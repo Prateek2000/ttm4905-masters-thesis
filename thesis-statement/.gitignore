@@ -1,0 +1,45 @@
+# Core LaTeX build files
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+
+# Intermediate outputs
+*.dvi
+*.xdv
+*.synctex
+*.synctex.gz
+*.pdfsync
+
+# BibLaTeX/Biber
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+
+# Beamer
+*.nav
+*.snm
+*.vrb
+
+# Minted
+*_minted*
+
+# glossaries
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.glsdefs
+
+# Editors / misc
+*~
+.#*
+.DS_Store
+_region_.tex

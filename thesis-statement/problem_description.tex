@@ -1,0 +1,20 @@
+\noindent%
+Garbled circuits are a fundamental cryptographic primitive used in secure two‑party computation (2PC), enabling two parties to jointly compute a function without revealing their private inputs—only the output is revealed. The concept was introduced by Andrew Yao in 1986 \cite{FOCS:Yao86}, where functions are expressed as Boolean circuits and each wire is labelled with encrypted wire keys. Early constructions required four ciphertexts per gate, resulting in significant communication overhead and limiting practical adoption.
+
+Subsequent optimizations such as Point‑and‑Permute and the Half‑Gates technique greatly reduced the number of ciphertexts needed per gate, leading to substantial performance improvements \cite{STOC:BeaMicRog90, EC:ZahRosEva15}. These optimizations form the basis of many state‑of‑the‑art secure computation frameworks.
+
+Formal verification of cryptographic constructions is essential to ensure correctness and prevent subtle vulnerabilities arising from unchecked corner cases. Brzuska and Oechsner \cite{CSF:BrzOec23} developed a state‑separating pen‑and‑paper reduction proof for Yao’s original garbling scheme. State‑separating proofs model protocol components as isolated “packages” with private state and oracle interfaces, allowing for structured security reductions. Their work established security by reducing the garbling scheme to the IND‑CPA security of the encryption primitive used for gate tables.
+
+Domino is an automated verification tool specifically designed for state‑separating proofs. It has been used to reason about complex real‑world protocols such as TLS \cite{rajabi_towards_2025} and WPA2 \cite{AC:BDEFKK22}. Domino offers a high level of automation and readability because proof scripts resemble the pseudocode found in traditional cryptographic proofs.
+
+Furthermore, the above mentioned proof for Yao's garbling scheme by Brzuska and Oechsner \cite{CSF:BrzOec23} was later formalized in Domino \cite{brzuska-private-communication}. It can serve as a good starting point for the thesis to observe how games may be converted from pen and paper proofs to Domino code.
+
+The goal of this thesis is to formalize and mechanize a security reduction for the Half‑Gates garbling scheme within the Domino framework. This includes:
+\begin{itemize}
+    \item Developing a state‑separating, pen‑and‑paper reduction proof for the Half‑Gates technique.
+    \item Encoding this proof in Domino.
+\end{itemize} \
+
+This work extends formal verification techniques to an optimized and widely deployed garbling construction and demonstrates Domino’s applicability to modern cryptographic primitives.
+
+%TODO: replace Blindtext with problem description
