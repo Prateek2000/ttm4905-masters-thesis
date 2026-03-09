@@ -43,3 +43,6 @@
 .#*
 .DS_Store
 _region_.tex
+
+*.loa
+*.xdy
