@@ -8,7 +8,10 @@ The following sections can be split into their own chapters (if needed).
 How do these relate to multi party Computation \\
 Garbling as a cryptographic goal, as opposed to a technique to achieve some specific properties. \\
 The properties that circuit garbling provides - privacy, authenticity and obliviousness. \\ 
-General definition of a grabling scheme: \cite{bellare_foundations_2012}
+General definition of a grabling scheme: \cite{bellare_foundations_2012}. The authors use notions of strings and functions being separate so that the garbling scheme remains generalizable and not specific to garbling boolean circuits or arithmetic circuits.
+Garbling scheme maps a function f to an encoding function En, a decoding function De, and an evaluation function Ev, such that when an input x is encoded by En, then the encoded value is evaluated through Ev, and the resulting output is decoded by De, the resultant value is the same as the input being evaluated by f. 
+\\
+Security notions definition may be included.
 \subsection{Oblivious Transfer Protocols}
 \label{subsec:ot}
 Why are they used in garbling schemes
