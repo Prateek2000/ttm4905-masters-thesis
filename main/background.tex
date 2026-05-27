@@ -19,6 +19,7 @@ Why are they used in garbling schemes. THis can be reduced to one line or someth
 \label{sec:garblingoptimizations}
 \subsection{Point and Permute}
 \label{subsec:pointandpermute}
+How many bits are supposed to be used for the wire "color"? If (x,y) are all the inputs to the circuit (if there are more than 2 inputs, x is x1x2x3... and similarly for y, i.e., for each binary input label x and y, $len(x) = 2^n$ where n is the number of x inputs. similarly for y.). So X and Y are the inputs domain for the two parties, and there need to be $\left\lceil \log(X) \right\rceil$ color bits after the key to preserve key length to be equal to the security parameter, while still having the ability to point to a specific X bit on the garbled truth table \cite{evans_pragmatic_2018}.
 \subsection{Free XOR}
 \label{subsec:freexor}
 \subsection{Garbled Row Reduction - 3}

@@ -21,11 +21,15 @@ The second prerequisite to run Domino is a functioning CVC5 installation, and fo
 \label{subsec:projectstructure}
 A Domino project directory requires the presence of an empty \textit{ssp.toml} file. It allows SSP logic to be written into packages, games and theorem files. These are all placed under their own directories, i.e., folders called \textit{packages}, \textit{games}, and \textit{theorem}.
 
-Each of these folders can then contain 
+Each of these folders can then contain one or more files. Domino checks packages and games for syntactic correctness even if they are not used in a theorem. This is intentional design, since when writing state separating proofs, the components (packages and games) are usually set up before the actual proof.
 
-Folder structure.
+In older versions of Domino, theorems were called proofs, and the folder and file header for proofs were named as such.
 
-What are Packages, Games, and Theorems (and they were called proofs before)
+\subsubsection{An Example Theorem in Domino}
+\label{subsubsec:examplegame}
+{\color{red}mIND-CPA game here, talk about its packages, and the two games with diagrams, and how the theorem to prove states that the two games are indistinguishable. }
+
+
 \section{Coding Half-gates in Domino}
 \label{sec:halfgatesindomino}
 \section{Improvements}
