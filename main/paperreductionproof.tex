@@ -5,6 +5,8 @@ Read half gates and chris's paper to understand what to do here even.
 \label{sec:ssp}
 \begin{itemize}
     \item Something about why state separating proofs exist. "composable" and "constructive" security
+    \item State separating proofs allow us to make intermediate arguments (hybrids) in a reusable manner. It is often more intuitive to model something as its own package that has inputs and outputs than to have it be part of many different codes and realise that its the same thing.
 \end{itemize}
+Composability of layers is very important so we can derive circuit security from just proving layer security. The simulator for layer n must output a garbling of its output which is then supplied to a new simulator for layer n+1. Therefore, if a simulator can simulate a gate by getting its inputs (garbled input) and return garbled output, it can be composed with the simulator for the next gate and so on. Same idea for layers.
 \section{Existing Half-Gates Proof and how it is to be modelled into state separating proofs}
 \label{sec:existingprooftossp}

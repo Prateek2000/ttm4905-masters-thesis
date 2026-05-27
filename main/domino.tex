@@ -4,13 +4,27 @@
 \label{sec:whatisdomino}
 What is domino and how does it work? The layers that exist, and the design in general.
 \\
-Domino is a proof verifier for State-separating proofs (SSPs) that allows the user to take a pen-and-paper SSP and import it using very similar syntax and constructs such as packages, games and theorems. The explicit relation between these games is defined using invariant files, written in the SMT-LIB language. These games are then checked against different lemmata that are needed to fulfil the relation that the user wants to establish.
+Domino is a proof assistant for State-separating proofs (SSPs) that allows the user to validate a SSP using familiar synatax, and an underlying SMT solver. It uses very similar syntax and constructs as SSPs, such as packages, games and theorems. The explicit relation between these games is defined using invariant files, written in the SMT-LIB language. These games are then checked against different lemmata that are needed to fulfil the relation that the user wants to establish.
 
 Domino is published as a rust package available on Github. The domino program/crate itself contains a compiler that has its own defined language that intentionally tries to be very similar the SSP syntax defined in \cite{brzuska_state_2018}. 
 
 \section{Using Domino}
 \label{sec:usingdomino}
+\subsection{Dependencies}
+\label{subsec:dependencies}
+Since Domino is published as a Rust package, it requires a Rust toolchain, which can be installed using \textit{rustup}. Rustup manages multiple Rust toolchains, and is the most straightforward way to getting set up on Linux. Rustup is typically installed using a bash script from the official website, but it is also available on most system package managers. It can also be built from source.
+Installing rustup automatically installs the Rust binary and cargo (the package manager), among other components. These can also be obtained without rustup, and the installation page explains the methods in more detail \cite{rust_install}.  
+
+The second prerequisite to run Domino is a functioning CVC5 installation, and for the cvc5 executable to be added to PATH, so that Domino can invoke it while running. CVC5 can be built from source following the instructions in \cite{cvc5_install}. CVC5 is the SMT solver that checks whether the constraints given by our proof are satisfiable or not. This is done in practice by taking the negation of the condition we want, and checking for satisfiability of that negation. If it exists, the condition if false.
+
+\subsection{Project Structure}
+\label{subsec:projectstructure}
+A Domino project directory requires the presence of an empty \textit{ssp.toml} file. It allows SSP logic to be written into packages, games and theorem files. These are all placed under their own directories, i.e., folders called \textit{packages}, \textit{games}, and \textit{theorem}.
+
+Each of these folders can then contain 
+
 Folder structure.
+
 What are Packages, Games, and Theorems (and they were called proofs before)
 \section{Coding Half-gates in Domino}
 \label{sec:halfgatesindomino}
