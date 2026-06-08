@@ -1,0 +1,17 @@
+package XOR{
+    oracle XOR (x:Bool, y:Bool) -> Bool {
+        if(x == true) {
+            if (y == true) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            if (y == true) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+}

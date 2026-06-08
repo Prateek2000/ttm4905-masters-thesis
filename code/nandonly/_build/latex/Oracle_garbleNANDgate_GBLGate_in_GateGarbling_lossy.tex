@@ -1,0 +1,52 @@
+\procedure{$\O{GBLGate}(\n{y})$}{
+ \n{a0} \stackrel{a0}{\sample} \bin^{\n{k}}\\
+ \n{a1} \stackrel{a1}{\sample} \bin^{\n{k}}\\
+ \n{b0} \stackrel{b0}{\sample} \bin^{\n{k}}\\
+ \n{b1} \stackrel{b1}{\sample} \bin^{\n{k}}\\
+ \n{c0} \stackrel{a0}{\sample} \bin^{\n{k}}\\
+ \n{c1} \stackrel{c1}{\sample} \bin^{\n{k}}\\
+ \n{pa} \stackrel{pa}{\sample} \O{Boolean}\\
+ \n{pb} \stackrel{pb}{\sample} \O{Boolean}\\
+ \n{pc} \stackrel{pc}{\sample} \O{Boolean}\\
+ \n{Wa0} \gets \left(\begin{array}{c}\n{a0}, \n{pa}\end{array}\right)\\
+ \n{tmp} \stackrel{\mathsf{\tiny invoke}}{\gets} \O{XOR}(\n{pa}, \lit{true}) \pccomment{Pkg: XOR}\\
+ \n{Wa1} \gets \left(\begin{array}{c}\n{a1}, \n{tmp}\end{array}\right)\\
+ \n{Wb0} \gets \left(\begin{array}{c}\n{b0}, \n{pb}\end{array}\right)\\
+ \n{tmp} \stackrel{\mathsf{\tiny invoke}}{\gets} \O{XOR}(\n{pb}, \lit{true}) \pccomment{Pkg: XOR}\\
+ \n{Wb1} \gets \left(\begin{array}{c}\n{b1}, \n{tmp}\end{array}\right)\\
+ \n{Wc0} \gets \left(\begin{array}{c}\n{c0}, \n{pc}\end{array}\right)\\
+ \n{tmp} \stackrel{\mathsf{\tiny invoke}}{\gets} \O{XOR}(\n{pc}, \lit{true}) \pccomment{Pkg: XOR}\\
+ \n{Wc1} \gets \left(\begin{array}{c}\n{c1}, \n{tmp}\end{array}\right)\\
+ \n{T} \gets \O{EmptyTable}(\O{Table}[\O{Integer} \rightarrow \O{Tuple([Type { kind: Bits(Identifier(PackageIdentifier(Const(PackageConstIdentifier { pkg_name: "SimNANDgate", name: "k", ty: Type { kind: Integer }, game_assignment: Some(Expression { kind: Identifier(GameIdentifier(Const(GameConstIdentifier { game_name: "GateGarbling", name: "k", ty: Type { kind: Integer }, game_inst_name: None, theorem_name: None, inst_info: None, assigned_value: None }))) }), pkg_inst_name: Some("garbleNANDgate"), game_name: Some("GateGarbling"), game_inst_name: None, theorem_name: None })))) }, Type { kind: Boolean }])}])\\
+ \n{dinf} \gets \O{EmptyTable}(\O{Table}[\O{Tuple([Type { kind: Bits(Identifier(PackageIdentifier(Const(PackageConstIdentifier { pkg_name: "SimNANDgate", name: "k", ty: Type { kind: Integer }, game_assignment: Some(Expression { kind: Identifier(GameIdentifier(Const(GameConstIdentifier { game_name: "GateGarbling", name: "k", ty: Type { kind: Integer }, game_inst_name: None, theorem_name: None, inst_info: None, assigned_value: None }))) }), pkg_inst_name: Some("garbleNANDgate"), game_name: Some("GateGarbling"), game_inst_name: None, theorem_name: None })))) }, Type { kind: Boolean }])} \rightarrow \O{Boolean}])\\
+\pcif \n{pa} = \lit{true} \pcthen\\
+\pcind\pcif \n{pb} = \lit{true} \pcthen\\
+\pcind\pcind \n{T}\left[0\right] \gets \O{\n{Enc}}(\n{Wa1}, \n{Wb1}, \n{Wc0})\\
+\pcind\pcind \n{T}\left[1\right] \gets \O{\n{Enc}}(\n{Wa1}, \n{Wb0}, \n{Wc1})\\
+\pcind\pcind \n{T}\left[2\right] \gets \O{\n{Enc}}(\n{Wa0}, \n{Wb1}, \n{Wc1})\\
+\pcind\pcind \n{T}\left[3\right] \gets \O{\n{Enc}}(\n{Wa0}, \n{Wb0}, \n{Wc1})\\
+\pcind\pcelse\\
+\pcind\pcind \n{T}\left[0\right] \gets \O{\n{Enc}}(\n{Wa1}, \n{Wb0}, \n{Wc1})\\
+\pcind\pcind \n{T}\left[1\right] \gets \O{\n{Enc}}(\n{Wa1}, \n{Wb1}, \n{Wc0})\\
+\pcind\pcind \n{T}\left[2\right] \gets \O{\n{Enc}}(\n{Wa0}, \n{Wb0}, \n{Wc1})\\
+\pcind\pcind \n{T}\left[3\right] \gets \O{\n{Enc}}(\n{Wa0}, \n{Wb1}, \n{Wc1})\\
+\pcelse\\
+\pcind\pcif \n{pb} = \lit{true} \pcthen\\
+\pcind\pcind \n{T}\left[0\right] \gets \O{\n{Enc}}(\n{Wa0}, \n{Wb1}, \n{Wc1})\\
+\pcind\pcind \n{T}\left[1\right] \gets \O{\n{Enc}}(\n{Wa0}, \n{Wb0}, \n{Wc1})\\
+\pcind\pcind \n{T}\left[2\right] \gets \O{\n{Enc}}(\n{Wa1}, \n{Wb1}, \n{Wc0})\\
+\pcind\pcind \n{T}\left[3\right] \gets \O{\n{Enc}}(\n{Wa1}, \n{Wb0}, \n{Wc1})\\
+\pcind\pcelse\\
+\pcind\pcind \n{T}\left[0\right] \gets \O{\n{Enc}}(\n{Wa0}, \n{Wb0}, \n{Wc1})\\
+\pcind\pcind \n{T}\left[1\right] \gets \O{\n{Enc}}(\n{Wa0}, \n{Wb1}, \n{Wc1})\\
+\pcind\pcind \n{T}\left[2\right] \gets \O{\n{Enc}}(\n{Wa1}, \n{Wb0}, \n{Wc1})\\
+\pcind\pcind \n{T}\left[3\right] \gets \O{\n{Enc}}(\n{Wa1}, \n{Wb1}, \n{Wc0})\\
+ \n{GC} \gets \n{T}\\
+\pcif \n{y} = \lit{true} \pcthen\\
+\pcind \n{dinf}\left[\n{Wc1}\right] \gets \n{y}\\
+\pcind \n{gin} \gets \left(\begin{array}{c}\n{Wa0}, \n{Wb0}\end{array}\right)\\
+\pcelse\\
+\pcind \n{dinf}\left[\n{Wc0}\right] \gets \n{y}\\
+\pcind \n{gin} \gets \left(\begin{array}{c}\n{Wa1}, \n{Wb1}\end{array}\right)\\
+ \pcreturn \left(\begin{array}{c}\n{GC}, \n{gin}, \n{dinf}\end{array}\right)\\
+}

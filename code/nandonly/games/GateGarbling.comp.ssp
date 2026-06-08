@@ -1,0 +1,23 @@
+composition GateGarbling {
+    const k: Integer;
+    const Enc: fn (Bits(k), Bool), (Bits(k), Bool),(Bits(k), Bool) -> (Bits(k), Bool);
+    instance garbleNANDgate = SimNANDgate {
+        params{
+            k: k,
+            Enc: Enc
+        }
+    }
+
+    instance XOR = XOR {
+
+    }
+
+    compose {
+        adversary: {
+            GBLGate: garbleNANDgate,
+        }
+        garbleNANDgate: {
+            XOR: XOR,
+        }
+    }
+}

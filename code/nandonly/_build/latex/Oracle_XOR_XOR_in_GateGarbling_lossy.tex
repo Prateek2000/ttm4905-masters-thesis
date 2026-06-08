@@ -1,0 +1,12 @@
+\procedure{$\O{XOR}(\n{x}, \n{y})$}{
+\pcif \n{x} = \lit{true} \pcthen\\
+\pcind\pcif \n{y} = \lit{true} \pcthen\\
+\pcind\pcind \pcreturn \lit{false}\\
+\pcind\pcelse\\
+\pcind\pcind \pcreturn \lit{true}\\
+\pcelse\\
+\pcind\pcif \n{y} = \lit{true} \pcthen\\
+\pcind\pcind \pcreturn \lit{true}\\
+\pcind\pcelse\\
+\pcind\pcind \pcreturn \lit{false}\\
+}
