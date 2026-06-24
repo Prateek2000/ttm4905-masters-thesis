@@ -1,17 +1,19 @@
 \chapter{Introduction}
 \label{chp:introduction} 
-The introduction must contain the following topics at the least:
-\begin{itemize}
-    \item Paragraph: MPC and significance
-    \item Garbling schemes and optimizations
-    \item Formal Verification
-    \item WIP TOOL Domino
-    \item What does the thesis do? Use domino to formally verify a proof for Half Gates  
-\end{itemize}
-Multiparty computation (MPC) is a common scenario in the present time, where data is transferred and operated on across multiple devices in order to provide services. 
-A very obvious example is deferring some computation to a cloud server which has higher and more elastic computation capabilities. 
-As a consequence, there also exist regulations as well as requirements that bring the need to secure such data from third parties, such as in the case of healthcare, or personal information (cite\_gdpr). 
+\color{red}{This needs a rewrite to make it flow better. Get proper definitions for the jargon you use and see which of them are not required to make your point.}
 
-Two-party computation (2PC) is a subset of MPC in which two parties want to evaluate a function that takes inputs from both parties, but with the constraint that they do not wish to reveal the inputs to each other. 
-Examples could be matching if a user's password is in a leak database, or jointly computed biometric validation, which are actually examples of a more well defined problem called Private Set Intersection (PSI) \cite{USENIX:PinSchZoh14}.
+In recent times, computation has become increasingly decentralized. Data is transferred to and operated on across multiple devices in order to provide services, and this class of problems can be broadly classified as Multiparty computation (MPC).
+A very common example is deferring some computation to a cloud server which is more powerful and has elastic computation capabilities. 
+However, since it is owned and operated by another party, a remote server may not automatically provide the same security and privacy guarantees as the user's own machine. Besides user requirements, cybersecurity regulations also require methods to secure data from such parties, such as in the case of private healthcare data, or other personal information (cite\_gdpr). 
 
+Two-party computation (2PC) is a special case of MPC in which two parties want to evaluate a function that takes inputs from both parties, but with the constraint that they do not wish to reveal the inputs to each other. \color{red}{define 2PC correctly here and somehow relate it to PSI or other garbling.}
+Examples could be matching if a user's password is in a leak database, or jointly computed biometric validation, which are actually examples of a more well defined problem called Private Set Intersection (PSI) \cite{USENIX:PinSchZoh14}. \color{red}{do we want to talk about Secure Function Evaluation? since the kolesnikov paper talks about that. maybe we do not need to bring up PSI here? Private Function -SFE is another interesting thing where both parties do not know the function to be evaluated. the paper says that this can be done using Universal circuits that can be garbled (so a ckt that takes another ckt and its input as input, and then evals this. its one abstraction/meta layer on top of GCs and provides only input hiding, which translates to circuit and input hiding for the ckt provided as input.)}
+
+Often attributed to Andrew Yao's seminal work in 1986 \cite{FOCS:Yao86}, a Garbled Circuit (GC) is a cryptographic building block that can be used to build such PSI protocols. Garbled Circuits allow any function that can be expressed as a boolean circuit to be converted into a two-party protocol (this also requires an Oblivious Transfer protocol, which we discuss later) where the function takes inputs from both parties but does not reveal anything besides the final output of the function.  
+For about more than a decade after this work, Garbled Circuits were considered to not be practical, due to bandwidth and computation inefficiencies. However, there has been ongoing work in the field that has led to optimizations that allow them to be somewhat usable in niche applications such as blockchains and even for generic 2PC in systems like Fairplay \color{red}{cite Fairplay}. 
+
+In this work, we aim to convert the proof of one such optimization (Free XOR) to a State-separating proof (SSP) format, and formally verify the correctness of this converted proof. Formal verification allows us to base the correctness of some protocol or scheme on mathematical and logical constructs, rather than exhaustively testing edge cases, as is often the case in software engineering. We use Domino, a proof verification tool for SSPs, which is currently under development, and examine the suitability of its current feature set for complex proofs, while also attempting to validate the above proof. \color{red}{rewrite}
+
+The initial goal of this project was to verify the Half-Gates garbling scheme. However, since the Half-Gates scheme works under the FreeXOR assumption, we realised that this would require us to first solve the same problem for the FreeXOR scheme. Due to the limited timeframe of the project, we were unable to do both, and leave Half-Gates as future work, which we describe in more detail later.
+
+The rest of this paper is organized as follows: Section 2 contains background information on Garbling schemes, optimizations, and Domino. Section 3 details the converted pen-and-paper proof for FreeXOR. Section 4 contains further details about the proof tool Domino, and an implementation of the proof, as well as comments on the tool. Section 5 contains concluding remarks and future work. 
