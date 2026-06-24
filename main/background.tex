@@ -20,18 +20,18 @@ Why are they used in garbling schemes. THis can be reduced to one line or someth
 \subsection{Point and Permute}
 \label{subsec:pointandpermute}
 How many bits are supposed to be used for the wire "color"? If (x,y) are all the inputs to the circuit (if there are more than 2 inputs, x is x1x2x3... and similarly for y, i.e., for each binary input label x and y, $len(x) = 2^n$ where n is the number of x inputs. similarly for y.). So X and Y are the inputs domain for the two parties, and there need to be $\left\lceil \log(X) \right\rceil$ color bits after the key to preserve key length to be equal to the security parameter, while still having the ability to point to a specific X bit on the garbled truth table \cite{evans_pragmatic_2018}.
-\subsection{Free XOR}
-\label{subsec:freexor}
 \subsection{Garbled Row Reduction - 3}
 \label{subsec:grr3}
 Compatible with Free XOR
+\subsection{Free XOR}
+\label{subsec:freexor}
 \subsection{Garbled Row Reduction - 2}
 \label{subsec:grr2}
 \subsection{FleXOR}
 \label{subsec:flexor}
 \subsection{Half-Gates}
 \label{subsec:halfgates}
-End with why we chose this one to work one
+Mention that this was the original objective of the thesis, however work with this requires freexor to be completed
 \subsection{Garbled Gadgets}
 \label{subsec:garbledgadgets}
 \section{Formal Verification and Tools}

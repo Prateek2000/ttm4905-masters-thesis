@@ -1,0 +1,78 @@
+package Sim_fx_NANDgate {
+
+    params {
+        k: Integer,
+        Enc: fn (Bits(k), Bool), (Bits(k), Bool),(Bits(k), Bool) -> (Bits(k), Bool), /*enc under 2 keys of length k+1*/ /*TODO: DEFINE THIS*/
+
+    }   
+    import oracles {
+        XOR(x:Bool, y:Bool) -> Bool,
+    }
+
+    oracle GBLNANDGate(
+        y: Bool
+    ) -> (Table(Integer, (Bits(k), Bool)), ((Bits(k), Bool), (Bits(k), Bool)), Table((Bits(k), Bool), Bool)) {
+        a0 <-$ Bits(k) sample-name a0;
+        a1 <-$ Bits(k) sample-name a1;
+        b0 <-$ Bits(k) sample-name b0;
+        b1 <-$ Bits(k) sample-name b1;
+        c0 <-$ Bits(k) sample-name a0;
+        c1 <-$ Bits(k) sample-name c1;
+        pa <-$ Bool sample-name pa;
+        pb <-$ Bool sample-name pb;
+        pc <-$ Bool sample-name pc;
+        Wa0 <- (a0, pa);
+        tmp <- invoke XOR(pa, true);
+        Wa1 <- (a1, tmp);
+        Wb0 <- (b0, pb);
+        tmp <- invoke XOR(pb, true);
+        Wb1 <- (b1, tmp);
+        Wc0 <- (c0, pc);
+        tmp <- invoke XOR(pc, true);
+        Wc1 <- (c1, tmp);
+        T <- new Table(Integer, (Bits(k), Bool)); /*placeholder table for GC*/
+        dinf <- new Table((Bits(k), Bool), Bool);
+        if (pa == true) {
+            if (pb == true) {
+                /*pa = 1, pb = 1*/ 
+                T[0] <- Some(Enc(Wa1, Wb1, Wc0));
+                T[1] <- Some(Enc(Wa1, Wb0, Wc1));
+                T[2] <- Some(Enc(Wa0, Wb1, Wc1));
+                T[3] <- Some(Enc(Wa0, Wb0, Wc1));
+            }
+            else {
+                /*pa = 1, pb = 0*/ 
+                T[0] <- Some(Enc(Wa1, Wb0, Wc1));
+                T[1] <- Some(Enc(Wa1, Wb1, Wc0));
+                T[2] <- Some(Enc(Wa0, Wb0, Wc1));
+                T[3] <- Some(Enc(Wa0, Wb1, Wc1));
+            }
+        } else {
+            if (pb == true) {
+                /*pa = 0, pb = 1*/ 
+                T[0] <- Some(Enc(Wa0, Wb1, Wc1));
+                T[1] <- Some(Enc(Wa0, Wb0, Wc1));
+                T[2] <- Some(Enc(Wa1, Wb1, Wc0));
+                T[3] <- Some(Enc(Wa1, Wb0, Wc1));
+            }
+            else {
+                /*pa = 0, pb = 0*/ 
+                T[0] <- Some(Enc(Wa0, Wb0, Wc1));
+                T[1] <- Some(Enc(Wa0, Wb1, Wc1));
+                T[2] <- Some(Enc(Wa1, Wb0, Wc1));
+                T[3] <- Some(Enc(Wa1, Wb1, Wc0));
+            }
+        }
+
+        GC <- T;
+        if (y==true) {
+            dinf[Wc1] <- Some(y);
+            gin <- (Wa0, Wb0); /*could also be any combination of Wa and Wb except 1,1 since they all give 1 output for NAND gate*/
+        }
+        else {
+            dinf[Wc0] <- Some(y);
+            gin <- (Wa1, Wb1);
+        }
+        return (GC, gin, dinf);
+    }
+}
