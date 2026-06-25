@@ -296,6 +296,9 @@
 \RequirePackage{algorithmicx}
 \RequirePackage{algpseudocode}
 
+% Cryptocode
+\RequirePackage{cryptocode}
+
 % Page style
 \makepagestyle{ruled}
 \makeevenhead{ruled}{{\small\thepage \ \ \ \leftmark}}{}{}

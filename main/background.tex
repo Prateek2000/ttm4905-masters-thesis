@@ -1,13 +1,12 @@
 \chapter{Background}
 \label{chp:background} 
-The following sections can be split into their own chapters (if needed).
-\section{Multi-Party Computation (MPC)}
-\label{sec:mpc}
-\color{red}{keep it very brief, do I even want this?}
-MPC is a class of problems that can be broadly described as having inputs from multiple parties and 
-
+\textcolor{red}{The following sections can be split into their own chapters (if needed).}
 \section{Garbling Schemes}
 \label{sec:garblingschemes}
+A Garbled Circuit can informally be defined as a two-party protocol as follows:
+\begin{itemize}
+    \item steps here
+\end{itemize}
 How do these relate to multi party Computation \\
 Garbling as a cryptographic goal, as opposed to a technique to achieve some specific properties. \\
 The properties that circuit garbling provides - privacy, authenticity and obliviousness. \\ 
@@ -15,6 +14,10 @@ General definition of a grabling scheme: \cite{bellare_foundations_2012}. The au
 Garbling scheme maps a function f to an encoding function En, a decoding function De, and an evaluation function Ev, such that when an input x is encoded by En, then the encoded value is evaluated through Ev, and the resulting output is decoded by De, the resultant value is the same as the input being evaluated by f. 
 \\
 Security notions definition may be included.
+
+\input{figs/gc_protocol.tex} %does not work, fix this. 
+
+
 \subsection{Oblivious Transfer Protocols}
 \label{subsec:ot}
 Why are they used in garbling schemes. THis can be reduced to one line or something. Its not important to Half-Gates of Yao SSP.
