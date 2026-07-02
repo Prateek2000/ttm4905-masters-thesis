@@ -1,0 +1,23 @@
+\begin{figure}[ht]
+\centering
+
+\fbox{%
+\begin{minipage}{0.95\linewidth}
+    \procedureblock[]{}{
+        \underline{\textbf{Garbler$(g\in \bin)$}} \< \< \< \< \underline{\textbf{Evaluator$(e\in \bin)$}} \\
+        (C', enc, dec) \gets Garble(f) \< \< \< \<   \\
+        g' \gets En(g, enc) \< \< \< \<  \\[-1em]
+        \< \sendmessagerightx[4.2cm]{6}{C', g', dec} \\[-1em]
+        e'_0 \gets En(e_0, enc) \< \< \< \< \\
+        e'_1 \gets En(e_1, enc) \< \< \< \< \\[-1em]
+        \< \sendmessagerightx[1.2cm]{2}{(e'_0, e'_1)} \> \fbox{\text{1-2 OT}} \> \< \\[-1em]
+        \< \< \> \sendmessageleftx[1.2cm]{3}{e} \\[-1em]
+        \< \< \> \sendmessagerightx[1.2cm]{3}{e'} \\[-1em]
+        \< \< \< \< y' \gets C'(g',e') \\
+        \< \< \< \< y \gets De(y', dec) \\
+    }
+\end{minipage}
+}
+\label{fig:garbledcircuitprotocol}
+\caption{Garbled Circuit Protocol}
+\end{figure}

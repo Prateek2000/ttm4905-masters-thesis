@@ -1,21 +1,67 @@
 \chapter{Background}
 \label{chp:background} 
 \textcolor{red}{The following sections can be split into their own chapters (if needed).}
+\section{Garbled Circuit}
+\label{sec:garbledcircuit}
+A Garbled Circuit can be informally defined as a two party protocol, in which both parties want to evaluate a shared function $C$ together, without revealing their inputs to each other. The two parties participating in the protocol are called the \textit{\textbf{Garbler}}, and the \textit{\textbf{Evaluator}}. The function $C$ needs to be expressed as a boolean circuit if a \textit{\textbf{Garbled Circuit}} protocol is used.
+Input hiding is achieved using something called \textit{\textbf{garbling}}, which in practice is some form of encryption. Similarly, the final output is initially garbled, and needs to be \textit{\textbf{ungarbled}}, which is then implemented using the corresponding decryption function. 
+
+\input{figs/gc_protocol.tex} %does not work, fix this. 
+
+A simple run of the protocol starts with both parties possessing their own input bit respectively ($g$, and $e$). The protocol proceeds as follows (ref. Figure \ref{fig:garbledcircuitprotocol}):
+\begin{enumerate}
+    \item The Garbler garbles the circuit $C$ to obtain the garbled circuit $C'$, along with some encoding information ($enc$) and decoding information ($dec$). These will be used to garbled and ungarble inputs and outputs.
+    \item The Garbler garbles its own input $g$ into $g'$.
+    \item The Garbler then sends across $C'$, $g$ and $dec$ to the Evaluator.
+    \item The Evaluator still needs to garble its own input, but does not possess the encoding information, $enc$ to do so. Therefore, both parties participate in what is called a 1-out-of-2 Oblivious Transfer (OT) protocol \cite{C:EveGolLem82}. This protocol (adapted for GCs) requires the Garbler to garbled both possible bit values that the Evaluator may possess, and provide them to the OT protocol. Then, the Evaluator provides their chosen bit $e$ to the OT protocol and the OT protocol returns the garbling of that bit ($e'$). The Garbler remains unaware of which garbling was sent to the Evaluator, and the Evaluator remains unaware of the value of the other garbling.
+    \item At this point, since the Evaluator possesses both garbled inputs ($g'$ and $e'$) and the Garbled circuit ($C'$), it can compute the Garbled output, $y'$ by running the garbled inputs through the Garbled circuit.  
+    \item Finally, using the decoding information $dec$, the Evaluator can obtain $y$ by ungarbling $y'$. This output is equivalent to the output of the function $C(g,e)$.
+    \item If necessary, the Evaluator can send the final output back to the Garbler.
+\end{enumerate}
+The protocol can also be scaled up to support larger inputs from both parties. However, this would increase the complexity of the Oblivious Transfer protocol.
+\subsection{Adversary Model}
+Both the Garbler and Evaluator are assumed to be \textit{honest-but-curious}.  
+This means that both parties adhere strictly to the protocol specification. However, they try to learn more than what is intended by using the information received from running the protocol, and from their own randomness and state. So, as an example, the Evaluator could try to obtain the Garbler's bit by ungarbling it, but will not suceed since the algorithm $dec$ that the Evaluator receives does not ungarble the inputs.
+
+This kind of adversary is equivalent to the `Semi-Honest' Adversary described by Aumann and Lindell in \cite{JC:AumLin10}.
+
 \section{Garbling Schemes}
 \label{sec:garblingschemes}
-A Garbled Circuit can informally be defined as a two-party protocol as follows:
-\begin{itemize}
-    \item steps here
-\end{itemize}
-How do these relate to multi party Computation \\
+In the previous section, we discussed a 2PC Garbled circuit protocol. However, it is easier to reason about a part of the security of such a protocol using a more generalized construct called a Garbling Scheme. A Garbling Scheme leaves out the Oblivious Transfer sub-protocol and focuses on the security and correctness properties of the garbling of the circuit and input.
+
+A Garbling scheme \cite{bellare_foundations_2012} can be expressed as a 5-tuple of algorithms 
+\[\mathsf{(Garble(Gb), Encode(En), Decode(De), Garbled Eval (Ev), Eval(ev))}\]
+
+\begin{enumerate}
+    \item $\mathsf{Garble(Gb)}$ takes as input the function $f$ and the security parameter \secparam and returns $(F, e, d)$, where $F$ is the garbled circuit, $e$ is the encoding information and $d$ is the decoding information. 
+    \item $\mathsf{Encode(En)}$ takes as input the initial input $x$ and the encoding information $e$, and returns the garbled input $X$.
+    \item $\mathsf{Garbled Eval (Ev)}$ takes as input the garbled circuit $F$ and the garbled input $x$, and returns a garbled output $Y$.  
+    \item $\mathsf{Decode(De)}$ takes input the garbled output $Y$ and the decoding information $d$, and returns the ungarbled output $y$.
+    \item $\mathsf{Eval(ev)}$ takes as input the function $f$ and the plain input $x$ and returns $f(x)$. We will just substitute this with $f(x)$.
+\end{enumerate}
+
+Relating this to the represenatation of the Garbled Circuit protocol in the previous section, the inputs $g$ and $e$ from the previous section are both shares of $x$. That is, $x$ can be expressed as $x=g \concat e$. 
+
+%%%%%%%%%ended here today
+
+
+Corercteness:
+\[ev(f,x) = De(Ev(Gb(f), En(x))),\] where $f$ is the function to be evaluated (expressed as a boolean circuit), and $x$ is the initial input to the function f \cite{bellare_foundations_2012}.
+
+
+
+
+The input 
+De,En, blah blah. that model
+Adversary model.
+Correctness and security property.
+
+How do these relate to multi party Computation? \\
 Garbling as a cryptographic goal, as opposed to a technique to achieve some specific properties. \\
 The properties that circuit garbling provides - privacy, authenticity and obliviousness. \\ 
 General definition of a grabling scheme: \cite{bellare_foundations_2012}. The authors use notions of strings and functions being separate so that the garbling scheme remains generalizable and not specific to garbling boolean circuits or arithmetic circuits.
-Garbling scheme maps a function f to an encoding function En, a decoding function De, and an evaluation function Ev, such that when an input x is encoded by En, then the encoded value is evaluated through Ev, and the resulting output is decoded by De, the resultant value is the same as the input being evaluated by f. 
-\\
-Security notions definition may be included.
-
-\input{figs/gc_protocol.tex} %does not work, fix this. 
+Garbling scheme maps a function f to an encoding function En, a decoding function De, and an evaluation function Ev, such that when an input x is encoded by En, then the encoded value is evaluated through Ev, and the resulting output is decoded by De, the resultant value is the same as the input being evaluated by f.  \\
+Security notions definition may be included. \\
 
 
 \subsection{Oblivious Transfer Protocols}

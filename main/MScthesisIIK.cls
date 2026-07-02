@@ -297,7 +297,25 @@
 \RequirePackage{algpseudocode}
 
 % Cryptocode
-\RequirePackage{cryptocode}
+\RequirePackage[
+  lambda, % or n
+  advantage,
+  operators,
+  sets,
+  adversary,
+  landau,
+  probability,
+  notions,
+  logic,
+  ff,
+  mm,
+  primitives,
+  events,
+  complexity,
+  oracles,
+  asymptotics,
+  keys
+]{cryptocode}
 
 % Page style
 \makepagestyle{ruled}
