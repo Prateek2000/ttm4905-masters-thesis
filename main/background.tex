@@ -33,35 +33,36 @@ A Garbling scheme \cite{bellare_foundations_2012} can be expressed as a 5-tuple 
 \[\mathsf{(Garble(Gb), Encode(En), Decode(De), Garbled Eval (Ev), Eval(ev))}\]
 
 \begin{enumerate}
-    \item $\mathsf{Garble(Gb)}$ takes as input the function $f$ and the security parameter \secparam and returns $(F, e, d)$, where $F$ is the garbled circuit, $e$ is the encoding information and $d$ is the decoding information. 
+    \item $\mathsf{Garble(Gb)}$ takes as input the function $f$ and the security parameter $\secparam$ and returns $(F, e, d)$, where $F$ is the garbled circuit, $e$ is the encoding information and $d$ is the decoding information. 
     \item $\mathsf{Encode(En)}$ takes as input the initial input $x$ and the encoding information $e$, and returns the garbled input $X$.
-    \item $\mathsf{Garbled Eval (Ev)}$ takes as input the garbled circuit $F$ and the garbled input $x$, and returns a garbled output $Y$.  
+    \item $\mathsf{Garbled Eval (Ev)}$ takes as input the garbled circuit $F$ and the garbled input $X$, and returns a garbled output $Y$.  
     \item $\mathsf{Decode(De)}$ takes input the garbled output $Y$ and the decoding information $d$, and returns the ungarbled output $y$.
     \item $\mathsf{Eval(ev)}$ takes as input the function $f$ and the plain input $x$ and returns $f(x)$. We will just substitute this with $f(x)$.
 \end{enumerate}
 
 Relating this to the represenatation of the Garbled Circuit protocol in the previous section, the inputs $g$ and $e$ from the previous section are both shares of $x$. That is, $x$ can be expressed as $x=g \concat e$. 
 
-%%%%%%%%%ended here today
+\subsection{Properties}
+\label{subsec: garblingschemeprops}
+The correctness property of a garbling scheme describes its intended behavior. It says that if $(F,e,d) \sample Gb(\secparam,f),$
+\[\forall x, De(Ev(F,En(x,e)),d) = f(x)\]
+Besides correctness, a Garbling scheme can have one or more of the following security properties \cite{bellare_foundations_2012}:
+\begin{enumerate}
+    \item \textbf{Privacy}: Knowledge of $(F,X,d)$ does not reveal anything beyond $f(x)$. This means that it is impossible for an Evaluator to obtain the initial input of the Garbler.
+    \item \textbf{Obliviousness}: Knowledge of $(F,X)$ does not reveal anything. This means that despite being able to solve the garbled circuit, the solver would not be able to map the garbled output to the real output.
+    \item \textbf{Authenticity}: Knowledge of $(F, X)$ does not allow one to find a $Y'\neq Ev(F,X)$ such that a $d$ exists to solve ($De(d, Y') \neq \bot$). 
+\end{enumerate}
+
+Of these properties, \textbf{Privacy} is the one that is most important to us in this work, and it is what we will continue working with in the rest of the paper.
+
+%talk about a simulator based definition of privacy and a IND based one.
+In \cite{bellare_foundations_2012}, Bellare, Hoang and Rogaway define privacy as two different cryptographic games: an \textit{indistinguishability} based one (Game\ $\mathsf{PrvInd_{G,\Phi}}$), and a \textit{simulation} based one (Game\ $\mathsf{PrvSim_{G,\Phi,S}}$), both described in Figure 5.
+In these notations, and elsewhere, $\Phi$ refers to the information function, which describes how much information about the circuit is public. In common usage, it is often either the whole circuit (denoted as $\Phi(C)=C)$, or the topology of the circuit (denoted as $\Phi(C)=topo(C)$). 
+
+In the indistinguishability based notation (Game\ $\mathsf{PrvInd_{G,\Phi}}$), 
 
 
-Corercteness:
-\[ev(f,x) = De(Ev(Gb(f), En(x))),\] where $f$ is the function to be evaluated (expressed as a boolean circuit), and $x$ is the initial input to the function f \cite{bellare_foundations_2012}.
-
-
-
-
-The input 
-De,En, blah blah. that model
-Adversary model.
-Correctness and security property.
-
-How do these relate to multi party Computation? \\
-Garbling as a cryptographic goal, as opposed to a technique to achieve some specific properties. \\
-The properties that circuit garbling provides - privacy, authenticity and obliviousness. \\ 
-General definition of a grabling scheme: \cite{bellare_foundations_2012}. The authors use notions of strings and functions being separate so that the garbling scheme remains generalizable and not specific to garbling boolean circuits or arithmetic circuits.
-Garbling scheme maps a function f to an encoding function En, a decoding function De, and an evaluation function Ev, such that when an input x is encoded by En, then the encoded value is evaluated through Ev, and the resulting output is decoded by De, the resultant value is the same as the input being evaluated by f.  \\
-Security notions definition may be included. \\
+Follow up works such as the Half-Gates paper, \cite{EC:ZahRosEva15} use simulation...
 
 
 \subsection{Oblivious Transfer Protocols}
