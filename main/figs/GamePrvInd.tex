@@ -1,0 +1,31 @@
+\begin{figure}[ht]
+\centering
+\begin{minipage}[t]{0.4\linewidth}
+    \procedureblock[]{$G^b_\mathsf{PrvInd_\mathit{G,\Phi}}$}{
+        \underline{\underline{\mathsf{GARBLE\mathit{(f_0,f_1,x_0,x_1)}}}} \\
+        \pcif \mathit{\Phi(f_0) \neq \Phi(f_1) \pcthen} \\
+        \t \pcreturn \bot \\
+        \pcif \mathit{f_0(x_0) \neq f_1(x_1) \pcthen} \\
+        \t \pcreturn \bot \\
+        (F,e,d)\gets Gb(\secparam, f_b) \\
+        X \gets En(x_b, e) \\
+        \pcreturn (F, X, d) \\
+       % 
+    }
+\end{minipage}
+\begin{minipage}[t]{0.4\linewidth}
+    \procedureblock[]{$G^b_\mathsf{PrvSim_\mathit{G,\Phi,S}}$}{
+        \underline{\underline{\mathsf{GARBLE\mathit{(f,x)\hspace{1cm}}}}} \\
+        \pcif b=0 \pcthen \\
+        \t (F,e,d) \gets Gb(\secparam,f)\\
+        \t X \gets En(x,e)\\
+        \pcelse \\
+        \t y \gets ev(f,x) \\
+        \t (F,X,d) \gets \sdv(\secparam, y,\Phi(f)) \\
+        \pcreturn (F,X,d)
+    }
+\end{minipage}
+
+\label{fig:prv}
+\caption{PrvInd and PrvSim Games - adapted from \cite{bellare_foundations_2012}}
+\end{figure}

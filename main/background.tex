@@ -56,18 +56,23 @@ Besides correctness, a Garbling scheme can have one or more of the following sec
 Of these properties, \textbf{Privacy} is the one that is most important to us in this work, and it is what we will continue working with in the rest of the paper.
 
 %talk about a simulator based definition of privacy and a IND based one.
-In \cite{bellare_foundations_2012}, Bellare, Hoang and Rogaway define privacy as two different cryptographic games: an \textit{indistinguishability} based one (Game\ $\mathsf{PrvInd_{G,\Phi}}$), and a \textit{simulation} based one (Game\ $\mathsf{PrvSim_{G,\Phi,S}}$), both described in Figure 5.
-In these notations, and elsewhere, $\Phi$ refers to the information function, which describes how much information about the circuit is public. In common usage, it is often either the whole circuit (denoted as $\Phi(C)=C)$, or the topology of the circuit (denoted as $\Phi(C)=topo(C)$). 
+In \cite{bellare_foundations_2012}, Bellare, Hoang and Rogaway define privacy as two different cryptographic games: an \textit{indistinguishability} based one (Game\ $\mathsf{PrvInd_\mathit{G,\Phi}}$), and a \textit{simulation} based one (Game\ $\mathsf{PrvSim_\mathit{G,\Phi,S}}$) as described in Figure \ref{fig:prv}.
+In these notations, and elsewhere, $\mathit{\Phi}$ refers to the side information function, which describes how much information about the circuit is public. In common usage, it is often either the whole circuit (denoted as $\mathit{\Phi_{circ}(C))}$, the topology of the circuit ($\mathit{\Phi_{topo}(C)}$), or the size of the circuit ($\mathit{\Phi_{size}(C)}$). 
 
-In the indistinguishability based notation (Game\ $\mathsf{PrvInd_{G,\Phi}}$), 
+\input{figs/GamePrvInd.tex}
+
+In the indistinguishability based game (Game\ $\mathsf{PrvInd^b_\mathit{G,\Phi}}$), the $\mathsf{GARBLE}$ oracle takes as parameters two pairs of functions and corresponding inputs, $(f_0,x_0)$ and $(f_1,x_1)$ such that $f_0(x_0)=f_1(x_1)$, and the bit $b$ that defines which $(f,x)$ pair $\mathsf{GARBLE}$ will use. A distinguishing adversary \ddv tries to guess the bit value $b$ that was used to generate the $(F,e,d)$ tuple. 
+A $\mathsf{INITIALIZE}$ procedure samples the value of $b$ and it is unknown to the adversary. $\mathsf{GARBLE}$ then uses the selected $(f,x)$ to generate $F$, $X$ and $d$ and returns it to the adversary.
+The advantage of the distinguishing adversary here is defined as the difference in the probability that the adversary guesses the correct bit and the probability of guessing randomly ($P=1/2$). \\
+If $b'$ is $\ddv$'s guess, 
+\[ \advantage{}{D, G_{PrvInd^0}, G_{PrvInd^1}} = \lvert \prob{b'=b} - \frac{1}{2} \rvert\]
 
 
-Follow up works such as the Half-Gates paper, \cite{EC:ZahRosEva15} use simulation...
+However, most follow-up works such as Half-Gates \cite{EC:ZahRosEva15} and Free XOR \cite{kolesnikov_freexor_2008,JC:Applebaum16}, use the simulation based paradigm (the PrvSim game from Figure \ref{fig:prv}).
 
+\section{Simulators}
+\label{sec:simulators}
 
-\subsection{Oblivious Transfer Protocols}
-\label{subsec:ot}
-Why are they used in garbling schemes. THis can be reduced to one line or something. Its not important to Half-Gates of Yao SSP.
 \section{Optimizations to Yao's Garbling scheme}
 \label{sec:garblingoptimizations}
 \subsection{Point and Permute}
