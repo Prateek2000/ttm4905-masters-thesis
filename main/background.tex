@@ -1,55 +1,57 @@
 \chapter{Background}
 \label{chp:background} 
-\textcolor{red}{The following sections can be split into their own chapters (if needed).}
-\section{Garbled Circuit}
+\newacronym{ot}{OT}{Oblivious Transfer}
+\newcommand{\cgarbler}{$\mathrm{Garbler}$ }
+\newcommand{\cevaluator}{$\mathrm{Evaluator}$ }
+In this chapter, we discuss the basic concepts that the reader would need to know in order to understand the Free XOR \acrlong{gs}, as well as \acrlong{ssp}s.
+\section{Garbled Circuits}
 \label{sec:garbledcircuit}
-A Garbled Circuit can be informally defined as a two party protocol, in which both parties want to evaluate a shared function $C$ together, without revealing their inputs to each other. The two parties participating in the protocol are called the \textit{\textbf{Garbler}}, and the \textit{\textbf{Evaluator}}. The function $C$ needs to be expressed as a boolean circuit if a \textit{\textbf{Garbled Circuit}} protocol is used.
-Input hiding is achieved using something called \textit{\textbf{garbling}}, which in practice is some form of encryption. Similarly, the final output is initially garbled, and needs to be \textit{\textbf{ungarbled}}, which is then implemented using the corresponding decryption function. 
+A \acrlong{gc} can be informally defined as a two-party protocol, in which both parties want to evaluate a shared function $C$ together, without revealing their inputs to each other. The two parties participating in the protocol are called the \cgarbler (or the \acrlong{gc} generator), and the \cevaluator. The function $C$ needs to be expressed as a boolean circuit if a \acrlong{gc} protocol is used. Input hiding is achieved using something called \textit{\textbf{garbling}}, which in practice is some form of encryption. Similarly, the final output is initially garbled, and needs to be ungarbled, which is then implemented using a corresponding decryption function. 
 
-\input{figs/gc_protocol.tex} %does not work, fix this. 
+\input{figs/gc_protocol.tex}
 
 A simple run of the protocol starts with both parties possessing their own input bit respectively ($g$, and $e$). The protocol proceeds as follows (ref. Figure \ref{fig:garbledcircuitprotocol}):
 \begin{enumerate}
-    \item The Garbler garbles the circuit $C$ to obtain the garbled circuit $C'$, along with some encoding information ($enc$) and decoding information ($dec$). These will be used to garbled and ungarble inputs and outputs.
-    \item The Garbler garbles its own input $g$ into $g'$.
-    \item The Garbler then sends across $C'$, $g$ and $dec$ to the Evaluator.
-    \item The Evaluator still needs to garble its own input, but does not possess the encoding information, $enc$ to do so. Therefore, both parties participate in what is called a 1-out-of-2 Oblivious Transfer (OT) protocol \cite{C:EveGolLem82}. This protocol (adapted for GCs) requires the Garbler to garbled both possible bit values that the Evaluator may possess, and provide them to the OT protocol. Then, the Evaluator provides their chosen bit $e$ to the OT protocol and the OT protocol returns the garbling of that bit ($e'$). The Garbler remains unaware of which garbling was sent to the Evaluator, and the Evaluator remains unaware of the value of the other garbling.
-    \item At this point, since the Evaluator possesses both garbled inputs ($g'$ and $e'$) and the Garbled circuit ($C'$), it can compute the Garbled output, $y'$ by running the garbled inputs through the Garbled circuit.  
-    \item Finally, using the decoding information $dec$, the Evaluator can obtain $y$ by ungarbling $y'$. This output is equivalent to the output of the function $C(g,e)$.
-    \item If necessary, the Evaluator can send the final output back to the Garbler.
+    \item The \cgarbler garbles the circuit $C$ to obtain the \acrlong{gc} $C'$, along with some encoding information ($enc$) and decoding information ($dec$). These will be used to garbled and ungarble inputs and outputs.
+    \item The \cgarbler garbles its own input $g$ into $g'$.
+    \item The \cgarbler then sends across $C'$, $g$ and $dec$ to the \cevaluator.
+    \item The \cevaluator still needs to garble its own input, but does not possess the encoding information, $enc$ to do so. Therefore, both parties participate in what is called a 1-out-of-2 \acrfull{ot} protocol \cite{C:EveGolLem82}. This protocol (adapted for \acrshort{gc}s) requires the \cgarbler to garbled both possible bit values that the \cevaluator may possess, and provide them to the OT protocol. Then, the \cevaluator provides their chosen bit $e$ to the OT protocol and the OT protocol returns the garbling of that bit ($e'$). The \cgarbler remains unaware of which garbling was sent to the \cevaluator, and the \cevaluator remains unaware of the value of the other garbling.
+    \item At this point, since the \cevaluator possesses both garbled inputs ($g'$ and $e'$) and the \acrlong{gc} ($C'$), it can compute the garbled output, $y'$ by running the garbled inputs through the \acrlong{gc}.  
+    \item Finally, using the decoding information $dec$, the \cevaluator can obtain $y$ by ungarbling $y'$. This output is equivalent to the output of the function $C(g,e)$.
+    \item If necessary, the \cevaluator can send the final output back to the \cgarbler.
 \end{enumerate}
-The protocol can also be scaled up to support larger inputs from both parties. However, this would increase the complexity of the Oblivious Transfer protocol.
-\subsection{Adversary Model}
-Both the Garbler and Evaluator are assumed to be \textit{honest-but-curious}.  
-This means that both parties adhere strictly to the protocol specification. However, they try to learn more than what is intended by using the information received from running the protocol, and from their own randomness and state. So, as an example, the Evaluator could try to obtain the Garbler's bit by ungarbling it, but will not suceed since the algorithm $dec$ that the Evaluator receives does not ungarble the inputs.
+The protocol can also be scaled up to support larger inputs from both parties. However, this would increase the complexity of the \acrlong{ot} protocol.
 
-This kind of adversary is equivalent to the `Semi-Honest' Adversary described by Aumann and Lindell in \cite{JC:AumLin10}.
+Both the \cgarbler and \cevaluator are assumed to be \textit{honest-but-curious}.  
+This means that both parties adhere strictly to the protocol specification. However, they try to learn more than what is intended by using the information received from running the protocol, and from their own randomness and state. So, as an example, the \cevaluator could try to obtain the \cgarbler's bit by ungarbling it, but will not suceed since the algorithm $dec$ that the \cevaluator receives does not ungarble the inputs.
+
+This kind of adversary is equivalent to the `Semi-Honest' adversary described by Aumann and Lindell in \cite{JC:AumLin10}.
 
 \section{Garbling Schemes}
 \label{sec:garblingschemes}
-In the previous section, we discussed a 2PC Garbled circuit protocol. However, it is easier to reason about a part of the security of such a protocol using a more generalized construct called a Garbling Scheme. A Garbling Scheme leaves out the Oblivious Transfer sub-protocol and focuses on the security and correctness properties of the garbling of the circuit and input.
+In the previous section, we discussed a \acrshort{2pc} \acrlong{gc} protocol. However, it is easier to reason about a part of the security of such a protocol using a more generalized construct called a \acrlong{gs}. A \acrlong{gs} leaves out the \acrlong{ot} sub-protocol and focuses on the correctness and security properties of the garbling of the circuit and the input.
 
-A Garbling scheme \cite{bellare_foundations_2012} can be expressed as a 5-tuple of algorithms 
+A \acrlong{gs} \cite{bellare_foundations_2012} can be expressed as a 5-tuple of algorithms 
 \[\mathsf{(Garble(Gb), Encode(En), Decode(De), Garbled Eval (Ev), Eval(ev))}\]
 
 \begin{enumerate}
-    \item $\mathsf{Garble(Gb)}$ takes as input the function $f$ and the security parameter $\secparam$ and returns $(F, e, d)$, where $F$ is the garbled circuit, $e$ is the encoding information and $d$ is the decoding information. 
+    \item $\mathsf{Garble(Gb)}$ takes as input the function $f$ and the security parameter $\secparam$ and returns $(F, e, d)$, where $F$ is the \acrlong{gc}, $e$ is the encoding information and $d$ is the decoding information. 
     \item $\mathsf{Encode(En)}$ takes as input the initial input $x$ and the encoding information $e$, and returns the garbled input $X$.
-    \item $\mathsf{Garbled Eval (Ev)}$ takes as input the garbled circuit $F$ and the garbled input $X$, and returns a garbled output $Y$.  
+    \item $\mathsf{Garbled Eval (Ev)}$ takes as input the \acrlong{gc} $F$ and the garbled input $X$, and returns a garbled output $Y$.  
     \item $\mathsf{Decode(De)}$ takes input the garbled output $Y$ and the decoding information $d$, and returns the ungarbled output $y$.
     \item $\mathsf{Eval(ev)}$ takes as input the function $f$ and the plain input $x$ and returns $f(x)$. We will just substitute this with $f(x)$.
 \end{enumerate}
 
-Relating this to the represenatation of the Garbled Circuit protocol in the previous section, the inputs $g$ and $e$ from the previous section are both shares of $x$. That is, $x$ can be expressed as $x=g \concat e$. 
+Relating this to the represenatation of the \acrlong{gc} protocol in the previous section, the inputs $g$ and $e$ from the previous section are both shares of $x$. That is, $x$ can be expressed as $x=g \concat e$. 
 
 \subsection{Properties}
 \label{subsec: garblingschemeprops}
-The correctness property of a garbling scheme describes its intended behavior. It says that if $(F,e,d) \sample Gb(\secparam,f),$
+The correctness property of a \acrlong{gs} describes its intended behavior. It says that if $(F,e,d) \sample Gb(\secparam,f),$
 \[\forall x, De(Ev(F,En(x,e)),d) = f(x)\]
-Besides correctness, a Garbling scheme can have one or more of the following security properties \cite{bellare_foundations_2012}:
+Besides correctness, a \acrlong{gs} can have one or more of the following security properties \cite{bellare_foundations_2012}:
 \begin{enumerate}
-    \item \textbf{Privacy}: Knowledge of $(F,X,d)$ does not reveal anything beyond $f(x)$. This means that it is impossible for an Evaluator to obtain the initial input of the Garbler.
-    \item \textbf{Obliviousness}: Knowledge of $(F,X)$ does not reveal anything. This means that despite being able to solve the garbled circuit, the solver would not be able to map the garbled output to the real output.
+    \item \textbf{Privacy}: Knowledge of $(F,X,d)$ does not reveal anything beyond $f(x)$. This means that it is impossible for an \cevaluator to obtain the initial input of the \cgarbler.
+    \item \textbf{Obliviousness}: Knowledge of $(F,X)$ does not reveal anything. This means that despite being able to solve the \acrlong{gc}, the solver would not be able to map the garbled output to the real output.
     \item \textbf{Authenticity}: Knowledge of $(F, X)$ does not allow one to find a $Y'\neq Ev(F,X)$ such that a $d$ exists to solve ($De(d, Y') \neq \bot$). 
 \end{enumerate}
 
@@ -65,19 +67,19 @@ In these notations, and elsewhere, $\mathit{\Phi}$ refers to the side informatio
 
 \input{figs/GamePrvInd.tex}
 
-In the indistinguishability based game (Game\ $\mathsf{PrvInd^b_\mathit{G,\Phi}}$), the $\mathsf{GARBLE}$ oracle takes as parameters two pairs of functions and corresponding inputs, $(f_0,x_0)$ and $(f_1,x_1)$ such that $f_0(x_0)=f_1(x_1)$, and the bit $b$ that defines which $(f,x)$ pair $\mathsf{GARBLE}$ will use. A distinguishing adversary \ddv tries to guess the bit value $b$ that was used to generate the $(F,e,d)$ tuple. 
+In the indistinguishability based game (Game\ $\mathsf{PrvInd^b_\mathit{G,\Phi}}$), the $\mathsf{GARBLE}$ oracle takes as parameters two pairs of functions and corresponding inputs, $(f_0,x_0)$ and $(f_1,x_1)$ such that $f_0(x_0)=f_1(x_1)$, and the bit $b$ that defines which $(f,x)$ pair $\mathsf{GARBLE}$ will use. A distinguishing adversary $\ddv$ tries to guess the bit value $b$ that was used to generate the $(F,e,d)$ tuple. 
 A $\mathsf{INITIALIZE}$ procedure samples the value of $b$ and it is unknown to the adversary. $\mathsf{GARBLE}$ then uses the selected $(f,x)$ to generate $F$, $X$ and $d$ and returns it to the adversary.
 The advantage of the distinguishing adversary here is defined as the difference in the probability that the adversary guesses the correct bit and the probability of guessing randomly ($P=1/2$). \\
 If $b'$ is $\ddv$'s guess, 
-\[ \advantage{}{D, G_{PrvInd^0}, G_{PrvInd^1}} = \lvert \prob{b'=b} - \frac{1}{2} \rvert\]
+\[ \advantage{}{D, G^0_{\mathsf{PrvInd}}, G^1_{\mathsf{PrvInd}}} = \lvert \prob{b'=b} - \frac{1}{2} \rvert\]
 
 \textcolor{red}{rewrite next 2 paras for clarity}\\
 However, most follow-up works such as Half-Gates \cite{EC:ZahRosEva15} and Free XOR \cite{kolesnikov_freexor_2008,JC:Applebaum16}, use the simulation based paradigm (the PrvSim game from Figure \ref{fig:prv}).
-Since privacy here means that the running the garbling and encoding algorithms $Gb$ and $En$ does not reveal anything about $f$ or $x$, we let the simulator \sdv access everything that someone participating in the protocol (semi-honest party) would be able to see, i.e., the security parameter (\secparam), the output of the algorithm $y$, and the information function of the circuit $\Phi(f)$. Then, this simulator tries to generate a $(\bar{F},\bar{X},\bar{d})$ tuple whose distribution is computationally indistinguishable from the one generated by actually running $Gb$ and $En$. 
+Since privacy here means that the running the garbling and encoding algorithms $Gb$ and $En$ does not reveal anything about $f$ or $x$, we let the simulator $\sdv$ access everything that someone participating in the protocol (semi-honest party) would be able to see, i.e., the security parameter (\secparam), the output of the algorithm $y$, and the information function of the circuit $\Phi(f)$. Then, this simulator tries to generate a $(\bar{F},\bar{X},\bar{d})$ tuple whose distribution is computationally indistinguishable from the one generated by actually running $Gb$ and $En$. 
 
-If the distribution of $(\bar{F},\bar{X},\bar{d})$ is actually indistinguishable to an adversary \adv from $(F,X,d)$, an adversary cannot claim to have recovered anything more than what the simulator knew, and hence privacy of $f$ (except $\Phi(f)$) and $x$ is preserved. For further reading on simualtors, Lindell provides a comprehensive overview of simualtors for beginners in \cite{lindell_how_2017} . 
+If the distribution of $(\bar{F},\bar{X},\bar{d})$ is actually indistinguishable to an adversary $\adv$ from $(F,X,d)$, an adversary cannot claim to have recovered anything more than what the simulator knew, and hence privacy of $f$ (except $\Phi(f)$) and $x$ is preserved. For further reading on simualtors, Lindell provides a comprehensive overview of simualtors for beginners in \cite{lindell_how_2017} . 
 
-\section{Optimizations to Yao's Garbling scheme}
+\section{Optimizations to Yao's Garbling Scheme}
 \label{sec:garblingoptimizations}
 \subsection{Point and Permute}
 \label{subsec:pointandpermute}

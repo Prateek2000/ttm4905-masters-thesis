@@ -1,16 +1,42 @@
 \chapter{Introduction}
 \label{chp:introduction} 
-Secure Multiparty Computation, or just Multi-Party Computation (MPC) refers to a class of problems in which two or more parties want to compute a common function using their individual inputs, but do not want to share these inputs with each other.
-Common use cases of MPC today include running heavy computation on cloud servers, or querying third party datasets that cannot be shared directly.
+
+\newacronym{mpc}{MPC}{Multi-Party Computation}
+\newacronym{gc}{GC}{Garbled Circuit}
+\newacronym{2pc}{2PC}{Two-party Computation}
+\newacronym{ssp}{SSP}{State-Separating Proof}
+\newacronym{gs}{GS}{garbling scheme}
+
+\section{Motivation}
+\label{sec:motivation}
+Secure Multiparty Computation, or just \acrfull{mpc} refers to a class of problems in which two or more parties want to compute a common function using their individual inputs, but do not want to share these inputs with each other.
+Common use cases of \acrshort{mpc} today include running heavy computation on cloud servers, or querying third party datasets that cannot be shared directly.
  
 Since remote servers are often owned and operated by a separate entity, it is difficult to obtain the same security and privacy guarantees that a user's own machine can provide. Besides user requirements, cybersecurity regulations also require methods to secure the data being processed from the data processor, such as in the case of private healthcare data, or other forms of personal data \cite{gdpr_2016}. 
 
-Two-party computation (2PC) is a special case of MPC in which only two parties are involved in the protocol. 
-Often attributed to Andrew Yao's seminal work in 1986 \cite{FOCS:Yao86}, the first approach for 2PC was to represent the function to be computed as a boolean circuit, and to use a Garbled Circuit (GC) to compute the output of the function, while maintaining the secrecy of the inputs of both parties. 
-For more than a decade after this work, Garbled Circuits were considered to not be practical because of the high bandwidth and computation costs of garbling, and due to the fact that garbling an arbitrary function into an optimized boolean circuit is difficult. However, there has been ongoing work in the field that has led to optimizations that allow them to be somewhat usable in generic 2PC systems like Fairplay \cite{malkhi_fairplaysecure_2004}, and in niche applications such as smart contracts \cite{haloani_coti_nodate}. 
+\acrfull{2pc} is a special case of \acrshort{mpc} in which only two parties are involved in the protocol. 
+Often attributed to Andrew Yao's seminal work in 1986 \cite{FOCS:Yao86}, the first approach for \acrshort{2pc} was to represent the function to be computed as a boolean circuit, and to use a \acrfull{gc} to compute the output of the function, while maintaining the secrecy of the inputs of both parties. For more than a decade after this work, \acrlong{gc}s were considered to not be practical because of the high bandwidth and computation costs of garbling, and due to the fact that garbling an arbitrary function into an optimized boolean circuit is difficult. However, there has been ongoing work in the field that has led to optimizations that allow them to be somewhat usable in generic \acrshort{2pc} systems like Fairplay \cite{malkhi_fairplaysecure_2004}, and in niche applications such as smart contracts \cite{haloani_coti_nodate}. 
 
-In this work, we aim to convert the proof of one such optimization (Free XOR) \cite{kolesnikov_freexor_2008} to a State-separating proof (SSP) format \cite{brzuska_state_2018}, and formally verify the correctness of this converted proof. Formal verification allows us to base the correctness of a protocol or scheme on mathematical and logical constructs, rather than exhaustively testing edge cases, as is often the case in software engineering. We use Domino, a proof verification tool for SSPs, which is currently under development, and examine the suitability of its current feature set for verifying complex proofs, while also attempting to validate the correctness of our Free XOR State-separating proof.
+In this work, we aim to convert the proof of one such optimization (Free XOR) \cite{kolesnikov_freexor_2008} to a \acrfull{ssp} format \cite{brzuska_state_2018}, and formally verify the correctness of this converted proof. Formal verification allows us to base the correctness of a protocol or scheme on mathematical and logical constructs, rather than exhaustively testing edge cases, as is often the case in software engineering. We use Domino, a proof verification tool for \acrshort{ssp}s, which is currently in development, and examine the suitability of its current feature set for verifying complex proofs, while also attempting to validate the correctness of our Free XOR \acrlong{ssp}.
 
-The initial goal of this project was to verify the Half-Gates garbling scheme \cite{EC:ZahRosEva15}. However, since the Half-Gates scheme works under the Free XOR assumption, it was mandatory for us to first solve the same problem for the Free XOR scheme. Due to the limited timeframe of the project, we were unable to complete both, and leave Half-Gates as future work. We describe the details of this in further sections.
+The initial goal of this project was to verify the Half-Gates \acrlong{gs} \cite{EC:ZahRosEva15}. However, since the Half-Gates scheme works under the Free XOR assumption, it was mandatory for us to first solve the same problem for the Free XOR scheme. Due to the limited timeframe of the project, we were unable to complete both, and leave Half-Gates as future work. We describe the details of this in further sections.
 
-The rest of this paper is organized as follows: Section 2 contains background information on Garbling schemes, optimizations, and Domino. Section 3 details the converted pen-and-paper proof for Free XOR. Section 4 contains further details about the proof tool Domino, and an implementation of the proof, as well as comments on the tool. Section 5 contains concluding remarks and future work. 
+The rest of this paper is organized as follows: Chapter 2 contains background information on \acrlong{gs}s, optimizations, and Domino. Chapter 3 details the converted pen-and-paper proof for Free XOR. Chapter 4 contains further details about the proof tool Domino, a brief overview on how to set it up, and an encoding of the \acrlong{ssp} in Domino. Chapter 5 discusses the advantages and challenges of working with Domino as opposed to plain pen-and-paper \acrshort{ssp}. Chapter 6 contains concluding remarks and future work. 
+
+\section{Objectives}
+\label{sec:objectives}
+The initial goals of this thesis were as follows:
+\begin{enumerate}
+    \item Developing a State-Separating, pen-and-paper reduction proof for the Half-Gates garbling scheme.
+    \item Encode and verify this proof in Domino.
+\end{enumerate}
+
+While working on the proof for the Half-Gates scheme, it was revealed that it is not possible to avoid proving (by assumption, or other means) the Free XOR scheme that Half-Gates depends on without functional and efficiency losses in Half Gates. A \acrlong{ssp} for Free XOR has not been worked on in the literature we reviewed, and we decided that it was fair to prove the Free XOR scheme instead, as it would allow future work in Half-Gates. 
+
+\section{Sustainibility}
+\label{sec:sustainibility}
+\newacronym{un}{UN}{United Nations}
+\newacronym{sdg}{SDG}{Sustainable Development Goals}
+\textcolor{red}{TODO}
+
+This project follows the \acrlong{un} \acrlong{sdg} \textnumero x and y.
