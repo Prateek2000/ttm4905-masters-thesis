@@ -317,6 +317,10 @@
   keys
 ]{cryptocode}
 
+%diagrams
+\RequirePackage{circuitikz}
+
+
 % Page style
 \makepagestyle{ruled}
 \makeevenhead{ruled}{{\small\thepage \ \ \ \leftmark}}{}{}

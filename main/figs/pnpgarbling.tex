@@ -1,0 +1,25 @@
+\begin{figure}[ht]
+    \centering
+    %---------------------------
+    % (c) Garbled table
+    %---------------------------
+    \begin{minipage}[c][4cm][b]{\linewidth}
+        \centering
+
+        \begin{tabular}{cccccc}
+            \toprule
+            $l_a$ & corresp. $A_a$ & $l_b$ & corresp. $B_b$ & $C_c$ based on $(A_a,B_b)$ & Ciphertext\\
+            \midrule
+            $0$ & $A_1$ & $0$ & $B_1$ & $C_1$ & $\enc(A_1, \enc(B_1, C_1))$\\
+            $0$ & $A_1$ & $1$ & $B_0$ & $C_0$ & $\enc(A_0, \enc(B_1, C_0))$\\
+            $1$ & $A_0$ & $0$ & $B_1$ & $C_0$ & $\enc(A_1, \enc(B_0, C_0))$\\
+            $1$ & $A_0$ & $1$ & $B_0$ & $C_0$ & $\enc(A_0, \enc(B_0, C_0))$\\
+            \bottomrule
+        \end{tabular}
+
+        \vspace{0.4cm}
+    \end{minipage}
+
+    \caption{Garbled table for an AND gate with Point and Permute}
+    \label{fig:pnp-garbling}
+\end{figure}

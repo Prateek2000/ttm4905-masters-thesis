@@ -1,0 +1,69 @@
+\begin{figure}[ht]
+    \centering
+
+    %---------------------------
+    % (a) AND gate
+    %---------------------------
+    \begin{minipage}[c][4cm][b]{0.30\linewidth}
+        \centering
+        \ctikzset{logic ports=ieee}
+        \begin{tikzpicture}[transform shape]
+            % Paths, nodes and wires:
+            \node[ieeestd and port](N1) at (8.331, 7.47){} node[anchor=center] at (N1.text){$AND$};
+            \node[shape=rectangle, minimum width=0.715cm, minimum height=0.465cm](N2) at (6.875, 7.75){} node[anchor=center] at (N2.text){$A$};
+            \node[shape=rectangle, minimum width=0.715cm, minimum height=0.465cm](N3) at (6.875, 7.19){} node[anchor=center] at (N3.text){$B$};
+            \node[shape=rectangle, minimum width=0.715cm, minimum height=0.465cm](N4) at (9.75, 7.5){} node[anchor=center] at (N4.text){$C$};
+        \end{tikzpicture}
+        \vspace{0.4cm}
+
+        (a) AND gate 
+    \end{minipage}
+    \hfill
+    %---------------------------
+    % (b) Truth table
+    %---------------------------
+    \begin{minipage}[c][4cm][b]{0.20\linewidth}
+        \centering
+
+        \begin{tabular}{ccc}
+            \toprule
+            $a$ & $b$ & $a\land b$\\
+            \midrule
+            0 & 0 & 0\\
+            0 & 1 & 0\\
+            1 & 0 & 0\\
+            1 & 1 & 1\\
+            \bottomrule
+        \end{tabular}
+
+        \vspace{0.4cm}
+
+        (b) Truth table
+    \end{minipage}
+    \hfill
+    %---------------------------
+    % (c) Garbled table
+    %---------------------------
+    \begin{minipage}[c][4cm][b]{0.40\linewidth}
+        \centering
+
+        \begin{tabular}{cc}
+            \toprule
+            Input labels & Ciphertext\\
+            \midrule
+            $(A_0,B_0)$ & $X_1$\\
+            $(A_0,B_1)$ & $X_2$\\
+            $(A_1,B_0)$ & $X_3$\\
+            $(A_1,B_1)$ & $X_4$\\
+            \bottomrule
+        \end{tabular}
+
+        \vspace{0.4cm}
+
+        (c) Generating a garbled table
+    \end{minipage}
+    \vspace{0.4cm}
+
+    \caption{An AND gate and its garbled form.}
+    \label{fig:garbling-and-gate}
+\end{figure}
