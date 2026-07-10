@@ -1,0 +1,22 @@
+\begin{figure}[ht]
+    \centering
+    \begin{minipage}[c][4cm][b]{0.6\linewidth}
+        \centering
+
+        \begin{tabular}{ccc}
+            \toprule
+            $A_a$ & $B_b$ & $C_c = A_a \xor B_b$\\
+            \midrule
+            $A_0$ & $B_0$ & $A_0\xor B_0$\\
+            $A_0$ & $B_0 \xor \Delta$ & $A_0\xor B_0 \xor \Delta$\\
+            $A_0 \xor \Delta$ & $B_0$ & $A_0\xor B_0 \xor \Delta$\\
+            $A_0 \xor \Delta$ & $B_0 \xor \Delta$ & $A_0\xor B_0$\\
+            \bottomrule
+        \end{tabular}
+
+        \vspace{0.4cm}
+    \end{minipage}
+
+    \caption{Evaluation of an XOR gate in Free XOR}
+    \label{fig:freexortable}
+\end{figure}

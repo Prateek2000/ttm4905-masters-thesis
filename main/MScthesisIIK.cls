@@ -210,6 +210,8 @@
 \RequirePackage{booktabs}
 \RequirePackage{multirow}
 \renewcommand{\arraystretch}{1.2}
+\RequirePackage{makecell}
+\renewcommand\theadfont{\normalfont}
 
 % Links
 \RequirePackage{hyperref}

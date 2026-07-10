@@ -1,16 +1,23 @@
 \chapter{Pen-and-Paper State-Separating Proof}
 \label{chp:penpaperssp}
-{\color{red}Read half gates and chris's paper to understand what to do here even. (WIP)}
 This chapter introduces the notion of a State Separating Proof, and how it differs from a traditional Game-playing proof. \textcolor{red}{is game-playing the correct term here?} Then, we define our pen-and-paper \acrlong{ssp} for the Free XOR \acrlong{gs} here.
 \section{State Separating Proofs}
 \label{sec:ssp}
 \begin{itemize}
-    \item What are games and packages
+    \item What are oracles, games and packages. Refer \cite{brzuska_state_2018} for syntax.
     \item Something about why state separating proofs exist. "composable" and "constructive" security
     \item State separating proofs allow us to make intermediate arguments (hybrids) in a reusable manner. It is often more intuitive to model something as its own package that has inputs and outputs than to have it be part of many different codes and realise that its the same thing.
 \end{itemize}
-Composability of layers is very important so we can derive circuit security from just proving layer security. The simulator for layer n must output a garbling of its output which is then supplied to a new simulator for layer n+1. Therefore, if a simulator can simulate a gate by getting its inputs (garbled input) and return garbled output, it can be composed with the simulator for the next gate and so on. Same idea for layers.
+Talk a bit about the simulator based notation in \cite{CSF:BrzOec23}.
+Say that we work on freexor, but only for a single AND gate. we believe this is sufficient since {AND, NOT, XOR} is functionally complete (just {AND, NOT} is too, but XOR is the optimization here).
 
-Actually, to add to the above, the simulator does NOT know the input. It only gets the circuit information loss of the garbled circuit $\Phi(C)$, the output of the garbled circuit $Y$, and the security parameter $1^\lambda$. So it samples a random input label (in this case its the label, in the original Yao paper it was a random bitstring sampled for the wire key, but since we are working in a setting where the Free XOR optimization is assumed, we will probably end up sampling a random $\Delta$ and sharing that state across simulator invocations to generate valid labels for the wires.)
-\section{Existing Half-Gates Proof and how it is to be modelled into state separating proofs}
-\label{sec:existingprooftossp}
+
+\section{State Separating Proof of security of the garbling of an AND gate}
+\label{sec:sspANDgate}
+Talk about the FreeXOR variation in \cite{ALP:KolSch08}, and the different underlying assumption in \cite{JC:Applebaum16}. Say why we picked this notion (is there even any good reason? maybe because the paper came with a underlying construction).
+\begin{itemize}
+    \item define security again (prvsim)
+    \item define the simualtor
+    \item make the game hopping table thing to show code equivalence
+    \item tadaaa
+\end{itemize}

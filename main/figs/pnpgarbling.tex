@@ -5,10 +5,9 @@
     %---------------------------
     \begin{minipage}[c][4cm][b]{\linewidth}
         \centering
-
         \begin{tabular}{cccccc}
             \toprule
-            $l_a$ & corresp. $A_a$ & $l_b$ & corresp. $B_b$ & $C_c$ based on $(A_a,B_b)$ & Ciphertext\\
+            $l_a$ & corresp. $A_a$ & $l_b$ & corresp. $B_b$ & $C_c = C_{a \land b}$ & Ciphertext\\
             \midrule
             $0$ & $A_1$ & $0$ & $B_1$ & $C_1$ & $\enc(A_1, \enc(B_1, C_1))$\\
             $0$ & $A_1$ & $1$ & $B_0$ & $C_0$ & $\enc(A_0, \enc(B_1, C_0))$\\
