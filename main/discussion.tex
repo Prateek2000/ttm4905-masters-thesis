@@ -7,9 +7,10 @@ In this chapter, we discuss the advantages and challanges when using Domino comp
 
 \section{Future Work}
 \label{sec:futurework}
+\textcolor{red}{wip}
 Composability of this would be a further work.
 Composability of layers is very important so we can derive circuit security from just proving layer security. The simulator for layer n must output a garbling of its output which is then supplied to a new simulator for layer n+1. Therefore, if a simulator can simulate a gate by getting its inputs (garbled input) and return garbled output, it can be composed with the simulator for the next gate and so on. Same idea for layers.
-Actually, to add to the above, the simulator does NOT know the input. It only gets the circuit information loss of the garbled circuit $\Phi(C)$, the output of the garbled circuit $Y$, and the security parameter $1^\lambda$. So it samples a random input label (in this case its the label, in the original Yao paper it was a random bitstring sampled for the wire key, but since we are working in a setting where the Free XOR optimization is assumed, we will probably end up sampling a random $\Delta$ and sharing that state across simulator invocations to generate valid labels for the wires.)
+Actually, to add to the above, the simulator does NOT know the input. It only gets the circuit information loss of the garbled circuit $\Phi(C)$, the output of the garbled circuit $Y$, and the security parameter $1^\lambda$. So it samples a random input label (in this case it's the label, in the original Yao paper it was a random bitstring sampled for the wire key, but since we are working in a setting where the Free XOR optimization is assumed, we will probably end up sampling a random $\Delta$ and sharing that state across simulator invocations to generate valid labels for the wires.)
 
 
 Doing this same work for CCRobust hash/the other freexor under which half gates works could be interesting too.

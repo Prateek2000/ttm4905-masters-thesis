@@ -1,23 +1,34 @@
 \chapter{Pen-and-Paper State-Separating Proof}
 \label{chp:penpaperssp}
-This chapter introduces the notion of a State Separating Proof, and how it differs from a traditional Game-playing proof. \textcolor{red}{is game-playing the correct term here?} Then, we define our pen-and-paper \acrlong{ssp} for the Free XOR \acrlong{gs} here.
+This chapter introduces the notion of a State Separating Proof, and how it differs from a traditional code-based game-playing proof. Then, we define our pen-and-paper \acrlong{ssp} for the Free XOR \acrlong{gs} here.
 \section{State Separating Proofs}
 \label{sec:ssp}
+\acrlong{ssp}s are a style of proofs built upon code-based game-playing proofs discussed by Bellare and Rogaway. They define code-based game-playing as proofs that encompass the adversary's interaction with its environment using code (could be pseudocode or any other formalized programming language), and these interactions are referred to as a game \cite{EC:BelRog06}. The game contains subroutines that initialize the state of the game, then run the adversary program. The adversary can call oracles, which are functions exposed by the game, and the the game concludes by running a finalize subroutine which outputs a bit from the adversary. The adversary has a similar interaction between two different versions of the game, one in a real world and one in an ideal world, whose behaviors are parameterized by a bit $b=0$ and $b=1$, respectively. 
+The success of the adversary is characterized by its `advantage', defined as the difference in the probability of the adversary returning $1$ in each game. In cryptographic notation, given two games $G_{real}$ and $G_{ideal}$, 
+\[ \advantage{}{\adv, G^0_{Real}, G^1_{ideal}} = \lvert \prob{A\to G_{real}=1} - \prob{A\to G_{ideal}=1} \rvert\]
+
+Games and Oracles are constructs of a game-playing proof. 
 \begin{itemize}
-    \item What are oracles, games and packages. Refer \cite{brzuska_state_2018} for syntax.
-    \item Something about why state separating proofs exist. "composable" and "constructive" security
-    \item State separating proofs allow us to make intermediate arguments (hybrids) in a reusable manner. It is often more intuitive to model something as its own package that has inputs and outputs than to have it be part of many different codes and realise that its the same thing.
+    \item \textbf{Oracles} are defined as a piece of code that provides some functionality. They usually either return something, or modify the state of the Game.
+    \item \textbf{Games} are a complete set of oracles that do not call other oracles, an initialize procedure and a finalize procedure that returns a bit. An adversary interacts with a game.
 \end{itemize}
-Talk a bit about the simulator based notation in \cite{CSF:BrzOec23}.
-Say that we work on freexor, but only for a single AND gate. we believe this is sufficient since {AND, NOT, XOR} is functionally complete (just {AND, NOT} is too, but XOR is the optimization here).
+However, \acrlong{ssp}s differ by introducing the notion of a package. A package has its own local state and they function as a intermediate layer between games and packages. Games contain packages, and packages contain oracles. In a \acrlong{ssp} \cite{brzuska_state_2018}, they are defined as follows:
+\begin{itemize}
+    \item \textbf{Oracles} are defined as above.
+    \item \textbf{Packages} are defined as a collection of related oracles with a shared state.
+    \item \textbf{Games} are defined as a package with no dependencies on oracles of other packages $([G\to] = \phi)$.
+    \item An \textbf{adversary} can be defined as a special package that is not a dependency of another package. It always outputs a single bit on termination $([\to A] = \phi)$.
+\end{itemize}
+
+\acrfull{ssp}s allow us to restrict the access to the state of each package to oracles in that package, and only provide the oracles themselves as an interface to other packages. This allows them to be highly modular and composable, allowing us to reuse a package used in one reduction in another, all while allowing changes in state that do not make changes to the whole game. If these changes cascaded to the whole game, it would require the cryptographer to once again verify the correctness of the game in the new state. \cite{brzuska_state_2018} formally defines the constructs we use here, and the mathematical properties of packages such as associativity and compositions. We slightly diverge from their notation of sequential composition by using the $\to$ operator instead of $\circ$. 
 
 
-\section{State Separating Proof of security of the garbling of an AND gate}
+\section{Proof of privacy of the garbling of an AND gate}
 \label{sec:sspANDgate}
-Talk about the FreeXOR variation in \cite{ALP:KolSch08}, and the different underlying assumption in \cite{JC:Applebaum16}. Say why we picked this notion (is there even any good reason? maybe because the paper came with a underlying construction).
-\begin{itemize}
-    \item define security again (prvsim)
-    \item define the simualtor
-    \item make the game hopping table thing to show code equivalence
-    \item tadaaa
-\end{itemize}
+In this work, we mainly focus on the privacy of garbling an AND gate in the Free XOR \acrlong{gs}. We also consider NOT and XOR gates as important, however, we do not prove their security explicitly since NOT gates are trivially usable by inverting the active wire label of the next gate in the circuit that the NOT gate is connected to. This means that a NOT gate does not need to be explicitly garbled, and we can just flip the active bit-value of that wire when garbling the following gate. The \cevaluator only receives the garbling of the flipped bit-value and never learns the corresponding unflipped value, preserving the secrecy of circui's global offset, $\Delta$.
+
+A similar argument can be made for the usage of a XOR gate, since it is not explicitly garbled, and the \cgarbler just indicates the presence of a XOR gate and the \cevaluator simply XORs the two input wire labels to obtain the output label. The \cevaluator never learns both possible wire labels for any wire, and privacy remains intact without needing to prove anything about a garbled table. 
+
+Now we move on to the proof of privacy of an AND gate in the Free XOR \acrlong{gs} using the scheme defined in \cite{JC:Applebaum16}.
+
+\textcolor{red}{wip}
