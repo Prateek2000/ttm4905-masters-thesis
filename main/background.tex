@@ -139,6 +139,7 @@ This technique can also be combined with the \acrfull{pnp} optimization, where t
 \newacronym{rk}{RK}{Related-Key}
 \newacronym{kdm}{KDM}{Key-Dependent-Message}
 \newacronym{linrkkdm}{LIN-RK-KDM}{Linear, Related-Key, Key-Dependent-Message}
+\newacronym{lpn}{LPN}{Learning Parity with Noise}
 
 The Free XOR optimization was a big step in the optimization of \acrlong{gc}s, allowing the transmission of a XOR gate for free, i.e., without the need to generate, send, or evaluate a garbled table for an XOR gate. This is a big improvement when we consider that circuits can be optimized to maximize the number of XOR gates. It was introduced by Kolesnikov and Schnieder in \cite{ALP:KolSch08}.
 \input{figs/freexortable.tex}
@@ -152,15 +153,19 @@ Kolesnikov and Schnieder proved the security of the Free XOR scheme under the Ra
 \[X_{a,b} = H(A_a \concat B_b \concat i)\xor C_c\]
 This scheme was later proved secure under a stronger \acrfull{ccr} hash assumption in \cite{TCC:CKKZ12}.
 
-However, Free XOR was also proved secure by Applebaum in \cite{JC:Applebaum16} under a different assumption called `\acrlong{linrkkdm}' (\acrshort{linrkkdm}) security for encryption schemes, which uses the same encryption definition as Yao. This is the scheme that we use to prove the security of the FreeXOR scheme in this paper.
+However, Free XOR was also proved secure by Applebaum in \cite{JC:Applebaum16} under a different assumption called `\acrlong{linrkkdm}' (\acrshort{linrkkdm}) security for encryption schemes, which uses the following definition for encryption of each row. 
+\[R_{a,b} \sample\bin^{\secpar}\]
+\[X_{a,b} = (\enc(A_a, R_{a,b}),\enc(B_b, R_{a,b} \xor C_{op(a,b)}))\]
+
+Under this scheme, the \cevaluator will decrypt both ciphertexts using the keys it receives, and XOR them together to receive the active output label $C_c$. We observe that there are two encryption operations per garbled table row, which reduces the efficiency of this scheme, but it was published with a underlying construction called \acrfull{lpn}, which is what made it attractive to use in this work. For more details on the underlying \acrshort{lpn} scheme, please refer to \cite{JC:Applebaum16}.
 
 \subsection{Half-Gates}
 \label{subsec:halfgates}
-Mention that this was the original objective of the thesis, however work with this requires freexor to be completed - why we dont do this in this thesis?
-It was introduced by Zahur, et al. in\cite{EC:ZahRosEva15}.
-\section{Formal Verification and Tools}
-\label{subsec:formalverification}
-Start from Formal verification in general (read more too), and then go into tools used for formal verification in cryptography.
-\subsection{Domino}
-\label{subsec:domino}
-How is it different from easycrypt? why did we choose this? what is a state separating proof and why is this more suited to those?
+Half-Gates was a novel technique introduced by Zahur, et al. in \cite{EC:ZahRosEva15} which uses the splitting of an AND gate into two half-AND gates and XORing the results to reduce the number of rows to be transmitted. While splitting the gates may seem counterintuitive, the inputs to one of the half-gates is known by the \cgarbler and the input to the other half-gate is known by the \cevaluator, and therefore, the outputs of those gates turn into a function of these known values, reducing each AND half-gate to two rows each. Then, using the \acrshort{grr} optimization, each of these two row half-gates are reduced to one row each. The XOR operation itself is free since this scheme builds on top of Free XOR, and we arrive at 2 total ciphertexts per AND gate.
+The detailed explanation of this scheme is in \cite{EC:ZahRosEva15}, and we leave this to the reader if they wish to understand the scheme in more detail since the complexity does not help us acheive our goals here. 
+This thesis initially aimed to prove Half-Gates as a \acrlong{ssp}. However, since this scheme works under the Free XOR assumption, we cannot obtain two ciphertexts per AND gate if the XOR operation at the end is not free, and ignoring Free XOR neuters the efficiency gains of Half-Gates. Therefore we chose to work on the Free XOR scheme instead, given the limited timeframe of the Master Thesis.
+\section{Formal Verification}
+\label{sec:formalverification}
+The complexity of cryptographic proofs, protocols and models explodes rapidly as the size of projects get larger. Quoting Brzuska, et al. in \cite{domino:paper}, one of the approaches to deal with this problem is to have computers handle the validation of the soundness of a cryptographic proof while the cryptographer writes the reductions. Further justification for inclusion of automation in cryptographic proofs is made by Rajabi in \cite{rajabi_towards_2025} where they point out the flaws in the TLS key schedule defined in \cite{AC:BDEFKK22}.
+
+To this end, we use Domino, a proof assistant for \acrlong{ssp}s \cite{domino:code} to validate the correctness of the pen-and-paper proof we discuss in Chapter \ref{chp:penpaperssp}. Domino is discussed in more detail in Chapter \ref{chp:domino}.
