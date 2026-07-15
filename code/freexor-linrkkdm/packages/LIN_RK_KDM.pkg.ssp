@@ -1,0 +1,29 @@
+package LIN_RK_KDM {
+    params {
+        n: Integer, /* secpar */
+        /* m: Integer,  message length */
+        enc: fn Bits(n), Bits(n) -> Bits(n), /*NOTE: message/ct is length n for our purposes maybe, since wire labels without pnp are length n */
+        zeros: Bits(n), /*placeholder for a zero bitstring*/
+        b: Bool, /* switch for real and ideal behaviour of ENC*/
+        xor_: fn Bits(n), Bits(n) -> Bits(n),
+    }
+    state {
+        lambda: Maybe(Bits(n)), 
+    }
+
+    oracle ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(n) {
+        if (lambda == None) {
+            tmp <-$ Bits(n) sample-name lambda;
+            lambda <- Some(tmp);
+        } 
+        if b {
+            return enc(xor_(Unwrap(lambda),key), zeros);
+        } else {
+            if z {
+                return enc(xor_(Unwrap(lambda),key), xor_(Unwrap(lambda)), msg));
+            } else {
+                return enc(xor_(Unwrap(lambda), key), msg);
+            }
+        }
+    }
+}

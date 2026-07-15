@@ -1,0 +1,24 @@
+composition G_LIN_RK_KDM {
+        const n: Integer; /* secpar */
+        /* m: Integer;  message length */
+        const enc: fn Bits(n), Bits(n) -> Bits(n); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
+        const zeros: Bits(n); /*placeholder for a zero bitstring message*/
+        const b: Bool; /* switch for real and ideal behaviour of ENC*/
+        const xor_: fn Bits(n), Bits(n) -> Bits(n);
+
+    instance G_LIN_RK_KDM = LIN_RK_KDM {
+        params {
+            n: n,
+            enc: enc,
+            zeros: zeros,
+            b: b,
+            xor_:xor_,
+        }
+    }
+
+    compose {
+        adversary: {
+            ENC: G_LIN_RK_KDM
+        }
+    }
+}
