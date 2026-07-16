@@ -9,5 +9,5 @@ package Reduction1 {
     import oracles {
         ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(n),
     }
-    oracle 
+    /* oracle  */
 }
