@@ -1,0 +1,166 @@
+package Sim_FreeXOR_Real_ANDONLY {
+    params {
+        n: Integer, /* secpar */
+        m: Integer, /* message length */
+        solve: fn Bits(*), Bits(*) -> Bool,
+        enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m), /*DISCUSS: message/ct is length n for our purposes maybe, since wire labels without pnp are length n */
+        /*for a randomized algorithm, the randomness needs to be one of the inputs (add a parameter) and the output needs to be larger*/
+        xor_: fn Bits(n), Bits(n) -> Bits(n),
+
+    }
+    /*since we dont model the adversary, we dont need to model what is G-Sim-FreeXOR0 or 1 on paper */
+    /*we just need to have two games that return Gbl and Sim outputs and */
+    /*prove them computationally indistinguishable */
+    /*G-Sim-FreeXOR is basically the distinguishing adversary*/
+
+    import oracles {
+        ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(n),
+    }
+    /* Do i need to split the second return arg into a and b here itself? */
+    oracle Garble(F: Bits(*), x: (Bool, Bool)) -> (((Bits(n),Bits(n)),(Bits(n),Bits(n)),(Bits(n),Bits(n)),(Bits(n),Bits(n))),(Bits(n),Bits(n)),Table(Bits(n),Bool))
+    /* F: AND gate, x[0]=A, x[1]=B || Bits(*) -> Garbled Table (4*2n here), garbled Inputs(2n here), decoder */
+    {
+        /* c <- solve(F,x); This was done in the if else blocks on a case by case basis*/
+        (a,b) <- x;
+        R_00 <-$ Bits(n) sample-name R_00; /* row 0 randomness */
+        R_01 <-$ Bits(n) sample-name R_01; /* row 1 randomness */
+        R_10 <-$ Bits(n) sample-name R_10; /* row 2 randomness */
+        R_11 <-$ Bits(n) sample-name R_11; /* row 3 randomness */
+
+        C_ <- ((Bits(n), Bits(n)),(Bits(n), Bits(n)),(Bits(n), Bits(n)),(Bits(n), Bits(n))); /* garbled table */
+        X_ <-(Bits(n),Bits(n));
+        d <- Table(Bits(n),Bool);
+        if ((a==false) and (b==false)) {
+            c <- false; /* AND gate */
+            A_0 <-$ Bits(n) sample-name A_0;
+            B_0 <-$ Bits(n) sample-name B_0;
+            C_0 <-$ Bits(n) sample-name C_0;
+            /* This function does not have access to the circuit offset lambda and must use the oracle ENC call*/
+
+            /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
+            /* Active row */
+            /* a,b */
+            r <-$ Bits(k);
+            r1 <-$ Bits(k);
+            GarbledRow0 <- (enc(A_0, R_00, r), enc(B_0, xor_(R_00, C_0), r1));
+            
+            /* Inactive rows */
+            /* a,b+1 */
+            r <-$ Bits(k);
+            temp <- invoke ENC(B_0, xor_(R_01, C_0), false);
+            GarbledRow1 <- (enc(A_0, R_01, r), temp);
+            /* a+1,b */
+            r <-$ Bits(k);
+            temp <- invoke ENC(A_0, xor_(R_10, C_0), false);
+            GarbledRow2 <- (temp, enc(B_0, R_10, r)); /*The weird part 1 part 2 flip ind thing we need to prove*/
+            /*C_[2] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
+            /* a+1,b+1 */
+            temp <- invoke ENC(A_0, R_11, false);
+            temp2 <- invoke ENC(B_0, xor_(R_11, C_1), false);
+            GarbledRow3 <- (temp, temp2);
+            C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
+            X_ <- (A_0, B_0);
+            d[C_0] <- c;
+
+        } 
+        if ((a==false) and (b==true)) {
+            c <- false; /* AND gate */
+            A_0 <-$ Bits(n) sample-name A_0;
+            B_1 <-$ Bits(n) sample-name B_1;
+            C_0 <-$ Bits(n) sample-name C_0;
+            /* This function does not have access to the circuit offset lambda and must use the oracle ENC call*/
+            /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
+            /* Active row */
+            /* a,b */
+            r <-$ Bits(k);
+            r1 <-$ Bits(k);
+            GarbledRow1 <- (enc(A_0, R_01, r), enc(B_1, xor_(R_01, C_0), r1));
+
+            /* Inactive rows */
+            /* a,b+1 */
+            r <-$ Bits(k);
+            temp <- invoke ENC(B_1, xor_(R_00, C_0), false);
+            GarbledRow0 <- (enc(A_0, R_00, r), temp);
+            /* a+1,b */
+            r <-$ Bits(k);
+            temp <- invoke ENC(A_0, xor_(R_11, C_0), true);
+            GarbledRow3 <- (temp, enc(B_1, R_11, r)); /*The weird part 1 part 2 flip ind thing we need to prove*/
+            /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
+            /* a+1,b+1 */
+            temp <- invoke ENC(A_0, R_10, false);
+            temp2 <- invoke ENC(B_1, xor_(R_10, C_0), false);
+            GarbledRow2 <- (temp, temp2);
+
+            C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
+            X_ <- (A_0, B_1);
+            d[C_0] <- c;
+
+        } 
+        if ((a==true) and (b==false)) {
+            c <- false; /* AND gate */
+            A_1 <-$ Bits(n) sample-name A_1;
+            B_0 <-$ Bits(n) sample-name B_0;
+            C_0 <-$ Bits(n) sample-name C_0;
+            /* This function does not have access to the circuit offset lambda and must use the oracle ENC call*/
+            /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
+            /* Active row */
+            /* a,b */
+            r <-$ Bits(k);
+            r1 <-$ Bits(k);
+            GarbledRow2 <- (enc(A_1, R_10, r), enc(B_0, xor_(R_10, C_0), r1));
+
+            /* Inactive rows */
+            /* a,b+1 */
+            r <-$ Bits(k);
+            temp <- invoke ENC(B_0, xor_(R_11, C_0), true);
+            GarbledRow3 <- (enc(A_1, R_11, r), temp);
+            /* a+1,b */
+            r <-$ Bits(k);
+            temp <- invoke ENC(A_1, xor_(R_00, C_0), false);
+            GarbledRow0 <- (temp, enc(B_0, R_00, r)); /*The weird part 1 part 2 flip ind thing we need to prove*/
+            /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
+            /* a+1,b+1 */
+            temp <- invoke ENC(A_1, R_01, false);
+            temp2 <- invoke ENC(B_0, xor_(R_01, C_0), false);
+            GarbledRow1 <- (temp, temp2);
+
+            C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
+            X_ <- (A_1, B_0);
+            d[C_0] <- c;
+
+        }
+        if ((a==true) and (b==true)) {
+            c <- true; /* AND gate */
+            A_1 <-$ Bits(n) sample-name A_1;
+            B_1 <-$ Bits(n) sample-name B_1;
+            C_1 <-$ Bits(n) sample-name C_1;
+            /* This function does not have access to the circuit offset lambda and must use the oracle ENC call*/
+            /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
+            /* Active row */
+            /* a,b */
+            r <-$ Bits(k);
+            r1 <-$ Bits(k);
+            GarbledRow3 <- (enc(A_1, R_11, r), enc(B_1, xor_(R_11, C_1), r1));
+
+            /* Inactive rows */
+            /* a,b+1 */
+            r <-$ Bits(k);
+            temp <- invoke ENC(B_1, xor_(R_10, C_1), true);
+            GarbledRow2 <- (enc(A_1, R_10, r), temp);
+            /* a+1,b */
+            r <-$ Bits(k);
+            temp <- invoke ENC(A_1, xor_(R_01, C_1), true);
+            GarbledRow1 <- (temp, enc(B_1, R_01, r)); /*The weird part 1 part 2 flip ind thing we need to prove*/
+            /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
+            /* a+1,b+1 */
+            temp <- invoke ENC(A_1, R_00, false);
+            temp2 <- invoke ENC(B_1, xor_(R_00, C_1), true);
+            GarbledRow0 <- (temp, temp2);
+
+            C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
+            X_ <- (A_1, B_1);
+            d[C_1] <- c;
+        }
+        return (C_,X_,d);
+    }
+}

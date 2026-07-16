@@ -1,16 +1,14 @@
 theorem freexor {
     const n: Integer; /* secpar */
-    /* const m: Integer;  message length */
-    const enc: fn Bits(n), Bits(n) -> Bits(n); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
-    const zeros: Bits(n); /*placeholder for a zero bitstring message*/
+    const m: Integer; /* message length */
+    const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(n); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
     const xor_: fn Bits(n), Bits(n) -> Bits(n);
 
     instance G_LIN_RK_KDM0 = G_LIN_RK_KDM {
         params {
             n: n,
-            /* m: m, */
+            m: m,
             enc: enc,
-            zeros: zeros,
             b: false,
             xor_: xor_,
         }
@@ -19,11 +17,48 @@ theorem freexor {
     instance G_LIN_RK_KDM1 = G_LIN_RK_KDM {
         params {
             n: n,
-            /* m: m, */
+            m: m,
             enc: enc,
-            zeros: zeros,
             b: true,
             xor_: xor_,
+        }
+    }
+
+    instance R_comp_G_LIN_RK_KDM0 = R_comp_G_LIN_RK_KDM {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            b: false,
+            xor_: xor_
+        }
+    }
+
+    instance R_comp_G_LIN_RK_KDM1 = R_comp_G_LIN_RK_KDM {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            b: true,
+            xor_: xor_
+        }
+    }
+
+    instance G_Sim_FreeXORReal = G_Sim_FreeXORReal {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_: xor_
+        }
+    }
+
+    instance G_Sim_FreeXORIdeal = G_Sim_FreeXORIdeal {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_: xor_
         }
     }
 
