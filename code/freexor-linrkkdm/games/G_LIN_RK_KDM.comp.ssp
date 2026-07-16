@@ -1,7 +1,7 @@
 composition G_LIN_RK_KDM {
         const n: Integer; /* secpar */
-        m: Integer;  /* message length */
-        const enc: fn Bits(n), Bits(n) -> Bits(n); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
+        const m: Integer;  /* message length */
+        const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
         const b: Bool; /* switch for real and ideal behaviour of ENC*/
         const xor_: fn Bits(n), Bits(n) -> Bits(n);
 

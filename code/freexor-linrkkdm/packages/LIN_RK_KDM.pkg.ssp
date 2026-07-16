@@ -21,9 +21,9 @@ package LIN_RK_KDM {
         } else {
             if z {
                 r <-$ Bits(n);
-                return enc(xor_(Unwrap(delta),key), xor_(msg,delta), r); 
+                return enc(xor_(Unwrap(delta),key), xor_(msg,Unwrap(delta)), r); 
             } else {
-                r <-$ Bits(k);
+                r <-$ Bits(n);
                 return enc(xor_(Unwrap(delta), key), msg, r);
             }
         }

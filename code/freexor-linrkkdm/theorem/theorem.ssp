@@ -1,7 +1,7 @@
 theorem freexor {
     const n: Integer; /* secpar */
     const m: Integer; /* message length */
-    const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(n); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
+    const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
     const xor_: fn Bits(n), Bits(n) -> Bits(n);
 
     instance G_LIN_RK_KDM0 = G_LIN_RK_KDM {
@@ -64,5 +64,48 @@ theorem freexor {
 
     assumptions {
         linrkkdm: G_LIN_RK_KDM0 ~ G_LIN_RK_KDM1 /*Under the LPN assumption*/
+    }
+
+    gamehops {
+        equivalence R_comp_G_LIN_RK_KDM0 G_Sim_FreeXORReal {
+            GARBLE: {
+                invariant: [
+                    ./theorem/real_game_invariant.smt2
+                ]
+
+                lemmas {
+                    same-output: [no-abort]
+                    equal-aborts: []
+                    invariant: [no-abort]
+                }
+            }
+        }
+
+        /* equivalence R_comp_G_LIN_RK_KDM0 G_Sim_FreeXORReal {
+            GARBLE: {
+                invariant: [
+                    ./theorem/ideal_game_invariant.smt2
+                ]
+
+                lemmas {
+                    same-output: [no-abort]
+                    equal-aborts: []
+                    invariant: [no-abort]
+                }
+            }
+        } */
+
+
+        reduction R_comp_G_LIN_RK_KDM0 R_comp_G_LIN_RK_KDM1 {
+            assumption linrkkdm
+
+            map G_LIN_RK_KDM0 R_comp_G_LIN_RK_KDM0 {
+                G_LIN_RK_KDM: G_LIN_RK_KDM
+            }
+
+            map G_LIN_RK_KDM1 R_comp_G_LIN_RK_KDM1 {
+                G_LIN_RK_KDM: G_LIN_RK_KDM
+            }
+        }
     }
 }

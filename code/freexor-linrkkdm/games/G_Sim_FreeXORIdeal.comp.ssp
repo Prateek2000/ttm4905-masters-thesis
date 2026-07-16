@@ -1,7 +1,7 @@
-composition G_Sim_FreeXORReal {
+composition G_Sim_FreeXORIdeal {
         const n: Integer; /* secpar */
         const m: Integer;  /* message length */
-        const enc: fn Bits(n), Bits(n) -> Bits(n); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
+        const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
         const xor_: fn Bits(n), Bits(n) -> Bits(n);
 
     instance Sim_FreeXOR0 = Sim_FreeXOR_Ideal_ANDONLY {
@@ -15,7 +15,7 @@ composition G_Sim_FreeXORReal {
 
     compose {
         adversary: {
-            Garble: Sim_FreeXOR0,
+            GARBLE: Sim_FreeXOR0,
         }
     }
 }
