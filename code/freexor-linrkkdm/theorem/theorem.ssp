@@ -4,7 +4,7 @@ theorem freexor {
     const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
     const xor_: fn Bits(n), Bits(n) -> Bits(n);
 
-    instance G_LIN_RK_KDM0 = G_LIN_RK_KDM {
+    instance GLINRKKDM0 = GLINRKKDM {
         params {
             n: n,
             m: m,
@@ -14,7 +14,7 @@ theorem freexor {
         }
     }
 
-    instance G_LIN_RK_KDM1 = G_LIN_RK_KDM {
+    instance GLINRKKDM1 = GLINRKKDM {
         params {
             n: n,
             m: m,
@@ -24,7 +24,7 @@ theorem freexor {
         }
     }
 
-    instance R_comp_G_LIN_RK_KDM0 = R_comp_G_LIN_RK_KDM {
+    instance RcompGLINRKKDM0 = RcompGLINRKKDM {
         params {
             n: n,
             m: m,
@@ -34,7 +34,7 @@ theorem freexor {
         }
     }
 
-    instance R_comp_G_LIN_RK_KDM1 = R_comp_G_LIN_RK_KDM {
+    instance RcompGLINRKKDM1 = RcompGLINRKKDM {
         params {
             n: n,
             m: m,
@@ -44,7 +44,7 @@ theorem freexor {
         }
     }
 
-    instance G_Sim_FreeXORReal = G_Sim_FreeXORReal {
+    instance GSimFreeXORReal = GSimFreeXORReal {
         params {
             n: n,
             m: m,
@@ -53,7 +53,7 @@ theorem freexor {
         }
     }
 
-    instance G_Sim_FreeXORIdeal = G_Sim_FreeXORIdeal {
+    instance GSimFreeXORIdeal = GSimFreeXORIdeal {
         params {
             n: n,
             m: m,
@@ -63,28 +63,30 @@ theorem freexor {
     }
 
     assumptions {
-        linrkkdm: G_LIN_RK_KDM0 ~ G_LIN_RK_KDM1 /*Under the LPN assumption*/
+        lin_rk_kdm: GLINRKKDM0 ~ GLINRKKDM1 /*Under the LPN assumption*/
     }
 
     gamehops {
-        equivalence R_comp_G_LIN_RK_KDM0 G_Sim_FreeXORReal {
+        equivalence RcompGLINRKKDM0 GSimFreeXORReal {
             GARBLE: {
                 invariant: [
                     ./theorem/real_game_invariant.smt2
                 ]
 
                 lemmas {
-                    same-output: [no-abort]
-                    equal-aborts: []
                     invariant: [no-abort]
+                    equal-aborts: []
+                    same-output: [no-abort]
                 }
             }
         }
 
-        /* equivalence R_comp_G_LIN_RK_KDM0 G_Sim_FreeXORReal {
+        /* equivalence RcompGLINRKKDM0 GSimFreeXORReal {
             GARBLE: {
                 invariant: [
                     ./theorem/ideal_game_invariant.smt2
+                    ./theorem/ideal_game_randomness.smt2
+
                 ]
 
                 lemmas {
@@ -96,15 +98,15 @@ theorem freexor {
         } */
 
 
-        reduction R_comp_G_LIN_RK_KDM0 R_comp_G_LIN_RK_KDM1 {
-            assumption linrkkdm
+        reduction RcompGLINRKKDM0 RcompGLINRKKDM1 {
+            assumption lin_rk_kdm
 
-            map G_LIN_RK_KDM0 R_comp_G_LIN_RK_KDM0 {
-                G_LIN_RK_KDM: G_LIN_RK_KDM
+            map GLINRKKDM0 RcompGLINRKKDM0 {
+                GLINRKKDM: GLINRKKDM
             }
 
-            map G_LIN_RK_KDM1 R_comp_G_LIN_RK_KDM1 {
-                G_LIN_RK_KDM: G_LIN_RK_KDM
+            map GLINRKKDM1 RcompGLINRKKDM1 {
+                GLINRKKDM: GLINRKKDM
             }
         }
     }

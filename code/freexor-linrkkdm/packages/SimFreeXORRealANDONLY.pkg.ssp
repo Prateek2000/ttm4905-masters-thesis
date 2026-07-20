@@ -1,4 +1,4 @@
-package Sim_FreeXOR_Real_ANDONLY {
+package SimFreeXORRealANDONLY {
     params {
         n: Integer, /* secpar */
         m: Integer, /* message length */
@@ -6,6 +6,9 @@ package Sim_FreeXOR_Real_ANDONLY {
         /*for a randomized algorithm, the randomness needs to be one of the inputs (add a parameter) and the output needs to be larger*/
         xor_: fn Bits(n), Bits(n) -> Bits(n),
 
+    }
+    state {
+        delta: Bits(n),
     }
     /*since we dont model the adversary, we dont need to model what is G-Sim-FreeXOR0 or 1 on paper */
     /*we just need to have two games that return Gbl and Sim outputs and */
@@ -18,17 +21,28 @@ package Sim_FreeXOR_Real_ANDONLY {
     {
         /* c <- solve(f,x); This was done in the if else blocks on a case by case basis*/
         (a,b) <- x;
-        delta <-$ Bits(n); /* sample secret offset sfor garbling this circuit */
+        delta <-$ Bits(n) sample-name delta; /* sample secret offset sfor garbling this circuit */
         R_00 <-$ Bits(n) sample-name R_00; /* row 0 randomness */
         R_01 <-$ Bits(n) sample-name R_01; /* row 1 randomness */
         R_10 <-$ Bits(n) sample-name R_10; /* row 2 randomness */
         R_11 <-$ Bits(n) sample-name R_11; /* row 3 randomness */
+        
+        o <-$ Bits(m); /*To generate placeholder C_ for the parser -> akin to initialization*/
+        oo <-$ Bits(n); /*To generate placeholder X_ for the parser -> akin to initialization*/
+        C_ <- ((o, o),(o, o),(o, o),(o, o));
+        X_ <- (oo, oo);
         d <- new Table(Bits(n), Bool);
+
+        /*We sample the following in advance since we cannot reuse sample names later*/
+        tempsample1 <-$ Bits(n) sample-name A_0;
+        tempsample2 <-$ Bits(n) sample-name B_0;
+        tempsample3 <-$ Bits(n) sample-name C_0;
+
         if ((a==false) and (b==false)) {
             c <- false; /* AND gate */
-            A_0 <-$ Bits(n) sample-name A_0;
-            B_0 <-$ Bits(n) sample-name B_0;
-            C_0 <-$ Bits(n) sample-name C_0;
+            A_0 <-tempsample1;
+            B_0 <-tempsample2;
+            C_0 <-tempsample3;
             A_1 <- xor_(A_0, delta);
             B_1 <- xor_(B_0, delta);
             C_1 <- xor_(C_0, delta);
@@ -61,9 +75,9 @@ package Sim_FreeXOR_Real_ANDONLY {
         } 
         if ((a==false) and (b==true)) {
             c <- false; /* AND gate */
-            A_0 <-$ Bits(n) sample-name A_0;
-            B_1 <-$ Bits(n) sample-name B_1;
-            C_0 <-$ Bits(n) sample-name C_0;
+            A_0 <-tempsample1;
+            B_1 <-tempsample2;
+            C_0 <-tempsample3;
             A_1 <- xor_(A_0, delta);
             B_0 <- xor_(B_1, delta);
             C_1 <- xor_(C_0, delta);
@@ -93,9 +107,9 @@ package Sim_FreeXOR_Real_ANDONLY {
         } 
         if ((a==true) and (b==false)) {
             c <- false; /* AND gate */
-            A_1 <-$ Bits(n) sample-name A_1;
-            B_0 <-$ Bits(n) sample-name B_0;
-            C_0 <-$ Bits(n) sample-name C_0;
+            A_1 <-tempsample1;
+            B_0 <-tempsample2;
+            C_0 <-tempsample3;
             A_0 <- xor_(A_1, delta);
             B_1 <- xor_(B_0, delta);
             C_1 <- xor_(C_0, delta);
@@ -125,9 +139,9 @@ package Sim_FreeXOR_Real_ANDONLY {
         }
         if ((a==true) and (b==true)) {
             c <- true; /* AND gate */
-            A_1 <-$ Bits(n) sample-name A_1;
-            B_1 <-$ Bits(n) sample-name B_1;
-            C_1 <-$ Bits(n) sample-name C_1;
+            A_1 <-tempsample1;
+            B_1 <-tempsample2;
+            C_1 <-tempsample3;
             A_0 <- xor_(A_1, delta);
             B_0 <- xor_(B_1, delta);
             C_0 <- xor_(C_1, delta);

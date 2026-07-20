@@ -17,12 +17,24 @@ package Reduction {
         R_10 <-$ Bits(n) sample-name R_10; /* row 2 randomness */
         R_11 <-$ Bits(n) sample-name R_11; /* row 3 randomness */
 
+        o <-$ Bits(m); /*To generate placeholder C_ for the parser -> akin to initialization*/
+        oo <-$ Bits(n); /*To generate placeholder X_ for the parser -> akin to initialization*/
+        C_ <- ((o, o),(o, o),(o, o),(o, o));
+        X_ <- (oo, oo);
         d <- new Table(Bits(n),Bool);
+
+        /*We sample the following in advance since we cannot reuse sample names later*/
+        tempsample1 <-$ Bits(n) sample-name A_0;
+        tempsample2 <-$ Bits(n) sample-name B_0;
+        tempsample3 <-$ Bits(n) sample-name C_0;
+        
+        
+
         if ((a==false) and (b==false)) {
             c <- false; /* AND gate */
-            A_0 <-$ Bits(n) sample-name A_0;
-            B_0 <-$ Bits(n) sample-name B_0;
-            C_0 <-$ Bits(n) sample-name C_0;
+            A_0 <-tempsample1;
+            B_0 <-tempsample2;
+            C_0 <-tempsample3;
             /* This function does not have access to the circuit offset lambda and must use the oracle ENC call*/
 
             /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
@@ -53,9 +65,9 @@ package Reduction {
         } 
         if ((a==false) and (b==true)) {
             c <- false; /* AND gate */
-            A_0 <-$ Bits(n) sample-name A_0;
-            B_1 <-$ Bits(n) sample-name B_1;
-            C_0 <-$ Bits(n) sample-name C_0;
+            A_0 <-tempsample1;
+            B_1 <-tempsample2; 
+            C_0 <-tempsample3;
             /* This function does not have access to the circuit offset lambda and must use the oracle ENC call*/
             /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
             /* Active row */
@@ -86,9 +98,9 @@ package Reduction {
         } 
         if ((a==true) and (b==false)) {
             c <- false; /* AND gate */
-            A_1 <-$ Bits(n) sample-name A_1;
-            B_0 <-$ Bits(n) sample-name B_0;
-            C_0 <-$ Bits(n) sample-name C_0;
+            A_1 <-tempsample1;
+            B_0 <-tempsample2;
+            C_0 <-tempsample3;
             /* This function does not have access to the circuit offset lambda and must use the oracle ENC call*/
             /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
             /* Active row */
@@ -119,9 +131,9 @@ package Reduction {
         }
         if ((a==true) and (b==true)) {
             c <- true; /* AND gate */
-            A_1 <-$ Bits(n) sample-name A_1;
-            B_1 <-$ Bits(n) sample-name B_1;
-            C_1 <-$ Bits(n) sample-name C_1;
+            A_1 <-tempsample1;
+            B_1 <-tempsample2;
+            C_1 <-tempsample3;
             /* This function does not have access to the circuit offset lambda and must use the oracle ENC call*/
             /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
             /* Active row */

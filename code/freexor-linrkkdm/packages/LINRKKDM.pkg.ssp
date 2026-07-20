@@ -1,4 +1,4 @@
-package LIN_RK_KDM {
+package LINRKKDM {
     params {
         n: Integer, /* secpar */
         m: Integer,  /* message length */
@@ -15,15 +15,13 @@ package LIN_RK_KDM {
             tmp <-$ Bits(n) sample-name delta;
             delta <- Some(tmp);
         } 
+        r <-$ Bits(n);
         if b {
-            r <-$ Bits(n);
             return enc(xor_(Unwrap(delta),key), 0_n, r); 
         } else {
             if z {
-                r <-$ Bits(n);
                 return enc(xor_(Unwrap(delta),key), xor_(msg,Unwrap(delta)), r); 
             } else {
-                r <-$ Bits(n);
                 return enc(xor_(Unwrap(delta), key), msg, r);
             }
         }

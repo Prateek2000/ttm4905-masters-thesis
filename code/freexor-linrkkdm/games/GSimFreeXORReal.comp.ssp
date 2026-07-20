@@ -1,23 +1,13 @@
-composition R_comp_G_LIN_RK_KDM {
+composition GSimFreeXORReal {
         const n: Integer; /* secpar */
         const m: Integer;  /* message length */
         const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
-        const b: Bool; /* switch for real and ideal behaviour of ENC*/
         const xor_: fn Bits(n), Bits(n) -> Bits(n);
 
-    instance G_LIN_RK_KDM = LIN_RK_KDM {
+    instance SimFreeXOR0 = SimFreeXORRealANDONLY {
         params {
             n: n,
             m:m,
-            enc: enc,
-            b: b,
-            xor_:xor_,
-        }
-    }
-    instance R = Reduction {
-        params {
-            n: n,
-            m: m,
             enc: enc,
             xor_:xor_,
         }
@@ -25,10 +15,7 @@ composition R_comp_G_LIN_RK_KDM {
 
     compose {
         adversary: {
-            GARBLE: R,
-        },
-        R: {
-            ENC: G_LIN_RK_KDM,
+            GARBLE: SimFreeXOR0,
         }
     }
 }
