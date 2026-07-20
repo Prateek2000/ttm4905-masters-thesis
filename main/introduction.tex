@@ -4,9 +4,11 @@
 \newacronym{mpc}{MPC}{Multi-Party Computation}
 \newacronym{gc}{GC}{Garbled Circuit}
 \newacronym{2pc}{2PC}{Two-party Computation}
-\newacronym{ssp}{SSP}{State-Separating Proof}
+\newacronym{ssp}{SSP}{State-Separating proof}
 \newacronym{gs}{GS}{garbling scheme}
 \textcolor{red}{One more pass needed after writing conclusion}
+
+Even though recent work in the field of \acrlong{gc}s has led to significant improvements in performance, the proofs of these improvements are primarily reasoned about theoretically. In this work, we aim to rigorously validate one such proof using formal verification. Further motivations for this work are discussed in the following section.  
 \section{Motivation}
 \label{sec:motivation}
 Secure Multiparty Computation, or just \acrfull{mpc} refers to a class of problems in which two or more parties want to compute a common function using their individual inputs, but do not want to share these inputs with each other.
@@ -21,8 +23,6 @@ In this work, we aim to convert the proof of one such optimization (Free XOR) \c
 
 The initial goal of this project was to verify the Half-Gates \acrlong{gs} \cite{EC:ZahRosEva15}. However, since the Half-Gates scheme works under the Free XOR assumption, it was mandatory for us to first solve the same problem for the Free XOR scheme. Due to the limited timeframe of the project, we were unable to complete both, and leave Half-Gates as future work. We describe the details of this in further sections.
 
-The rest of this paper is organized as follows: Chapter \ref{chp:background} contains background information on \acrlong{gs}s, optimizations, and Domino. Chapter \ref{chp:penpaperssp} details the converted pen-and-paper proof for Free XOR. Chapter \ref{chp:domino} contains further details about the proof tool Domino, a brief overview on how to set it up, and an encoding of the \acrlong{ssp} in Domino. Chapter \ref{chp:discussion} discusses the advantages and challenges of working with Domino as opposed to plain pen-and-paper \acrshort{ssp}. Chapter \ref{chp:conclusion} contains concluding remarks and future work. 
-
 \section{Objectives}
 \label{sec:objectives}
 The initial goals of this thesis were the following:
@@ -31,7 +31,7 @@ The initial goals of this thesis were the following:
     \item To encode this proof and verify its correctness in Domino.
 \end{enumerate}
 
-While working on the proof for the Half-Gates scheme, it was revealed that it is not possible to avoid proving (by assumption, or other means) the Free XOR scheme that Half-Gates depends on without functional and efficiency losses in Half Gates. A \acrlong{ssp} for Free XOR has not been worked on in the literature we reviewed, and we decided that it was fair to prove the Free XOR scheme instead, as it would allow future work in Half-Gates. 
+While working on the proof for the Half-Gates scheme, it was revealed that it is not possible to avoid proving (by assumption, or other means) the Free XOR scheme that Half-Gates depends on without functional and efficiency losses in Half-Gates. A \acrlong{ssp} for Free XOR has not been worked on in the literature we reviewed, and we decided that it was fair to prove the Free XOR scheme instead, as it would allow future work in Half-Gates. 
 
 Therefore, the revised goals for the thesis are as follows:
 \begin{enumerate}
@@ -46,7 +46,7 @@ Therefore, the revised goals for the thesis are as follows:
 While theoretical cryptography itself does not map well to any of the \acrfull{un} \acrfull{sdg}s, since the indicators for each subgoal are very distinct, the following arguments can be made for the contributions that this thesis may make to the targets of various subgoals:
 \begin{itemize}
     \item \textbf{Target 9.5 - Enhance research and upgrade industrial technologies:} This work pushes the boundaries of research in verified proofs of cryptographic algorithms and protocols that are used to build software technologies.
-    \item \textbf{Target 9.c - Universal access to information and communications technology:} This work will be available in the public domain from both the universities that it will be submitted to, offering unrestricted access to the findings and work done.
-    \item \textbf{Target 16.6 - Develop effective, accountable and transparent institutions:} This work is in the domain of privacy-preserving technologies, which when implemented into software can allow institutions to provide transparency without significant loss in privacy. 
-    \item \textbf{Target 16.10 - Ensure public access to information and protect fundamental freedoms:} Similar to the previous subgoal, privacy preserving technologies provide opportunities for institutions in power to allow useful access to information while protecting parts that are sensitive.
+    \item \textbf{Target 16.6 - Develop effective, accountable and transparent institutions:} This work is in the domain of privacy-preserving technologies, which when implemented into software can allow institutions to be more transparent while retaining the privacy of information. 
 \end{itemize}   
+
+The rest of this thesis is organized as follows: Chapter \ref{chp:background} contains background information on \acrlong{gs}s, optimizations, and Domino. Chapter \ref{chp:penpaperssp} details the converted pen-and-paper proof for Free XOR. Chapter \ref{chp:domino} contains further details about the proof tool Domino, a brief overview on how to set it up, and an encoding of the \acrlong{ssp} in Domino. Chapter \ref{chp:discussion} discusses the advantages and challenges of working with Domino as opposed to plain pen-and-paper \acrshort{ssp}. Chapter \ref{chp:conclusion} contains concluding remarks and future work. 

@@ -175,6 +175,7 @@
 
 % Spacing
 \setSpacing{1.1}
+\RequirePackage{xspace}
 
 % Paragraphs
 \clubpenalty  = 5000
