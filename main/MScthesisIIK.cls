@@ -56,11 +56,15 @@
 \ProcessOptions\relax
 \LoadClass[10pt,b5paper]{memoir}
 
+% Colors
+\RequirePackage[rgb]{xcolor}
+
+%pdf/a compliance - also had to modify the embedded logo pdfs to a rgb color device from cmyk |gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sColorConversionStrategy=sRGB -dProcessColorModel=/DeviceRGB    -sOutputFile=./figs/ntnu-uten-slagord-rgb.pdf    ./figs/ntnu-uten-slagord.pdf|
+\RequirePackage[a-2b]{pdfx}
+
 % Fixes
 \RequirePackage{iftex}
 
-% Colors
-\RequirePackage{xcolor}
 
 % Text and encoding
 \ifPDFTeX
@@ -83,6 +87,8 @@
 \let\supervisorname\@empty
 \let\cosupervisorname\@empty
 \let\cosupervisorsname\@empty
+\let\advisorname\@empty
+\let\advisorsname\@empty
 \let\studentname\@empty
 \let\studentsname\@empty
 \let\submissiondatename\@empty
@@ -103,11 +109,13 @@
   \renewcommand\supervisorname{Hovedveileder}%
   \renewcommand\cosupervisorname{Medveileder}%
   \renewcommand\cosupervisorsname{Medveiledere}%
+  \renewcommand\advisorname{Rådgiver}%
+  \renewcommand\advisorsname{Rådgivere}%
   \renewcommand\studentname{Student}%
   \renewcommand\studentsname{Studenter}%
   \renewcommand\submissiondatename{Innleveringsdato}%
   \renewcommand\ntnuname{Norges teknisk-naturvitenskapelige universitet}%
-  \renewcommand\ntnulogo{./figs/ntnu-uten-slagord.pdf}%
+  \renewcommand\ntnulogo{./figs/ntnu-uten-slagord-rgb.pdf}%
   \renewcommand\iikname{Institutt for informasjonssikkerhet og kommunikasjonsteknologi}%
   \renewcommand{\andname}{og\newline}%
   \renewcommand{\anddescname}{og\unskip{} }%
@@ -125,11 +133,13 @@
   \renewcommand\supervisorname{Hovudrettleiar}%
   \renewcommand\cosupervisorname{Medrettleiar}%
   \renewcommand\cosupervisorsname{Medrettleiarar}%
+  \renewcommand\advisorname{Rådgjevar}%
+  \renewcommand\advisorsname{Rådgjevarar}%
   \renewcommand\studentname{Student}%
   \renewcommand\studentsname{Studentar}%
   \renewcommand\submissiondatename{Innleveringsdato}%
   \renewcommand\ntnuname{Noregs teknisk-naturvitskaplege universitet}%
-  \renewcommand\ntnulogo{./figs/ntnu-uten-slagord.pdf}%
+  \renewcommand\ntnulogo{./figs/ntnu-uten-slagord-rgb.pdf}%
   \renewcommand\iikname{Institutt for informasjonstryggleik og kommunikasjonsteknologi}%
   \renewcommand{\andname}{og\newline}%
   \renewcommand{\anddescname}{og\unskip{} }%
@@ -147,11 +157,13 @@
   \renewcommand\supervisorname{Main supervisor}%
   \renewcommand\cosupervisorname{Co-supervisor}%
   \renewcommand\cosupervisorsname{Co-supervisors}%
+  \renewcommand\advisorname{Advisor}%
+  \renewcommand\advisorsname{Advisors}%
   \renewcommand\studentname{Student}%
   \renewcommand\studentsname{Students}%
   \renewcommand\submissiondatename{Submission date}%
   \renewcommand\ntnuname{Norwegian University of Science and Technology}%
-  \renewcommand\ntnulogo{./figs/ntnu-hoeyde-eng.pdf}%
+  \renewcommand\ntnulogo{./figs/ntnu-hoeyde-eng-rgb.pdf}%
   \renewcommand\iikname{Department of Information Security and Communication Technology}%
   \renewcommand{\andname}{and\newline}%
   \renewcommand{\anddescname}{and\unskip{} }%
@@ -347,7 +359,7 @@
 
 % Chapter style - based on hansen style, http://www.tex.ac.uk/tex-archive/info/latex-samples/MemoirChapStyles/
 \RequirePackage{calc}
-\definecolor{chaptercolor}{gray}{0.8}
+\definecolor{chaptercolor}{rgb}{0.8,0.8,0.8}
 % helper macros
 \newcommand\numlifter[1]{\raisebox{-2cm}[0pt][0pt]{\smash{#1}}}
 \newcommand\numindent{\kern37pt}
@@ -428,20 +440,24 @@
 % Title page and project description
 \let\ordinal\undefined
 \RequirePackage{datetime}
-\newdateformat{dateIIK}{\monthname[\THEMONTH] \THEYEAR}
+\newdateformat{dateIIK}{27 \monthname[\THEMONTH] \THEYEAR}
 
 
 \newcounter{@auth}
 \newcounter{@cosupv}
+\newcounter{@adv}
 \newcounter{@name}
 \newcounter{@names}
 \def\auth{1}
 \def\cosupv{2}
+\def\adv{3}
 \newcommand{\student}[1]{\author{#1}}
 \let\@supervisor\@empty
 \newcommand{\supervisor}[1]{\def\@supervisor{#1}}
 \let\@cosupervisor\@empty
 \newcommand{\cosupervisor}[1]{\def\@cosupervisor{#1}}
+\let\@advisor\@empty
+\newcommand{\advisor}[1]{\def\@advisor{#1}}
 \let\@approvedon\@empty
 \newcommand{\approvedon}[1]{\def\@approvedon{#1}}
 \let\names\undefined
@@ -452,24 +468,27 @@
 \newcommand{\frontpagefont}{\fontsize{1.15em}{1.3em}\sffamily}
 \newcommand{\newlinetitle}{\par\noindent }
 \def\@maketitle{%
- \def\lastand{\if\names\auth\value{@names}=\value{@auth}\else\value{@names}=\value{@cosupv}\fi
+ \def\lastand{\if\names\auth\value{@names}=\value{@auth}\else\if\names\cosupv\value{@names}=\value{@cosupv}\else\value{@names}=\value{@adv}\fi\fi
               \ifnum\value{@names}=2\relax
                  \unskip{} \andname
               \else
                  \unskip, \andname
               \fi}%
- \def\and{\if\names\auth\value{@names}=\value{@auth}\else\value{@names}=\value{@cosupv}\fi
+ \def\and{\if\names\auth\value{@names}=\value{@auth}\else\if\names\cosupv\value{@names}=\value{@cosupv}\else\value{@names}=\value{@adv}\fi\fi
           \stepcounter{@name}\relax
           \ifnum\value{@name}=\value{@names}%
              \lastand
           \else
              \unskip,\newline
           \fi}%
+ 
  {%
  \setbox0=\vbox{\setcounter{@name}{1}\def\and{\stepcounter{@name}}\@author}
  \global\value{@auth}=\value{@name}%
  \setbox1=\vbox{\setcounter{@name}{1}\def\and{\stepcounter{@name}}\@cosupervisor}
  \global\value{@cosupv}=\value{@name}%
+ \setbox2=\vbox{\setcounter{@name}{1}\def\and{\stepcounter{@name}}\@advisor}
+ \global\value{@adv}=\value{@name}%
  \setcounter{@name}{1}%
  \renewcommand{\arraystretch}{1}
  \thispagestyle{empty}
@@ -492,6 +511,7 @@
          \submissiondatename:   & \dateIIK\@date \\
          \supervisorname:       & \@supervisor    \\
          \ifx\@cosupervisor\empty\else\ifnum\value{@cosupv}=1\relax\cosupervisorname\else\cosupervisorsname\fi:     & \@cosupervisor  \\\fi
+         \ifx\@advisor\empty\else\setcounter{@name}{1}\global\let\names\adv\ifnum\value{@adv}=1\relax\advisorname\else\advisorsname\fi:     & \@advisor  \\\fi
        \end{tabular}\par
       }\vspace{.5cm}
       {\noindent \ntnuname\\\iikname}
@@ -522,14 +542,14 @@
 }
 
 \def\makedescription{%
-\def\lastand{\if\names\auth\value{@names}=\value{@auth}\else\value{@names}=\value{@cosupv}\fi
+\def\lastand{\if\names\auth\value{@names}=\value{@auth}\else\if\names\cosupv\value{@names}=\value{@cosupv}\else\value{@names}=\value{@adv}\fi
   \ifnum\value{@names}=2\relax
     \unskip{} \anddescname
   \else
     \unskip, \anddescname
   \fi
 }
-\def\and{\if\names\auth\value{@names}=\value{@auth}\else\value{@names}=\value{@cosupv}\fi
+\def\and{\if\names\auth\value{@names}=\value{@auth}\else\if\names\cosupv\value{@names}=\value{@cosupv}\else\value{@names}=\value{@adv}\fi
   \stepcounter{@name}\relax
   \ifnum\value{@name}=\value{@names}%
     \lastand
@@ -543,6 +563,8 @@
 \global\setcounter{@auth}{\value{@name}}
 \setbox1=\vbox{\setcounter{@name}{1}\def\and{\stepcounter{@name}}\@cosupervisor}
 \global\setcounter{@cosupv}{\value{@name}}
+\setbox2=\vbox{\setcounter{@name}{1}\def\and{\stepcounter{@name}}\@advisor}
+\global\setcounter{@adv}{\value{@name}}
 \setcounter{@name}{1}
 \newcounter{@incr}
 \begingroup
@@ -564,6 +586,9 @@
       \global\let\names\cosupv
       \textbf{\supervisorname:} & \@supervisor\\
       \ifx\@cosupervisor\empty\else\textbf{\ifnum\value{@cosupv}=1\relax\cosupervisorname\else\cosupervisorsname\fi:} & \@cosupervisor \\\fi  
+      \setcounter{@name}{1}
+      \global\let\names\adv
+      \ifx\@advisor\empty\else\textbf{\ifnum\value{@adv}=1\relax\advisorname\else\advisorsname\fi:} & \@advisor \\\fi  
     \end{tabular}\par
     \vspace{4ex}
     \noindent\textbf{\problemdescriptionname:}\par

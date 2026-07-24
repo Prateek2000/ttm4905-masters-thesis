@@ -86,6 +86,18 @@
 	year = {2025},
 }
 
+@article{chen_easycrypt_2025,
+	title = {{EasyCrypt} vs. Domino: A comparative study based on the {IEEE} 802.11 4-Way Handshake protocol},
+	url = {https://aaltodoc.aalto.fi/handle/123456789/142257},
+	shorttitle = {{EasyCrypt} vs. Domino},
+	abstract = {This thesis compares two formal verification tools for cryptographic proofs, {EasyCrypt} and Domino, and explores the feasibility of translating formal proofs from Domino into {EasyCrypt}. We first consider a toy example showing via reduction that a (standard) pseudorandom function ({PRF}) with adversarially chosen inputs is also a weak {PRF} where inputs are chosen uniformly at random. This proof combines a reduction step and a probabilistic argument. We formalize this proof in {EasyCrypt} and compare it to a Domino proof. One key difference between the tools is that {EasyCrypt} can prove probabilistic arguments such as the birthday bound, while Domino needs to assume them. We then move to studying the {IEEE} 802.11 4-Way Handshake (4WHS) protocol. Brzuska and Jacobsen ({PKC} 2017) provided a pen-and-paper proof of 4WHS security which was later refined and formalized in Domino by Brzuska, Egger, Rajabi and Winkelmann ({GitHub} domino-lang/domino) in two versions, a full proof and a simplified proof which only established key indistinguishability. We translate part of the key indistinguishability proof from Domino into {EasyCrypt}. Along the way, we develop a systematic approach to translate game-terminating aborts in Domino into aborts in {EasyCrypt} which do not terminate games. Moreover, we develop transformations to move intermediate returns in Domino into a final return statement in {EasyCrypt}. Domino applies similar transforms when compiling to {SMT}-{LIB} code, while the user-facing code allows for intermediate returns. The translation shows the potential of a hybrid approach that combines both tools and leverages the strengths of each, namely using Domino for large-scale verification through its modular structure and automated proof workflow, and {EasyCrypt} for proving probabilistic assumptions.},
+	journaltitle = {Master thesis, Aalto University},
+	author = {Chen, Jiaqi},
+	urldate = {2026-07-23},
+	date = {2025-12-31},
+	langid = {english}}
+
+
 @inproceedings{AC:BDEFKK22,
   author = "Chris Brzuska and
             Antoine {Delignat-Lavaud} and
@@ -109,7 +121,8 @@
 @unpublished{domino:paper,
   title = "Domino: Computer-Assisted Game-Hopping for Large-Scale Protocols",
   author = "Brzuska, Chris and Egger, Christoph and Rajabi, Amirhosein and Winkelmann, Jan",
-  howpublished = "manuscript"
+  howpublished = "manuscript",
+  year = 2026
 }
 
 @online{domino:code,
@@ -388,4 +401,115 @@ series = {EC '99}
   series = "Lecture Notes in Computer Science",
   year = 2006,
   doi = "10.1007/11761679_25",
+}
+@article{proverif,
+author = {Blanchet, Bruno},
+title = {Modeling and Verifying Security Protocols with the Applied Pi Calculus and ProVerif},
+year = {2016},
+issue_date = {31 10 2016},
+publisher = {Now Publishers Inc.},
+address = {Hanover, MA, USA},
+volume = {1},
+number = {1–2},
+issn = {2474-1558},
+url = {https://doi.org/10.1561/3300000004},
+doi = {10.1561/3300000004},
+abstract = {ProVerif is an automatic symbolic protocol verifier. It supports a wide range of cryptographic primitives, defined by rewrite rules or by equations. It can prove various security properties: secrecy, authentication, and process equivalences, for an unbounded message space and an unbounded number of sessions. It takes as input a description of the protocol to verify in a dialect of the applied pi calculus, an extension of the pi calculus with cryptography. It automatically translates this protocol description into Horn clauses and determines whether the desired security properties hold by resolution on these clauses. This survey presents an overview of the research on ProVerif.},
+journal = {Found. Trends Priv. Secur.},
+month = 10,
+pages = {1–135},
+numpages = {135}
+}
+
+@ARTICLE{tamarin,
+author={Basin, David and Cremers, Cas and Dreier, Jannik and Sasse, Ralf},
+journal={ IEEE Security \& Privacy },
+title={{ Tamarin: Verification of Large-Scale, Real-World, Cryptographic Protocols }},
+year={2022},
+volume={20},
+number={03},
+ISSN={1558-4046},
+pages={24-32},
+abstract={ Tamarin is a mature, state-of-the-art tool for cryptographic protocol verification. We survey some of the larger tour de force results achieved and show how Tamarin can formalize protocols, adversary models, and properties, and scale to substantial, real world, verification problems. },
+keywords={Protocols;Security;Cryptographic protocols;Cryptography;Authentication;Large-scale systems;Mathematical models},
+doi={10.1109/MSEC.2022.3154689},
+url = {https://doi.ieeecomputersociety.org/10.1109/MSEC.2022.3154689},
+publisher={IEEE Computer Society},
+address={Los Alamitos, CA, USA},
+month=05
+}
+
+
+@incollection{easycrypt,
+	location = {Cham},
+	title = {{EasyCrypt}: A Tutorial},
+	isbn = {978-3-319-10082-1},
+	url = {https://doi.org/10.1007/978-3-319-10082-1_6},
+	doi = {10.1007/978-3-319-10082-1_6},
+	shorttitle = {{EasyCrypt}},
+	abstract = {Cryptography plays a key role in the security of modern communication and computer infrastructures; therefore, it is of paramount importance to design cryptographic systems that yield strong security guarantees. To achieve this goal, cryptographic systems are supported by security proofs that establish an upper bound for the probability that a resource-constrained adversary is able to break the cryptographic system. In most cases, security proofs are reductionist, i.e. they construct from an (arbitrary but computationally bounded) adversary that would break the security of the cryptographic construction with some reasonable probability another computationally bounded adversary that would break a hardness assumption with reasonable probability. This approach, known as provable security, is in principle able to deliver rigorous and detailed mathematical proofs. However, new cryptographic designs (and consequently their security analyses) are increasingly complex, and there is a growing emphasis on shifting from algorithmic descriptions to implementation-level descriptions that account for implementation details, recommendations from standards when they exist, and possibly side-channels. As a consequence, cryptographic proofs are becoming increasingly error-prone and difficult to check. One promising solution to address these concerns is to develop machine-checked frameworks that support the construction and automated verification of cryptographic systems. Although many such frameworks exist for the symbolic model of cryptography, comparatively little work has been done to develop machine-checked frameworks to reason directly in the computational model commonly used by cryptographers},
+	pages = {146--166},
+	booktitle = {Foundations of Security Analysis and Design {VII}: {FOSAD} 2012/2013 Tutorial Lectures},
+	publisher = {Springer International Publishing},
+	author = {Barthe, Gilles and Dupressoir, François and Grégoire, Benjamin and Kunz, César and Schmidt, Benedikt and Strub, Pierre-Yves},
+	editor = {Aldini, Alessandro and Lopez, Javier and Martinelli, Fabio},
+	urldate = {2026-07-23},
+	date = {2014},
+	langid = {english},
+	file = {Full Text PDF:C\:\\Users\\Prateek\\Zotero\\storage\\MMGXBU6P\\Barthe et al. - 2014 - EasyCrypt A Tutorial.pdf:application/pdf},
+}
+
+@techreport{cryptoverif,
+  TITLE = {{CryptoVerif: a Computationally-Sound Security Protocol Verifier (Initial Version with Communications on Channels)}},
+  AUTHOR = {Blanchet, Bruno},
+  URL = {https://inria.hal.science/hal-04246199},
+  NUMBER = {RR-9525},
+  HAL_LOCAL_REFERENCE = {RR-9525},
+  PAGES = {166},
+  INSTITUTION = {{Inria Paris}},
+  YEAR = {2023},
+  MONTH = Oct,
+  KEYWORDS = {Computational model ; Verification ; Security protocols ; V{\'e}rification ; Mod{\`e}le calculatoire ; Protocoles cryptographiques},
+  PDF = {https://inria.hal.science/hal-04246199v1/file/RR-9525.pdf},
+  HAL_ID = {hal-04246199},
+  HAL_VERSION = {v1},
+}
+
+@inproceedings{dolev-yao,
+  author = "Danny Dolev and
+            Andrew Chi-Chih Yao",
+  title = "On the Security of Public Key Protocols (Extended Abstract)",
+  pages = "350--357",
+  booktitle = "22nd Annual Symposium on Foundations of Computer Science",
+  address = "Nashville, TN, USA",
+  month = 10,
+  eventdate = {1981-10-28/1981-10-30},
+  publisher = "{IEEE} Computer Society Press",
+  year = 1981,
+  doi = "10.1109/SFCS.1981.32",
+}
+
+@misc{EPRINT:Halevi05b,
+  author = "Shai Halevi",
+  title = "A plausible approach to computer-aided cryptographic proofs",
+  year = 2005,
+  howpublished = "Cryptology ePrint Archive, Report 2005/181",
+  url = "https://eprint.iacr.org/2005/181",
+}
+
+@inproceedings{threehalves,
+  author = "Mike Rosulek and
+            Lawrence Roy",
+  title = "Three Halves Make a Whole? {B}eating the Half-Gates Lower Bound for Garbled Circuits",
+  pages = "94--124",
+  editor = "Tal Malkin and Chris Peikert",
+  booktitle = "Advances in Cryptology -- {CRYPTO}~2021, Part~I",
+  volume = 12825,
+  address = "Virtual Event",
+  eventdate = {2021-08-16/2021-08-20},
+  month = {08},
+  publisher = "Springer, Cham, Switzerland",
+  series = "Lecture Notes in Computer Science",
+  year = 2021,
+  doi = "10.1007/978-3-030-84242-0_5",
 }
