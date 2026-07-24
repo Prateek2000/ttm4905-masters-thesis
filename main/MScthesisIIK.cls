@@ -511,7 +511,7 @@
          \submissiondatename:   & \dateIIK\@date \\
          \supervisorname:       & \@supervisor    \\
          \ifx\@cosupervisor\empty\else\ifnum\value{@cosupv}=1\relax\cosupervisorname\else\cosupervisorsname\fi:     & \@cosupervisor  \\\fi
-         \ifx\@advisor\empty\else\setcounter{@name}{1}\global\let\names\adv\ifnum\value{@adv}=1\relax\advisorname\else\advisorsname\fi:     & \@advisor  \\\fi
+         \ifx\@advisor\empty\else\setcounter{@name}{1}\global\let\names\adv\ifnum\value{@adv}=1\relax\advisorsname\else\advisorsname\fi:     & \@advisor  \\\fi
        \end{tabular}\par
       }\vspace{.5cm}
       {\noindent \ntnuname\\\iikname}
@@ -588,7 +588,7 @@
       \ifx\@cosupervisor\empty\else\textbf{\ifnum\value{@cosupv}=1\relax\cosupervisorname\else\cosupervisorsname\fi:} & \@cosupervisor \\\fi  
       \setcounter{@name}{1}
       \global\let\names\adv
-      \ifx\@advisor\empty\else\textbf{\ifnum\value{@adv}=1\relax\advisorname\else\advisorsname\fi:} & \@advisor \\\fi  
+      \ifx\@advisor\empty\else\textbf{\ifnum\value{@adv}=1\relax\advisorsname\else\advisorsname\fi:} & \@advisor \\\fi  
     \end{tabular}\par
     \vspace{4ex}
     \noindent\textbf{\problemdescriptionname:}\par
