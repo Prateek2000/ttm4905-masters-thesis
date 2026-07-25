@@ -1,0 +1,13 @@
+\procedure{$\O{ENC}(\n{key}, \n{msg}, \n{z})$}{
+\pcif \n{delta} = \O{none}\left(\bin^{\n{n}}\right) \pcthen\\
+\pcind \n{tmp} \stackrel{delta}{\sample} \bin^{\n{n}}\\
+\pcind \n{delta} \gets \O{some}\left(\n{tmp}\right)\\
+ \n{r} \stackrel{2}{\sample} \bin^{\n{n}}\\
+\pcif \n{b} \pcthen\\
+\pcind \pcreturn \O{\n{enc}}(\O{\n{xor}^\prime}(\O{unwrap}\left(\n{delta}\right), \n{key}), Expression { kind: BitsLiteral("0", Type { kind: Bits(Identifier(PackageIdentifier(Const(PackageConstIdentifier { pkg_name: "LINRKKDM", name: "n", ty: Type { kind: Integer }, game_assignment: Some(Expression { kind: Identifier(GameIdentifier(Const(GameConstIdentifier { game_name: "GLINRKKDM", name: "n", ty: Type { kind: Integer }, game_inst_name: None, theorem_name: None, inst_info: None, assigned_value: None }))) }), pkg_inst_name: Some("GLINRKKDM"), game_name: Some("GLINRKKDM"), game_inst_name: None, theorem_name: None })))) }) }, \n{r})\\
+\pcelse\\
+\pcind\pcif \n{z} \pcthen\\
+\pcind\pcind \pcreturn \O{\n{enc}}(\O{\n{xor}^\prime}(\O{unwrap}\left(\n{delta}\right), \n{key}), \O{\n{xor}^\prime}(\n{msg}, \O{unwrap}\left(\n{delta}\right)), \n{r})\\
+\pcind\pcelse\\
+\pcind\pcind \pcreturn \O{\n{enc}}(\O{\n{xor}^\prime}(\O{unwrap}\left(\n{delta}\right), \n{key}), \n{msg}, \n{r})\\
+}

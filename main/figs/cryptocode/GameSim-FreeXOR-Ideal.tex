@@ -1,0 +1,25 @@
+\begin{figure}[ht]
+\centering
+    \procedureblock[]{$G^1_\mathsf{Sim\text{-}FreeXOR}$}{
+        \underline{\underline{\mathsf{GARBLE\mathit{(f(x), \Phi(f))}}}} \\
+        c \gets f(x) \\
+        \Delta \sample \bin^\secpar //\text{global offset}\\
+        A_0, B_0, C_0 \sample \bin^\secpar \\
+        A_1 \gets A_0 \xor \Delta \\
+        B_1 \gets B_0 \xor \Delta \\
+        C_1 \gets C_0 \xor \Delta \\
+        R_{00}, R_{01}, R_{10}, R_{11} \sample \bin^\secpar \\
+        F: \text{Table} \\
+        F[0][0] \sample (\enc(A_0, R_{0,0}),\enc(B_0, R_{0,0} \xor C_0)) \\
+        F[0][1] \sample (\enc(A_0, R_{0,1}),\enc(B_1, R_{0,1} \xor C_1)) \\
+        F[1][0] \sample (\enc(A_1, R_{1,0}),\enc(B_0, R_{1,0} \xor C_1)) \\
+        F[1][1] \sample (\enc(A_1, R_{1,1}),\enc(B_1, R_{1,1} \xor C_1)) \\
+        X \gets (A_0, B_0) \\
+        d \gets  {C_0: 0} \\
+        \pcreturn (F,X,d) \\
+       % 
+    }
+
+\caption{Code for $G^1_\mathsf{Sim\text{-}FreeXOR}$}
+\label{fig:simfreexor-ideal-game}
+\end{figure}

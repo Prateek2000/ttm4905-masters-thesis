@@ -1,0 +1,24 @@
+\begin{figure}[ht]
+\setlength{\abovecaptionskip}{0pt}
+\centering
+    \procedureblock[]{$G^0_\mathsf{Sim\text{-}FreeXOR}$}{
+        \underline{\underline{\mathsf{GARBLE\mathit{(f, x)}}}} \\
+        c \gets f(x) \\
+        (a, b) \gets x \\
+        \Delta \sample \bin^\secpar \\
+        A_a, B_b, C_c \sample \bin^\secpar \\
+        R_{00}, R_{01}, R_{10}, R_{11} \sample \bin^\secpar \\
+        F: \text{Table} \\
+        F[a][b]             \sample (\enc(A_a, R_{00}),          \enc(B_b, R_{00}           \xor C_{a\land b}))                 \\
+        F[a][b\xor 1]       \sample (\enc(A_a, R_{01}),          \enc(B_{b\xor 1}, R_{01}   \xor C_{a\land({b\xor 1})}))          \\
+        F[a\xor 1][b]       \sample (\enc(A_{a\xor 1}, R_{10}),  \enc(B_b, R_{10}           \xor C_{({a\xor 1})\land b}))         \\
+        F[a\xor 1][b\xor 1] \sample (\enc(A_{a\xor 1}, R_{11}),  \enc(B_{b\xor 1}, R_{11}   \xor C_{({a\xor 1})\land ({b\xor 1})})) \\
+        X \gets (A_a, B_b) \\
+        d \gets  \{C_c: c\} \\
+        \pcreturn (F,X,d) \\
+       % 
+    }
+
+\caption{Code for $G^0_\mathsf{Sim\text{-}FreeXOR}$}
+\label{fig:simfreexor-real-game}
+\end{figure}

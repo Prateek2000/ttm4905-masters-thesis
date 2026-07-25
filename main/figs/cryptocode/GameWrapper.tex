@@ -1,0 +1,20 @@
+\begin{figure}[ht]
+\centering
+\begin{minipage}[t]{0.45\linewidth}
+    \procedureblock[]{$G^0_{\mathsf{Wrapper},{Gbl}}$}{
+        \underline{\underline{\mathsf{GBL}(f,x)}} \\
+        (F, X, d) \sample \mathsf{GARBLE}(f, x) \\
+        \pcreturn (F, X, d) \\
+    }
+\end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+    \procedureblock[]{$G^1_{\mathsf{Wrapper},{Sim}}$}{
+        \underline{\underline{\mathsf{GBL}(f,x)}} \\
+        (F, X, d) \sample \mathsf{GARBLE}(f(x), \Phi(f)) \\
+        \pcreturn (F, X, d) \\
+    }
+\end{minipage}
+
+\caption{Code of $G^{b}_{wrapper}$ }
+\label{fig:wrapper-game}
+\end{figure}

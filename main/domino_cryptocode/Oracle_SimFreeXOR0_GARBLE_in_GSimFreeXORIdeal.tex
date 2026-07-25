@@ -1,0 +1,31 @@
+\procedure{$\O{GARBLE}(\n{y}, \n{topo\_F})$}{
+ \n{delta} \stackrel{delta}{\sample} \bin^{\n{n}}\\
+ \n{A}_\n{0} \stackrel{A\_0}{\sample} \bin^{\n{n}}\\
+ \n{B}_\n{0} \stackrel{B\_0}{\sample} \bin^{\n{n}}\\
+ \n{C}_\n{0} \stackrel{C\_0}{\sample} \bin^{\n{n}}\\
+ \n{A}_\n{1} \gets \O{\n{xor}^\prime}(\n{A}_\n{0}, \n{delta})\\
+ \n{B}_\n{1} \gets \O{\n{xor}^\prime}(\n{B}_\n{0}, \n{delta})\\
+ \n{C}_\n{1} \gets \O{\n{xor}^\prime}(\n{C}_\n{0}, \n{delta})\\
+ \n{R}_\n{00} \stackrel{R\_00}{\sample} \bin^{\n{n}}\\
+ \n{R}_\n{01} \stackrel{R\_01}{\sample} \bin^{\n{n}}\\
+ \n{R}_\n{10} \stackrel{R\_10}{\sample} \bin^{\n{n}}\\
+ \n{R}_\n{11} \stackrel{R\_11}{\sample} \bin^{\n{n}}\\
+ \n{d} \gets \O{EmptyTable}(\O{Table}[\bin^{\n{n}} \rightarrow \O{Boolean}])\\
+ \n{c} \gets \n{y}\\
+ \n{r} \stackrel{9}{\sample} \bin^{\n{n}}\\
+ \n{r1} \stackrel{10}{\sample} \bin^{\n{n}}\\
+ \n{GarbledRow0} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{0}, \n{R}_\n{00}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{0}, \O{\n{xor}^\prime}(\n{R}_\n{00}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+ \n{r} \stackrel{11}{\sample} \bin^{\n{n}}\\
+ \n{r1} \stackrel{12}{\sample} \bin^{\n{n}}\\
+ \n{GarbledRow1} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{0}, \n{R}_\n{01}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{1}, Expression { kind: BitsLiteral("0", Type { kind: Bits(Identifier(PackageIdentifier(Const(PackageConstIdentifier { pkg_name: "SimFreeXORIdealANDONLY", name: "n", ty: Type { kind: Integer }, game_assignment: Some(Expression { kind: Identifier(GameIdentifier(Const(GameConstIdentifier { game_name: "GSimFreeXORIdeal", name: "n", ty: Type { kind: Integer }, game_inst_name: None, theorem_name: None, inst_info: None, assigned_value: None }))) }), pkg_inst_name: Some("SimFreeXOR0"), game_name: Some("GSimFreeXORIdeal"), game_inst_name: None, theorem_name: None })))) }) }, \n{r1})\end{array}\right)\\
+ \n{r} \stackrel{13}{\sample} \bin^{\n{n}}\\
+ \n{r1} \stackrel{14}{\sample} \bin^{\n{n}}\\
+ \n{GarbledRow2} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{1}, Expression { kind: BitsLiteral("0", Type { kind: Bits(Identifier(PackageIdentifier(Const(PackageConstIdentifier { pkg_name: "SimFreeXORIdealANDONLY", name: "n", ty: Type { kind: Integer }, game_assignment: Some(Expression { kind: Identifier(GameIdentifier(Const(GameConstIdentifier { game_name: "GSimFreeXORIdeal", name: "n", ty: Type { kind: Integer }, game_inst_name: None, theorem_name: None, inst_info: None, assigned_value: None }))) }), pkg_inst_name: Some("SimFreeXOR0"), game_name: Some("GSimFreeXORIdeal"), game_inst_name: None, theorem_name: None })))) }) }, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{0}, \n{R}_\n{10}, \n{r1})\end{array}\right)\\
+ \n{r} \stackrel{15}{\sample} \bin^{\n{n}}\\
+ \n{r1} \stackrel{16}{\sample} \bin^{\n{n}}\\
+ \n{GarbledRow3} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{1}, Expression { kind: BitsLiteral("0", Type { kind: Bits(Identifier(PackageIdentifier(Const(PackageConstIdentifier { pkg_name: "SimFreeXORIdealANDONLY", name: "n", ty: Type { kind: Integer }, game_assignment: Some(Expression { kind: Identifier(GameIdentifier(Const(GameConstIdentifier { game_name: "GSimFreeXORIdeal", name: "n", ty: Type { kind: Integer }, game_inst_name: None, theorem_name: None, inst_info: None, assigned_value: None }))) }), pkg_inst_name: Some("SimFreeXOR0"), game_name: Some("GSimFreeXORIdeal"), game_inst_name: None, theorem_name: None })))) }) }, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{1}, Expression { kind: BitsLiteral("0", Type { kind: Bits(Identifier(PackageIdentifier(Const(PackageConstIdentifier { pkg_name: "SimFreeXORIdealANDONLY", name: "n", ty: Type { kind: Integer }, game_assignment: Some(Expression { kind: Identifier(GameIdentifier(Const(GameConstIdentifier { game_name: "GSimFreeXORIdeal", name: "n", ty: Type { kind: Integer }, game_inst_name: None, theorem_name: None, inst_info: None, assigned_value: None }))) }), pkg_inst_name: Some("SimFreeXOR0"), game_name: Some("GSimFreeXORIdeal"), game_inst_name: None, theorem_name: None })))) }) }, \n{r1})\end{array}\right)\\
+ \n{C}^\prime \gets \left(\begin{array}{c}\n{GarbledRow0}, \pclb\n{GarbledRow1}, \pclb\n{GarbledRow2}, \pclb\n{GarbledRow3}\end{array}\right)\\
+ \n{X}^\prime \gets \left(\begin{array}{c}\n{A}_\n{0}, \n{B}_\n{0}\end{array}\right)\\
+ \n{d}\left[\n{C}_\n{0}\right] \gets \O{some}\left(\n{c}\right)\\
+ \pcreturn \left(\begin{array}{c}\n{C}^\prime, \n{X}^\prime, \pclb\n{d}\end{array}\right)\\
+}

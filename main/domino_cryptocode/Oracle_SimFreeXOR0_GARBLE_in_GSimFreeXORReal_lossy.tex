@@ -1,0 +1,109 @@
+\procedure{$\O{GARBLE}(\n{f}, \n{x})$}{
+ \left(\n{a}, \n{b}\right) \gets \n{x}\\
+ \n{delta} \stackrel{delta}{\sample} \bin^{\n{n}}\\
+ \n{R}_\n{00} \stackrel{R\_00}{\sample} \bin^{\n{n}}\\
+ \n{R}_\n{01} \stackrel{R\_01}{\sample} \bin^{\n{n}}\\
+ \n{R}_\n{10} \stackrel{R\_10}{\sample} \bin^{\n{n}}\\
+ \n{R}_\n{11} \stackrel{R\_11}{\sample} \bin^{\n{n}}\\
+ \n{o} \stackrel{6}{\sample} \bin^{\n{m}}\\
+ \n{oo} \stackrel{7}{\sample} \bin^{\n{n}}\\
+ \n{C}^\prime \gets \left(\begin{array}{c}\pclb\left(\begin{array}{c}\n{o}, \n{o}\end{array}\right), \pclb\left(\begin{array}{c}\n{o}, \n{o}\end{array}\right), \pclb\left(\begin{array}{c}\n{o}, \n{o}\end{array}\right), \pclb\left(\begin{array}{c}\n{o}, \n{o}\end{array}\right)\end{array}\right)\\
+ \n{X}^\prime \gets \left(\begin{array}{c}\n{oo}, \n{oo}\end{array}\right)\\
+ \n{d} \gets \O{EmptyTable}(\O{Table}[\bin^{\n{n}} \rightarrow \O{Boolean}])\\
+ \n{tempsample1} \stackrel{A\_0}{\sample} \bin^{\n{n}}\\
+ \n{tempsample2} \stackrel{B\_0}{\sample} \bin^{\n{n}}\\
+ \n{tempsample3} \stackrel{C\_0}{\sample} \bin^{\n{n}}\\
+\pcif \left(\n{a} = \lit{false} \wedge \n{b} = \lit{false}\right) \pcthen\\
+\pcind \n{c} \gets \lit{false}\\
+\pcind \n{A}_\n{0} \gets \n{tempsample1}\\
+\pcind \n{B}_\n{0} \gets \n{tempsample2}\\
+\pcind \n{C}_\n{0} \gets \n{tempsample3}\\
+\pcind \n{A}_\n{1} \gets \O{\n{xor}^\prime}(\n{A}_\n{0}, \n{delta})\\
+\pcind \n{B}_\n{1} \gets \O{\n{xor}^\prime}(\n{B}_\n{0}, \n{delta})\\
+\pcind \n{C}_\n{1} \gets \O{\n{xor}^\prime}(\n{C}_\n{0}, \n{delta})\\
+\pcind \n{r} \stackrel{11}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{12}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow0} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{0}, \n{R}_\n{00}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{0}, \O{\n{xor}^\prime}(\n{R}_\n{00}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{13}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{14}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow1} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{0}, \n{R}_\n{01}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{1}, \O{\n{xor}^\prime}(\n{R}_\n{01}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{15}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{16}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow2} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{1}, \n{R}_\n{10}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{0}, \O{\n{xor}^\prime}(\n{R}_\n{10}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{17}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{18}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow3} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{1}, \n{R}_\n{11}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{1}, \O{\n{xor}^\prime}(\n{R}_\n{11}, \n{C}_\n{1}), \n{r1})\end{array}\right)\\
+\pcind \n{C}^\prime \gets \left(\begin{array}{c}\n{GarbledRow0}, \pclb\n{GarbledRow1}, \pclb\n{GarbledRow2}, \pclb\n{GarbledRow3}\end{array}\right)\\
+\pcind \n{X}^\prime \gets \left(\begin{array}{c}\n{A}_\n{0}, \n{B}_\n{0}\end{array}\right)\\
+\pcind \n{d}\left[\n{C}_\n{0}\right] \gets \n{c}\\
+\pcif \left(\n{a} = \lit{false} \wedge \n{b} = \lit{true}\right) \pcthen\\
+\pcind \n{c} \gets \lit{false}\\
+\pcind \n{A}_\n{0} \gets \n{tempsample1}\\
+\pcind \n{B}_\n{1} \gets \n{tempsample2}\\
+\pcind \n{C}_\n{0} \gets \n{tempsample3}\\
+\pcind \n{A}_\n{1} \gets \O{\n{xor}^\prime}(\n{A}_\n{0}, \n{delta})\\
+\pcind \n{B}_\n{0} \gets \O{\n{xor}^\prime}(\n{B}_\n{1}, \n{delta})\\
+\pcind \n{C}_\n{1} \gets \O{\n{xor}^\prime}(\n{C}_\n{0}, \n{delta})\\
+\pcind \n{r} \stackrel{19}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{20}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow1} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{0}, \n{R}_\n{01}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{1}, \O{\n{xor}^\prime}(\n{R}_\n{01}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{21}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{22}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow0} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{0}, \n{R}_\n{00}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{0}, \O{\n{xor}^\prime}(\n{R}_\n{00}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{23}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{24}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow3} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{1}, \n{R}_\n{11}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{1}, \O{\n{xor}^\prime}(\n{R}_\n{11}, \n{C}_\n{1}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{25}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{26}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow2} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{1}, \n{R}_\n{10}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{0}, \O{\n{xor}^\prime}(\n{R}_\n{10}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{C}^\prime \gets \left(\begin{array}{c}\n{GarbledRow0}, \pclb\n{GarbledRow1}, \pclb\n{GarbledRow2}, \pclb\n{GarbledRow3}\end{array}\right)\\
+\pcind \n{X}^\prime \gets \left(\begin{array}{c}\n{A}_\n{0}, \n{B}_\n{1}\end{array}\right)\\
+\pcind \n{d}\left[\n{C}_\n{0}\right] \gets \n{c}\\
+\pcif \left(\n{a} = \lit{true} \wedge \n{b} = \lit{false}\right) \pcthen\\
+\pcind \n{c} \gets \lit{false}\\
+\pcind \n{A}_\n{1} \gets \n{tempsample1}\\
+\pcind \n{B}_\n{0} \gets \n{tempsample2}\\
+\pcind \n{C}_\n{0} \gets \n{tempsample3}\\
+\pcind \n{A}_\n{0} \gets \O{\n{xor}^\prime}(\n{A}_\n{1}, \n{delta})\\
+\pcind \n{B}_\n{1} \gets \O{\n{xor}^\prime}(\n{B}_\n{0}, \n{delta})\\
+\pcind \n{C}_\n{1} \gets \O{\n{xor}^\prime}(\n{C}_\n{0}, \n{delta})\\
+\pcind \n{r} \stackrel{27}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{28}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow2} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{1}, \n{R}_\n{10}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{0}, \O{\n{xor}^\prime}(\n{R}_\n{10}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{29}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{30}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow3} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{1}, \n{R}_\n{11}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{1}, \O{\n{xor}^\prime}(\n{R}_\n{11}, \n{C}_\n{1}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{31}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{32}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow0} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{0}, \n{R}_\n{00}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{0}, \O{\n{xor}^\prime}(\n{R}_\n{00}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{33}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{34}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow1} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{0}, \n{R}_\n{01}, \n{r}), \pclb\O{\n{enc}}(\n{A}_\n{1}, \O{\n{xor}^\prime}(\n{R}_\n{01}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{C}^\prime \gets \left(\begin{array}{c}\n{GarbledRow0}, \pclb\n{GarbledRow1}, \pclb\n{GarbledRow2}, \pclb\n{GarbledRow3}\end{array}\right)\\
+\pcind \n{X}^\prime \gets \left(\begin{array}{c}\n{A}_\n{1}, \n{B}_\n{0}\end{array}\right)\\
+\pcind \n{d}\left[\n{C}_\n{0}\right] \gets \n{c}\\
+\pcif \left(\n{a} = \lit{true} \wedge \n{b} = \lit{true}\right) \pcthen\\
+\pcind \n{c} \gets \lit{true}\\
+\pcind \n{A}_\n{1} \gets \n{tempsample1}\\
+\pcind \n{B}_\n{1} \gets \n{tempsample2}\\
+\pcind \n{C}_\n{1} \gets \n{tempsample3}\\
+\pcind \n{A}_\n{0} \gets \O{\n{xor}^\prime}(\n{A}_\n{1}, \n{delta})\\
+\pcind \n{B}_\n{0} \gets \O{\n{xor}^\prime}(\n{B}_\n{1}, \n{delta})\\
+\pcind \n{C}_\n{0} \gets \O{\n{xor}^\prime}(\n{C}_\n{1}, \n{delta})\\
+\pcind \n{r} \stackrel{35}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{36}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow3} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{1}, \n{R}_\n{11}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{1}, \O{\n{xor}^\prime}(\n{R}_\n{11}, \n{C}_\n{1}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{37}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{38}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow2} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{1}, \n{R}_\n{10}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{0}, \O{\n{xor}^\prime}(\n{R}_\n{10}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{39}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{40}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow1} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{0}, \n{R}_\n{01}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{1}, \O{\n{xor}^\prime}(\n{R}_\n{01}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{r} \stackrel{41}{\sample} \bin^{\n{n}}\\
+\pcind \n{r1} \stackrel{42}{\sample} \bin^{\n{n}}\\
+\pcind \n{GarbledRow0} \gets \left(\begin{array}{c}\pclb\O{\n{enc}}(\n{A}_\n{0}, \n{R}_\n{00}, \n{r}), \pclb\O{\n{enc}}(\n{B}_\n{0}, \O{\n{xor}^\prime}(\n{R}_\n{00}, \n{C}_\n{0}), \n{r1})\end{array}\right)\\
+\pcind \n{C}^\prime \gets \left(\begin{array}{c}\n{GarbledRow0}, \pclb\n{GarbledRow1}, \pclb\n{GarbledRow2}, \pclb\n{GarbledRow3}\end{array}\right)\\
+\pcind \n{X}^\prime \gets \left(\begin{array}{c}\n{A}_\n{1}, \n{B}_\n{1}\end{array}\right)\\
+\pcind \n{d}\left[\n{C}_\n{1}\right] \gets \n{c}\\
+ \pcreturn \left(\begin{array}{c}\n{C}^\prime, \n{X}^\prime, \pclb\n{d}\end{array}\right)\\
+}

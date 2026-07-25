@@ -1,4 +1,5 @@
 \noindent%
+\textcolor{red}{reduce}
 Garbled circuits are a fundamental cryptographic primitive used in secure two‑party computation (2PC), enabling two parties to jointly compute a function without revealing their private inputs—only the output is revealed. The concept was introduced by Andrew Yao in 1986 \cite{FOCS:Yao86}, where functions are expressed as Boolean circuits and each wire is labelled with encrypted wire keys. Early constructions required four ciphertexts per gate, resulting in significant communication overhead and limiting practical adoption.
 
 Subsequent optimizations such as Point‑and‑Permute, Half‑Gates and the Free {XOR} technique greatly reduced the number of ciphertexts needed per gate, as well as reducing the number of gates to be transmitted, leading to substantial performance improvements \cite{STOC:BeaMicRog90,EC:ZahRosEva15,ALP:KolSch08}. These optimizations form the basis of many state‑of‑the‑art secure computation frameworks.

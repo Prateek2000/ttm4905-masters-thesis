@@ -1,0 +1,18 @@
+\begin{figure}[ht]
+\setlength{\abovecaptionskip}{0pt}
+\centering
+    \procedureblock[]{$G^{b}_{\mathsf{LIN-RK-KDM}}$}{
+        \underline{\text{State:}} \\
+        \Delta :\text{global circuit offset}\\
+        \underline{\underline{\mathsf{ENC\mathit{({key}, {msg} ,{z}\in\bin)}}}} \\
+        \pcif \Delta = \bot : \\
+        \t \Delta \sample \bin^{\secpar} \\
+        \pcif b = 0 : \\
+        \t {ct} \sample \enc({key} + \Delta,\ {msg} + {z}\cdot \Delta) \\
+        \pcif b = 1 : \\
+        \t {ct} \sample \enc({key} + \Delta,\ 0^{\lvert{msg}\rvert}) \\
+        \pcreturn {ct} \\
+    }
+\caption{Code for $G^{b}_{\mathsf{LIN-RK-KDM}}$}
+\label{fig:linrkkdm-game}
+\end{figure}

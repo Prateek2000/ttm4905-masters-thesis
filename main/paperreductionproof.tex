@@ -2,7 +2,7 @@
 \label{chp:penpaperssp}
 \newcommand{\real}{$\mathit{real}$\xspace}
 \newcommand{\ideal}{$\mathit{ideal}$\xspace}
-This chapter introduces the notion of a State Separating Proof, and how it differs from a traditional code-based game-playing proof. Then, we define our pen-and-paper \acrlong{ssp} for the Free XOR \acrlong{gs} here.
+This chapter introduces the notion of a State Separating Proof (SSP), and how it differs from a traditional code-based game-playing proof. Then, we define our pen-and-paper \acrlong{ssp} for the Free XOR \acrlong{gs} here.
 \section{State Separating Proofs}
 \label{sec:ssp}
 \acrlong{ssp}s are a style of proofs built upon code-based game-playing proofs discussed by \citeauthor{EC:BelRog06} \cite{EC:BelRog06}. They define code-based game-playing as proofs that encompass an adversary's interaction with its environment using code (could be pseudocode or any other formalized programming language), and these interactions are referred to as a game. The game contains subroutines that initialize the state of the game, then run the adversary program. The adversary can call oracles, which are functions exposed by the game, and the game concludes by running a finalize subroutine which outputs a bit from the adversary. The adversary has a similar interaction between two different versions of the game, one in a \real world and one in an \ideal world, whose behaviors are parameterized by a bit $b=0$ and $b=1$, respectively. 
@@ -25,12 +25,63 @@ However, \acrlong{ssp}s differ by introducing the notion of a package. A package
 \acrfull{ssp}s allow us to restrict the access to the state of each package to oracles in that package, and only provide the oracles themselves as an interface to other packages. This allows them to be highly modular and composable, allowing us to reuse a package used in one reduction in another, all while allowing changes in state that do not make changes to the whole game. If these changes cascaded to the whole game, it would require the cryptographer to once again verify the correctness of the game in the new state. \cite{brzuska_state_2018} formally defines the constructs we use here, and the mathematical properties of packages such as associativity and compositions. We slightly diverge from their notation of sequential composition by using the $\to$ operator instead of $\circ$. 
 
 
-\section{Proof of Privacy of the Garbling of an AND Gate}
+\section{On the Privacy of the Garbling of Various Gates}
 \label{sec:sspANDgate}
-In this work, we mainly focus on the privacy of garbling an AND gate in the Free XOR \acrlong{gs}. We also consider NOT and XOR gates as important, however, we do not prove their security explicitly since NOT gates are trivially usable by inverting the active wire label of the next gate in the circuit that the NOT gate is connected to. This means that a NOT gate does not need to be explicitly garbled, and we can just flip the active bit-value of that wire when garbling the following gate. The \cevaluator only receives the garbling of the flipped bit-value and never learns the corresponding unflipped value, preserving the secrecy of circuit's global offset, $\Delta$.
+In our work, we are concerned with the garbling of NOT, XOR and AND gates, since every boolean circuit can be represented with that combination of gates (functional completeness of boolean gates). Despite the fact that NOT and AND gates by themselves are functionally complete, we are interested in XOR gates since they are the basis on which the Free XOR optimization improves the efficiency of evaluating a \acrlong{gc}. We discuss these gates in order:
+\subsection{NOT Gate}
+\label{subsec:notgate}
+\input{figs/garblingNOTgate.tex}
+\citeauthor{ALP:KolSch08} note that NOT gates do not need to be garbled separately at all \cite[Section 3.1]{ALP:KolSch08}. A NOT gate simply inverts the mapping between the bit-value of a wire and its wire label, i.e., if the wire label $W_b$ corresponds to bit $b$ before encountering a NOT gate, the wire label $W_b$ will correspond to bit $b\xor 1$ after the NOT gate (Figure \ref{fig:garbling-not-gate} describes this inversion). 
+Since NOT gates are not garbled, they are not part of the security proof of the privacy of the garbling of a circuit.
 
-A similar argument can be made for the usage of an XOR gate, since it is not explicitly garbled, and the \cgarbler just indicates the presence of an XOR gate and the \cevaluator simply XORs the two input wire labels to obtain the output label. The \cevaluator never learns both possible wire labels for any wire, and privacy remains intact without needing to prove anything about a garbled table. 
+\subsection{XOR Gate}
+\label{subsec:xorgate}
+Similarly to NOT gates, XOR gates are garbled for `free' in the Free XOR scheme. What this means in practice is that the \cevaluator directly computes the output wire label of an XOR gate using the input wire labels (as discussed in Section \ref{subsec:freexor}). There is no garbled table that the \cevaluator receives, and no decryption that takes place, and the security of the XOR gate depends directly on the secrecy of the circuit offset $\Delta$. As long as the adversary does not know $\Delta$, the method of computing XOR gates in Free XOR remains secure.
 
-Now we move on to the proof of privacy of an AND gate in the Free XOR \acrlong{gs} using the scheme defined in \cite{JC:Applebaum16}.
+\subsection{AND Gate}
+\label{subsec:andgate}
+Since the privacy of the gates discussed so far is trivial, the privacy of the garbling of AND gates in the Free XOR scheme becomes the main focus of this work. As mentioned in Section \ref{subsec:freexor}, we base our \acrlong{ssp} on \citeauthor{JC:Applebaum16}'s proof in \cite{JC:Applebaum16}.
+
+\input{figs/cryptocode/GameSim-FreeXOR-Real.tex}
+
+Since we use the simulation based definition of privacy (discussed in Section \ref{sec:defininigprivacy}), we define the garbling of an AND gate in the Free XOR scheme as the security game $G^0_\mathsf{Sim\text{-}FreeXOR}$ (defined in Figure \ref{fig:simfreexor-real-game}). The game exposes a $\mathsf{GARBLE}$ oracle that provides the core functionality of garbling an AND gate. It first obtains the evaluation of the circuit $f$ with the input $x$ to determine the output it has to garble. The input $x$ is partitioned into the bit-values for wire $A$ and $B$. Then, it samples a random offset value, and wire labels for the two active input wires and active output wire. It also samples four random values, one for each row of the garbled table. The order in which these values are used is irrelevant since they are not used across multiple rows of the garbled table, therefore, they can be used independently from the index of the garbled table, as long as they are not reused.
+The garbled table is then generated as described in Section \ref{subsec:freexor}. The garbled inputs are the wire labels sampled corresponding to the active wire bit-values. The decoding information $d$ is set as a map from the active wire label for the output wire to the bit-value of the output wire.
+
+\citeauthor{JC:Applebaum16} defines the notion of \acrshort{linrkkdm} security of a symmetric encryption scheme $(\enc,\dec)$ as the computational indistinguishability of the two games $\mathsf{Real}_s$ and $\mathsf{Fake}_s$ \cite[Section 3.2]{JC:Applebaum16}, where 
+\[\mathsf{Real}_s: (\Delta, M, b) \mapsto \enc_{S+\Delta}(M+bS) \text{, and,}\]
+\[\mathsf{Fake}_s: (\Delta, M, b) \mapsto \enc_{S+\Delta}(0^{l\times N}) \text{.}\]
+
+We redefine the same security notion to better fit our \acrshort{ssp} setting: An encryption scheme is said to be \acrshort{linrkkdm} secure if any adversary $\adv$ interacting with $G^{b}_{\mathsf{LIN-RK-KDM}}$ (Figure \ref{fig:linrkkdm-game}) in the real and ideal world cannot distinguish between them with more than negligible advantage, i.e.,
+\[ \advantage{}{\adv, G^{0}_{\mathsf{LIN-RK-KDM}}, G^{1}_{\mathsf{LIN-RK-KDM}}} \leq \negl \text{.}\]
+
+Our $G^{b}_{\mathsf{LIN-RK-KDM}}$ provides an interface $\mathsf{ENC}$ that takes the key, message and an extra parameter $z$ as input, and returns an encryption of the message in the real game, and an encryption of zeroes in the ideal game (Figure \ref{fig:linrkkdm-game}). It is important to note that the real \acrshort{linrkkdm} game does not simply return an encryption under the key used as input to the $\mathsf{ENC}$ oracle. It XORs this key by an offset of $\Delta$, and optionally XORs the same offset to the message, depending on the value of $z$.  
+
+\input{figs/cryptocode/GameLIN-RK-KDM.tex}
+\newacronym{ppt}{PPT}{probabilistic, polynomial-time}
+\begin{theorem}
+    If $\enc$ is the \acrshort{linrkkdm} secure encryption scheme used in the Free XOR garbling scheme, then for f=\{AND\} and $\forall x\in \bin^2$, there exists a \acrfull{ppt} simulator $G^1_\mathsf{Sim\text{-}FreeXOR}$ and reduction $\rdv$ such that for all \acrshort{ppt} adversaries $\adv$,
+    \[\mathsf{Adv}(\adv, G^0_\mathsf{Sim\text{-}FreeXOR}, G^1_\mathsf{Sim\text{-}FreeXOR}) \leq \mathsf{Adv}(\adv\to\rdv, G^{0}_{\mathsf{LIN-RK-KDM}}, G^{1}_{\mathsf{LIN-RK-KDM}}) \] 
+\end{theorem}
+
+We now describe the simulation strategy used by $G^1_\mathsf{Sim\text{-}FreeXOR}$ (Figure \ref{fig:simfreexor-ideal-game}). The simulator receives as input the output of the circuit evaluation, $f(x)$, which corresponds to the bit-value of the output wire of the AND gate. It then samples random bitstrings for the wire labels corresponding to the zero bit-values on the input and output wires. It also samples the global circuit offset $\Delta$, and random values for each row of the garbled table. 
+It then garbles the ...
+
+\input{figs/cryptocode/GameSim-FreeXOR-Ideal.tex}
+
+The $\mathsf{GARBLE}$ oracle in the ideal game, however, is a simulation. It only receives the output of the circuit evaluation $f(x)$ and the side information function $\Phi(f)$, and attempts to generate a valid garbling (F,X,d) that is indistinguishable from the garbling of the real game which has access to $f$ and $x$.
+
+\input{figs/cryptocode/GameWrapper.tex}
+
+
+The first problem here is that the two $\mathsf{GARBLE}$ oracles expect different inputs. $\mathsf{GARBLE}$ in the real game takes a function $f$, which in this case is a simple AND operation, and also the inputs to the function, $x$. The $\mathsf{GARBLE}$ oracle in the ideal game however, takes $f(x)$ and $\Phi(f)$. To solve this incompatibility, we provide another game $G^{b}_{wrapper}$ that provides a shared interface `$GBL$' that can be composed with the real and ideal $G^b_\mathsf{Sim\text{-}FreeXOR}$ games. We also note that the function $Enc$ used in the $\mathsf{GARBLE}$ procedures is assumed to be \acrshort{linrkkdm} secure.
+
+
+
+mention that the adversary provides different inputs to real and ideal game's garble oracles. This can be made more consistent by writing a wrapper package that calls these oracles instead, but in the interest of keeping the reduction clean, we focus only on the indistinguishability of the values returned by these oracles.
+
+
+
+
+
 
 \textcolor{red}{wip}

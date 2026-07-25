@@ -1,0 +1,152 @@
+\documentclass[a3paper]{article}
+\usepackage[margin=.25in]{geometry}
+\usepackage[sets,operators,adversary,advantage,probability]{cryptocode}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\newcommand{\pcas}{~\highlightkeyword{as}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{claim}{Claim}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newcommand\lit[1]{\ensuremath{\mathtt{#1}}}
+\renewcommand\O[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\M}[1]{\ensuremath{\text{\texttt{#1}}}}
+\newcommand{\n}[1]{\ensuremath{\mathit{#1}}}
+\tikzstyle{package} = [inner sep=1pt,align=center,rounded corners,draw,minimum width=2cm,minimum height=1cm,font=\small]
+\tikzstyle{onarrow} = [inner sep=1pt,font=\scriptsize,anchor=west,at start,align=left,fill=white]
+\title{Theorem: freexor}
+\begin{document}
+\maketitle
+\tableofcontents
+\clearpage
+\section{Games}
+\begin{minipage}{.245\textwidth}
+\subsection*{\hyperref[section:game:GLINRKKDM0]{GLINRKKDM0 Game}}
+\scalebox{0.66}{\input{CompositionGraph_GLINRKKDM.tex}}
+\end{minipage}
+\begin{minipage}{.245\textwidth}
+\subsection*{\hyperref[section:game:GLINRKKDM1]{GLINRKKDM1 Game}}
+\scalebox{0.66}{\input{CompositionGraph_GLINRKKDM.tex}}
+\end{minipage}
+\begin{minipage}{.245\textwidth}
+\subsection*{\hyperref[section:game:RcompGLINRKKDM0]{RcompGLINRKKDM0 Game}}
+\scalebox{0.66}{\input{CompositionGraph_RcompGLINRKKDM.tex}}
+\end{minipage}
+\begin{minipage}{.245\textwidth}
+\subsection*{\hyperref[section:game:RcompGLINRKKDM1]{RcompGLINRKKDM1 Game}}
+\scalebox{0.66}{\input{CompositionGraph_RcompGLINRKKDM.tex}}
+\end{minipage}
+\\
+\begin{minipage}{.245\textwidth}
+\subsection*{\hyperref[section:game:GSimFreeXORReal]{GSimFreeXORReal Game}}
+\scalebox{0.66}{\input{CompositionGraph_GSimFreeXORReal.tex}}
+\end{minipage}
+\begin{minipage}{.245\textwidth}
+\subsection*{\hyperref[section:game:GSimFreeXORIdeal]{GSimFreeXORIdeal Game}}
+\scalebox{0.66}{\input{CompositionGraph_GSimFreeXORIdeal.tex}}
+\end{minipage}
+\clearpage
+\subsection{GLINRKKDM0 Game}
+\label{section:game:GLINRKKDM0}
+\begin{center}
+\input{CompositionGraph_GLINRKKDM.tex}
+\end{center}
+\begin{pchstack}
+\input{Package_GLINRKKDM_in_GLINRKKDM_lossy.tex}
+\pchspace
+\end{pchstack}
+\clearpage
+\subsection{GLINRKKDM1 Game}
+\label{section:game:GLINRKKDM1}
+\begin{center}
+\input{CompositionGraph_GLINRKKDM.tex}
+\end{center}
+\begin{pchstack}
+\input{Package_GLINRKKDM_in_GLINRKKDM_lossy.tex}
+\pchspace
+\end{pchstack}
+\clearpage
+\subsection{RcompGLINRKKDM0 Game}
+\label{section:game:RcompGLINRKKDM0}
+\begin{center}
+\input{CompositionGraph_RcompGLINRKKDM.tex}
+\end{center}
+\begin{pchstack}
+\input{Package_GLINRKKDM_in_RcompGLINRKKDM_lossy.tex}
+\pchspace
+\input{Package_R_in_RcompGLINRKKDM_lossy.tex}
+\pchspace
+\end{pchstack}
+\clearpage
+\subsection{RcompGLINRKKDM1 Game}
+\label{section:game:RcompGLINRKKDM1}
+\begin{center}
+\input{CompositionGraph_RcompGLINRKKDM.tex}
+\end{center}
+\begin{pchstack}
+\input{Package_GLINRKKDM_in_RcompGLINRKKDM_lossy.tex}
+\pchspace
+\input{Package_R_in_RcompGLINRKKDM_lossy.tex}
+\pchspace
+\end{pchstack}
+\clearpage
+\subsection{GSimFreeXORReal Game}
+\label{section:game:GSimFreeXORReal}
+\begin{center}
+\input{CompositionGraph_GSimFreeXORReal.tex}
+\end{center}
+\begin{pchstack}
+\input{Package_SimFreeXOR0_in_GSimFreeXORReal_lossy.tex}
+\pchspace
+\end{pchstack}
+\clearpage
+\subsection{GSimFreeXORIdeal Game}
+\label{section:game:GSimFreeXORIdeal}
+\begin{center}
+\input{CompositionGraph_GSimFreeXORIdeal.tex}
+\end{center}
+\begin{pchstack}
+\input{Package_SimFreeXOR0_in_GSimFreeXORIdeal_lossy.tex}
+\pchspace
+\end{pchstack}
+\clearpage
+\section{Advantages}
+\begin{definition}[lin\_rk\_kdm]
+\label{advantage:assumption:lin_rk_kdm:GLINRKKDM0:GLINRKKDM1}
+For all adversaries $\adv$, we define the lin\_rk\_kdm advantage as\[\mathsf{Adv}(\adv;GLINRKKDM0,GLINRKKDM1):=\abs{\begin{array}{l}\phantom{-}\prob{1 = \adv\rightarrow GLINRKKDM0}\\-\prob{1 = \adv\rightarrow GLINRKKDM1}\end{array}},
+                      \]where GLINRKKDM0 and GLINRKKDM1 are defined in Sec.~\ref{section:game:GLINRKKDM0} and Sec.~\ref{section:game:GLINRKKDM1}, respectively.\end{definition}
+\begin{figure}
+\hfill\begin{tikzpicture}
+\node[anchor=south west,align=center,package,minimum height=1cm,fill=red!50] (node0) at (7,0.5) {\M{GLINRKKDM}};\node[anchor=south west,align=center,package,minimum height=1cm,fill=white] (node1) at (3.5,0.5) {\M{R}};\draw[-latex,rounded corners]
+    (5.5,1) -- node[onarrow] {\O{ENC}} (7,1);
+\draw[-latex,rounded corners] (2,1) -- node[onarrow] {\O{GARBLE}} (3.5,1);
+\end{tikzpicture}
+\hfill\begin{tikzpicture}
+\node[anchor=south west,align=center,package,minimum height=1cm,fill=red!50] (node0) at (7,0.5) {\M{GLINRKKDM}};\node[anchor=south west,align=center,package,minimum height=1cm,fill=white] (node1) at (3.5,0.5) {\M{R}};\draw[-latex,rounded corners]
+    (5.5,1) -- node[onarrow] {\O{ENC}} (7,1);
+\draw[-latex,rounded corners] (2,1) -- node[onarrow] {\O{GARBLE}} (3.5,1);
+\end{tikzpicture}
+\hfill\caption{Reduction: RcompGLINRKKDM0 $\approx$ RcompGLINRKKDM1 assuming lin\_rk\_kdm. The sub-graphs corresponding to GLINRKKDM0 and GLINRKKDM1, respectively, are highlighted in red. The remaining graph constitutes the reduction.}\label{figure:reduction:lin_rk_kdm:RcompGLINRKKDM0:RcompGLINRKKDM1}
+\end{figure}
+\section{Gamehops}
+\subsection{Equivalence between RcompGLINRKKDM0 and GSimFreeXORReal}
+\subsection{Reduction to lin\_rk\_kdm}
+\subsubsection{Game RcompGLINRKKDM0 with Assumption Game GLINRKKDM0 highlighted in red}
+\begin{center}
+\begin{tikzpicture}
+\node[anchor=south west,align=center,package,minimum height=1cm,fill=red!50] (node0) at (7,0.5) {\M{GLINRKKDM}};\node[anchor=south west,align=center,package,minimum height=1cm,fill=white] (node1) at (3.5,0.5) {\M{R}};\draw[-latex,rounded corners]
+    (5.5,1) -- node[onarrow] {\O{ENC}} (7,1);
+\draw[-latex,rounded corners] (2,1) -- node[onarrow] {\O{GARBLE}} (3.5,1);
+\end{tikzpicture}
+\end{center}
+\subsubsection{Game RcompGLINRKKDM1 with Assumption Game GLINRKKDM1 highlighted  in red}
+\begin{center}
+\begin{tikzpicture}
+\node[anchor=south west,align=center,package,minimum height=1cm,fill=red!50] (node0) at (7,0.5) {\M{GLINRKKDM}};\node[anchor=south west,align=center,package,minimum height=1cm,fill=white] (node1) at (3.5,0.5) {\M{R}};\draw[-latex,rounded corners]
+    (5.5,1) -- node[onarrow] {\O{ENC}} (7,1);
+\draw[-latex,rounded corners] (2,1) -- node[onarrow] {\O{GARBLE}} (3.5,1);
+\end{tikzpicture}
+\end{center}
+\end{document}
