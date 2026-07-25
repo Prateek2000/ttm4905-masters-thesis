@@ -1,11 +1,12 @@
+\theoremstyle{atheorem}
+\newtheorem{claim}[theorem]{Claim}
+
 \chapter{Pen-and-Paper State-Separating Proof}
 \label{chp:penpaperssp}
-\newcommand{\real}{$\mathit{real}$\xspace}
-\newcommand{\ideal}{$\mathit{ideal}$\xspace}
 This chapter introduces the notion of a State Separating Proof (SSP), and how it differs from a traditional code-based game-playing proof. Then, we define our pen-and-paper \acrlong{ssp} for the Free XOR \acrlong{gs} here.
 \section{State Separating Proofs}
 \label{sec:ssp}
-\acrlong{ssp}s are a style of proofs built upon code-based game-playing proofs discussed by \citeauthor{EC:BelRog06} \cite{EC:BelRog06}. They define code-based game-playing as proofs that encompass an adversary's interaction with its environment using code (could be pseudocode or any other formalized programming language), and these interactions are referred to as a game. The game contains subroutines that initialize the state of the game, then run the adversary program. The adversary can call oracles, which are functions exposed by the game, and the game concludes by running a finalize subroutine which outputs a bit from the adversary. The adversary has a similar interaction between two different versions of the game, one in a \real world and one in an \ideal world, whose behaviors are parameterized by a bit $b=0$ and $b=1$, respectively. 
+\acrlong{ssp}s are a style of proofs built upon code-based game-playing proofs discussed by \citeauthor{EC:BelRog06} \cite{EC:BelRog06}. They define code-based game-playing as proofs that encompass an adversary's interaction with its environment using code (could be pseudocode or any other formalized programming language), and these interactions are referred to as a game. The game contains subroutines that initialize the state of the game, then run the adversary program. The adversary can call oracles, which are functions exposed by the game, and the game concludes by running a finalize subroutine which outputs a bit from the adversary. The adversary has a similar interaction between two different versions of the game, one in a real world and one in an ideal world, whose behaviors are parameterized by a bit $b=0$ and $b=1$, respectively. 
 The success of the adversary is characterized by its `advantage', defined as the difference in the probability of the adversary returning the same bit in each game. In cryptographic notation, given two games $G_\mathit{real}$ and $G_\mathit{ideal}$, 
 \[ \advantage{}{\adv, G^0_\mathit{real}, G^1_\mathit{ideal}} = \lvert \prob{A\to G_\mathit{real}=1} - \prob{A\to G_\mathit{ideal}=1} \rvert\]
 
@@ -14,7 +15,7 @@ Games and Oracles are constructs of a game-playing proof.
     \item \textbf{Oracles} are defined as a piece of code that provides some functionality. They usually either return a value, or modify the state of the Game.
     \item \textbf{Games} are a complete set of oracles that do not call other oracles, an initialize procedure and a finalize procedure that returns a bit. An adversary interacts with a game.
 \end{itemize}
-However, \acrlong{ssp}s differ by introducing the notion of a package. A package has its own local state and they function as an intermediate layer between games and packages. Games contain packages, and packages contain oracles. In a \acrlong{ssp} \cite{brzuska_state_2018}, they are defined as follows:
+However, \acrlong{ssp}s differ by introducing the notion of a package. A package has its own local state, and it functions as an intermediate layer between a game and a package. Games contain packages, and packages contain oracles. In a \acrlong{ssp} \cite{brzuska_state_2018}, they are defined as follows:
 \begin{itemize}
     \item \textbf{Oracles} are a piece of executable code. They usually either return a value or modify the state of the package they are contained in. Oracles in a package cannot call each other to prevent recursion.
     \item \textbf{Packages} are defined as a collection of related oracles with a shared state.
@@ -40,12 +41,15 @@ Similarly to NOT gates, XOR gates are garbled for `free' in the Free XOR scheme.
 
 \subsection{AND Gate}
 \label{subsec:andgate}
+
 Since the privacy of the gates discussed so far is trivial, the privacy of the garbling of AND gates in the Free XOR scheme becomes the main focus of this work. As mentioned in Section \ref{subsec:freexor}, we base our \acrlong{ssp} on \citeauthor{JC:Applebaum16}'s proof in \cite{JC:Applebaum16}.
 
 \input{figs/cryptocode/GameSim-FreeXOR-Real.tex}
 
-Since we use the simulation based definition of privacy (discussed in Section \ref{sec:defininigprivacy}), we define the garbling of an AND gate in the Free XOR scheme as the security game $G^0_\mathsf{Sim\text{-}FreeXOR}$ (defined in Figure \ref{fig:simfreexor-real-game}). The game exposes a $\mathsf{GARBLE}$ oracle that provides the core functionality of garbling an AND gate. It first obtains the evaluation of the circuit $f$ with the input $x$ to determine the output it has to garble. The input $x$ is partitioned into the bit-values for wire $A$ and $B$. Then, it samples a random offset value, and wire labels for the two active input wires and active output wire. It also samples four random values, one for each row of the garbled table. The order in which these values are used is irrelevant since they are not used across multiple rows of the garbled table, therefore, they can be used independently from the index of the garbled table, as long as they are not reused.
+Since we use the simulation based definition of privacy (discussed in Section \ref{sec:defininigprivacy}), we define the garbling of an AND gate in the Free XOR scheme as the security game $G^0_\mathsf{Sim\text{-}FreeXOR}$ (defined in Figure \ref{fig:simfreexor-real-game}). The game exposes a $\mathsf{GARBLE}$ oracle that provides the core functionality of garbling an AND gate. It first obtains the evaluation of the circuit $f$ with the input $x$ to determine the output it has to garble. The input $x$ is partitioned into the bit-values for wire $A$ and $B$. Then, it samples a random offset value, and wire labels for the two active input wires and active output wire. It also samples four random values, one for each row of the garbled table. The order in which these values are used is irrelevant since they are not used across multiple rows of the garbled table, therefore, they can be used independently of the index of the garbled table, as long as they are not reused.
 The garbled table is then generated as described in Section \ref{subsec:freexor}. The garbled inputs are the wire labels sampled corresponding to the active wire bit-values. The decoding information $d$ is set as a map from the active wire label for the output wire to the bit-value of the output wire.
+
+\input{figs/cryptocode/GameLIN-RK-KDM.tex}
 
 \citeauthor{JC:Applebaum16} defines the notion of \acrshort{linrkkdm} security of a symmetric encryption scheme $(\enc,\dec)$ as the computational indistinguishability of the two games $\mathsf{Real}_s$ and $\mathsf{Fake}_s$ \cite[Section 3.2]{JC:Applebaum16}, where 
 \[\mathsf{Real}_s: (\Delta, M, b) \mapsto \enc_{S+\Delta}(M+bS) \text{, and,}\]
@@ -56,32 +60,44 @@ We redefine the same security notion to better fit our \acrshort{ssp} setting: A
 
 Our $G^{b}_{\mathsf{LIN-RK-KDM}}$ provides an interface $\mathsf{ENC}$ that takes the key, message and an extra parameter $z$ as input, and returns an encryption of the message in the real game, and an encryption of zeroes in the ideal game (Figure \ref{fig:linrkkdm-game}). It is important to note that the real \acrshort{linrkkdm} game does not simply return an encryption under the key used as input to the $\mathsf{ENC}$ oracle. It XORs this key by an offset of $\Delta$, and optionally XORs the same offset to the message, depending on the value of $z$.  
 
-\input{figs/cryptocode/GameLIN-RK-KDM.tex}
 \newacronym{ppt}{PPT}{probabilistic, polynomial-time}
 \begin{theorem}
     If $\enc$ is the \acrshort{linrkkdm} secure encryption scheme used in the Free XOR garbling scheme, then for f=\{AND\} and $\forall x\in \bin^2$, there exists a \acrfull{ppt} simulator $G^1_\mathsf{Sim\text{-}FreeXOR}$ and reduction $\rdv$ such that for all \acrshort{ppt} adversaries $\adv$,
     \[\mathsf{Adv}(\adv, G^0_\mathsf{Sim\text{-}FreeXOR}, G^1_\mathsf{Sim\text{-}FreeXOR}) \leq \mathsf{Adv}(\adv\to\rdv, G^{0}_{\mathsf{LIN-RK-KDM}}, G^{1}_{\mathsf{LIN-RK-KDM}}) \] 
 \end{theorem}
 
-We now describe the simulation strategy used by $G^1_\mathsf{Sim\text{-}FreeXOR}$ (Figure \ref{fig:simfreexor-ideal-game}). The simulator receives as input the output of the circuit evaluation, $f(x)$, which corresponds to the bit-value of the output wire of the AND gate. It then samples random bitstrings for the wire labels corresponding to the zero bit-values on the input and output wires. It also samples the global circuit offset $\Delta$, and random values for each row of the garbled table. 
-It then garbles the ...
-
 \input{figs/cryptocode/GameSim-FreeXOR-Ideal.tex}
 
-The $\mathsf{GARBLE}$ oracle in the ideal game, however, is a simulation. It only receives the output of the circuit evaluation $f(x)$ and the side information function $\Phi(f)$, and attempts to generate a valid garbling (F,X,d) that is indistinguishable from the garbling of the real game which has access to $f$ and $x$.
+We now describe the simulation strategy used by $G^1_\mathsf{Sim\text{-}FreeXOR}$ (Figure \ref{fig:simfreexor-ideal-game}). The simulator receives as input the output of the circuit evaluation, $f(x)$, which corresponds to the bit-value of the output wire of the AND gate. It then samples random bitstrings for the wire labels corresponding to the zero bit-values on the input and output wires. It also samples the global circuit offset $\Delta$, and random values for each row of the garbled table. 
+The correctness property of garbling requires that when the \cevaluator evaluates a garbled table, they are able to decrypt exactly one row of the table with the input wire labels they have. It also requires that the final decrypted output wire label corresponds to the correct function evaluation $f(x)$.
+
+Since the simulator knows $f(x)$, the simulation strategy involves  mapping one of the output wire labels (our simulator in Figure \ref{fig:simfreexor-ideal-game} chooses $C_0$) to the bit-value $f(x)$, and making sure that row that the adversary can decrypt actually encrypts the chosen output wire label. We also need to ensure that if the adversary receives wire labels $A_0$ and $B_0$ as the garbled input $X$, then every encryption on the table that uses these as the key is encrypted with real messages, but for the other encryptions, we can forge them by encrypting zeroes. This concludes the generation of the garbled table $F$. The garbled input $X$ is a tuple of the active wire labels of the first and second wire, which we assumed to be $A_0$ and $B_0$ in our simulator. The choice only matters to select which row of the garbled table is available to the adversary for decryption. Finally, the decoding information $d$ is a map from our chosen active output wire label that was encrypted with the active input wire labels, to the real value of $f(x)$ that is available to the adversary. Finally, the adversary returns this $(F,X,d)$ tuple.
 
 \input{figs/cryptocode/GameWrapper.tex}
 
+Another problem we quickly realise is that the two $\mathsf{GARBLE}$ oracles expect different inputs. $\mathsf{GARBLE}$ in the real game takes a circuit $f$, which in this case is a simple AND operation, and it also takes the inputs to the circuit, $x$. The $\mathsf{GARBLE}$ oracle in the ideal game however, takes $f(x)$ and $\Phi(f)$. To solve this incompatibility, we provide another game $G^{b}_{wrapper}$ that provides a shared interface `$GBL$' that can be composed with the real and ideal $G^b_\mathsf{Sim\text{-}FreeXOR}$ games. However, we do not include this in our proof in order to keep it simple to understand and translate into Domino code.
 
-The first problem here is that the two $\mathsf{GARBLE}$ oracles expect different inputs. $\mathsf{GARBLE}$ in the real game takes a function $f$, which in this case is a simple AND operation, and also the inputs to the function, $x$. The $\mathsf{GARBLE}$ oracle in the ideal game however, takes $f(x)$ and $\Phi(f)$. To solve this incompatibility, we provide another game $G^{b}_{wrapper}$ that provides a shared interface `$GBL$' that can be composed with the real and ideal $G^b_\mathsf{Sim\text{-}FreeXOR}$ games. We also note that the function $Enc$ used in the $\mathsf{GARBLE}$ procedures is assumed to be \acrshort{linrkkdm} secure.
+\begin{lemma}
+    Let $\rdv$ be the reduction defined in Figure \ref{fig:reduction}. Then, for all \acrshort{ppt} adversaries $\adv$,
+    \[\mathsf{Adv}(\adv, G^0_\mathsf{Sim\text{-}FreeXOR}, G^1_\mathsf{Sim\text{-}FreeXOR}) = \mathsf{Adv}(\adv \to \rdv, G^{0}_{\mathsf{LIN-RK-KDM}}, G^{1}_{\mathsf{LIN-RK-KDM}}) \]
+\end{lemma}
 
+\input{figs/cryptocode/Reduction.tex}
 
+We now describe the reduction $\rdv$. The interface to the reduction is a $\mathsf{GARBLE}$ oracle. It initially computes $f(x)$ and samples three bitstrings $A_a$, $B_b$ and $C_c$ of length $\secpar$ assuming $a$,$b$ and $c$ are the active wire labels. It also samples four random bitstrings of length $\secpar$, just like the real $G^0_\mathsf{Sim\text{-}FreeXOR}$. However, unlike that game, the reduction does not sample its own $\Delta$. This is because $\Delta$ is part of the state of the \acrshort{linrkkdm} game, and therefore, the reduction must rely on $\mathsf{ENC}$ oracle access from the \acrshort{linrkkdm} game in order to generate any of the ciphertexts that require inactive wire labels. The rest of the reduction follows the same steps as $G^0_\mathsf{Sim\text{-}FreeXOR}$, and inlining the $\mathsf{ENC}$ oracle gives us code that is equivalent to $G^0_\mathsf{Sim\text{-}FreeXOR}$, except for one important difference. For the calculation of $F[a\xor 1][b]$, $\rdv$ encrypts the output wire label in the first ciphertext, as opposed to the second one which is where $G^0_\mathsf{Sim\text{-}FreeXOR}$ encrypts it.
 
-mention that the adversary provides different inputs to real and ideal game's garble oracles. This can be made more consistent by writing a wrapper package that calls these oracles instead, but in the interest of keeping the reduction clean, we focus only on the indistinguishability of the values returned by these oracles.
+\textcolor{red}{wip - the argument to show that }
+\[F[a\xor 1][b]\sample (\mathsf{ENC}(A_{a}, R_{10} \xor C_{c}, {(a\xor 1)\land(b)}),  \enc(B_b, R_{10}))\]
+\[\implies F[a\xor 1][b]\sample (Enc(A_{a\xor 1}, R_{10} \xor C_{c} \xor S*(a\xor1)\land(b)),  \enc(B_b, R_{10}))\], 
+\[\implies F[a\xor 1][b]\sample (Enc(A_{a\xor 1}, R_{10} \xor C_{c\xor((a\xor 1) \land b)}),  \enc(B_b, R_{10}))\], 
 
+and 
+\[        F[a\xor 1][b]       \sample (\enc(A_{a\xor 1}, R_{10}),  \enc(B_b, R_{10}           \xor C_{({a\xor 1})\land b}))         \]
+are identically distributed.
 
-
-
-
-
-\textcolor{red}{wip}
+TODO:
+\begin{itemize}
+    \item Write about the code equivalence of $R->G_LINRKKDM-1 = G-SimFreeXOR1$
+    \item List all the game hops that were discussed above and the contradiction argument on the reduction
+    \item Done for this section
+\end{itemize}

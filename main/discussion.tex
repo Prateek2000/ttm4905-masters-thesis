@@ -1,27 +1,37 @@
 \chapter{Discussion}
 \label{chp:discussion}
 In this chapter, we discuss the advantages and challenges when using Domino compared to a pen-and-paper proof. 
-%Among other things,
-%Domino being under development - challenges and advantages, etc
-\section{Domino - Advantages and Challenges }
 \begin{itemize}
+    \item Claim 4.6-4.8 from Applebaums proof that map to the game hops here
+    \item underlying assumption and how this was programmed in domino
+    \item adapting the lin rk kdm game to ssp 
+    \item domino verified the reduction game hop, but not the equivalence ones
+    \item what does the acceptance of the reduction game hop mean 
+    \item why did it not accept them? - the information theoretic assumption where we swap the output wire label to the 1st ciphertext was difficult to model since statistical assumptions are hard. what would it take to model that? (another game hop with an assumption that those two games are computationally indistinguishable)
+\end{itemize}
+\section{Domino - Advantages and Challenges}
+\begin{itemize}
+    \item Advantages:
+    \item Simplicity of the syntax and examples of mappings to SSP syntax
+    \item 
+    \item Challenges:
     \item Real 0 bitstrings 
     \item composing bitstrings to make larger bitstrings 
     \item composing bits and bits or bits and bitstings into bitstrings 
     \item indexing bitstrings by array index
     \item inline invoke commands for oracle calls
     \item index tuples by index to access their elements
-    \item cant explicitly define random functions like enc so we have to use enc(k,m,rand)
-    \item smt generation is a buggy and often function names arent defined in scope 
+    \item can't explicitly define random functions like enc so we have to use $enc(k,m,rand)$ and we needed to map the randomness between games explicitly (which is very clunky and there's probably a better way to do this)
     \item need a way to initialize Bits(n) tuples without using Tables
+    \item randomness sampling is not aware of conditional blocks so we had to use very dirty randomness syntax
     \item 
 \end{itemize}
 \section{Future Work}
 \label{sec:futurework}
 \textcolor{red}{wip}
-Composability of this would be a further work.
-Composability of layers is very important so we can derive circuit security from just proving layer security. The simulator for layer n must output a garbling of its output which is then supplied to a new simulator for layer n+1. Therefore, if a simulator can simulate a gate by getting its inputs (garbled input) and return garbled output, it can be composed with the simulator for the next gate and so on. Same idea for layers.
-Actually, to add to the above, the simulator does NOT know the input. It only gets the circuit information loss of the garbled circuit $\Phi(C)$, the output of the garbled circuit $Y$, and the security parameter $1^\lambda$. So it samples a random input label (in this case it's the label, in the original Yao paper it was a random bitstring sampled for the wire key, but since we are working in a setting where the Free XOR optimization is assumed, we will probably end up sampling a random $\Delta$ and sharing that state across simulator invocations to generate valid labels for the wires.)
-
-
-Doing this same work for CCRobust hash/the other freexor under which half-gates works could be interesting too.
+\begin{itemize}
+    \item Proof of privacy when Point and Permute is added to this and special correctness is not required anymore
+    \item Proof of privacy of Free XOR in a hash based model could be interesting
+    \item Proof of privacy when we have multiple gates or a larger circuit
+    \item 
+\end{itemize}

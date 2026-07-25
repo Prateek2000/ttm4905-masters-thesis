@@ -11,11 +11,11 @@
         R_{00}, R_{01}, R_{10}, R_{11} \sample \bin^\secpar \\
         F: \text{Table} \\
         F[0][0] \sample (\enc(A_0, R_{0,0}),\enc(B_0, R_{0,0} \xor C_0)) \\
-        F[0][1] \sample (\enc(A_0, R_{0,1}),\enc(B_1, R_{0,1} \xor C_1)) \\
-        F[1][0] \sample (\enc(A_1, R_{1,0}),\enc(B_0, R_{1,0} \xor C_1)) \\
-        F[1][1] \sample (\enc(A_1, R_{1,1}),\enc(B_1, R_{1,1} \xor C_1)) \\
+        F[0][1] \sample (\enc(A_0, R_{0,1}),\enc(B_1, 0^\secpar)) \\
+        F[1][0] \sample (\enc(A_1, 0^\secpar),\enc(B_0, R_{1,0} \xor C_1)) \\
+        F[1][1] \sample (\enc(A_1, 0^\secpar),\enc(B_1, 0^\secpar)) \\
         X \gets (A_0, B_0) \\
-        d \gets  {C_0: 0} \\
+        d \gets  {C_0: c} \\
         \pcreturn (F,X,d) \\
        % 
     }

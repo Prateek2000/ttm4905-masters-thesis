@@ -46,3 +46,5 @@ _region_.tex
 
 *.loa
 *.xdy
+
+.vscode/
