@@ -9,10 +9,10 @@
 \graphicspath{{./figs/}}
 
 %% Uncomment the following in case you want subfigures; note that there will be a warning for the caption package
-% \let\subcaption\undefined
-% \let\subfloat\undefined
-% \usepackage[bf]{caption}
-% \usepackage{subcaption}
+\let\subcaption\undefined
+\let\subfloat\undefined
+\usepackage[bf]{caption}
+\usepackage{subcaption}
 
 \loadglsentries{glossary}
 \ifthesis
@@ -54,6 +54,8 @@
 \cleardoublepage
 
 % similarly you may add a separate acknowledgments page
+\include{acknowledgements}
+\cleardoublepage
 
 \tableofcontents*
 \cleardoublepage
@@ -63,26 +65,28 @@
 \cleardoublepage
 
 %% include if relevant
-\listoftables
-\cleardoublepage
+% \listoftables
+% \cleardoublepage
 
 %% include if relevant
-\listofalgorithms
-\addcontentsline{toc}{chapter}{\listalgorithmname}
-\cleardoublepage
+% \listofalgorithms
+% \addcontentsline{toc}{chapter}{\listalgorithmname}
+% \cleardoublepage
 
 %% include if relevant
-\printglossary[title=\listsymbolname, style=long]
-\cleardoublepage
-\glsaddall[]
+% \printglossary[title=\listsymbolname, style=long]
+% \cleardoublepage
+% \glsaddall[]
 
 %% include if relevant
+\setglossarystyle{long}
+\renewcommand{\glsgroupskip}{}
+\renewcommand*{\glspostdescription}{}
 \printglossary[title=\listacronymname,type=\acronymtype] % prints just the list of acronyms
 \cleardoublepage
 
 \pagenumbering{arabic}
 \pagestyle{ruled}
-\textcolor{red}{TODO: Remember to change minus to hyphen where needed.}
 % \include{example_chapter}
 \include{introduction}
 \include{background}
@@ -96,15 +100,15 @@
 
 %% Uncomment the following if you have any appendix
 %% if your language is English and you only have one appendix, uncomment the following line
-%% \renewcommand{\appendixtocname}{Appendix}
-% \renewcommand{\chaptername}{\appendixname}
-% \appendix
-% \addtocontents{toc}{%
-%  \protect\vspace{1em}% 
-%  \protect\noindent \bfseries \appendixtocname\protect\par
-% }
+\renewcommand{\appendixtocname}{Appendix}
+\renewcommand{\chaptername}{\appendixname}
+\appendix
+\addtocontents{toc}{%
+ \protect\vspace{1em}% 
+ \protect\noindent \bfseries \appendixtocname\protect\par
+}
 %% include below possible appendices (chapters)
-
+\include{appendix}
 \else
 % produce the problem description to be signed and submitted within one month after start
 \makedescription

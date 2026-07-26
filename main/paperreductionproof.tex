@@ -3,10 +3,11 @@
 
 \chapter{Pen-and-Paper State-Separating Proof}
 \label{chp:penpaperssp}
+\newcommand{\codeequiv}{\overset{\textit{code}}{\equiv}}
 This chapter introduces the notion of a State Separating Proof (SSP), and how it differs from a traditional code-based game-playing proof. Then, we define our pen-and-paper \acrlong{ssp} for the Free XOR \acrlong{gs} here.
 \section{State Separating Proofs}
 \label{sec:ssp}
-\acrlong{ssp}s are a style of proofs built upon code-based game-playing proofs discussed by \citeauthor{EC:BelRog06} \cite{EC:BelRog06}. They define code-based game-playing as proofs that encompass an adversary's interaction with its environment using code (could be pseudocode or any other formalized programming language), and these interactions are referred to as a game. The game contains subroutines that initialize the state of the game, then run the adversary program. The adversary can call oracles, which are functions exposed by the game, and the game concludes by running a finalize subroutine which outputs a bit from the adversary. The adversary has a similar interaction between two different versions of the game, one in a real world and one in an ideal world, whose behaviors are parameterized by a bit $b=0$ and $b=1$, respectively. 
+State separating proofs are a style of proofs built upon code-based game-playing proofs discussed by \citeauthor{EC:BelRog06} \cite{EC:BelRog06}. They define code-based game-playing as proofs that encompass an adversary's interaction with its environment using code (could be pseudocode or any other formalized programming language), and these interactions are referred to as a game. The game contains subroutines that initialize the state of the game, then run the adversary program. The adversary can call oracles, which are functions exposed by the game, and the game concludes by running a finalize subroutine which outputs a bit from the adversary. The adversary has a similar interaction between two different versions of the game, one in a real world and one in an ideal world, whose behaviors are parameterized by a bit $b=0$ and $b=1$, respectively. 
 The success of the adversary is characterized by its `advantage', defined as the difference in the probability of the adversary returning the same bit in each game. In cryptographic notation, given two games $G_\mathit{real}$ and $G_\mathit{ideal}$, 
 \[ \advantage{}{\adv, G^0_\mathit{real}, G^1_\mathit{ideal}} = \lvert \prob{A\to G_\mathit{real}=1} - \prob{A\to G_\mathit{ideal}=1} \rvert\]
 
@@ -23,7 +24,7 @@ However, \acrlong{ssp}s differ by introducing the notion of a package. A package
     \item An \textbf{adversary} can be defined as a special package that is not a dependency of another package. It always outputs a single bit on termination $([\to A] = \varnothing)$.
 \end{itemize}
 
-\acrfull{ssp}s allow us to restrict the access to the state of each package to oracles in that package, and only provide the oracles themselves as an interface to other packages. This allows them to be highly modular and composable, allowing us to reuse a package used in one reduction in another, all while allowing changes in state that do not make changes to the whole game. If these changes cascaded to the whole game, it would require the cryptographer to once again verify the correctness of the game in the new state. \cite{brzuska_state_2018} formally defines the constructs we use here, and the mathematical properties of packages such as associativity and compositions. We slightly diverge from their notation of sequential composition by using the $\to$ operator instead of $\circ$. 
+State separating proofs allow us to restrict the access to the state of each package to oracles in that package, and only provide the oracles themselves as an interface to other packages. This allows them to be highly modular and composable, allowing us to reuse a package used in one reduction in another, all while allowing changes in state that do not make changes to the whole game. If these changes cascaded to the whole game, it would require the cryptographer to once again verify the correctness of the game in the new state. \cite{brzuska_state_2018} formally defines the constructs we use here, and the mathematical properties of packages such as associativity and compositions. We slightly diverge from their notation of sequential composition by using the $\to$ operator instead of $\circ$. 
 
 
 \section{On the Privacy of the Garbling of Various Gates}
@@ -37,12 +38,12 @@ Since NOT gates are not garbled, they are not part of the security proof of the 
 
 \subsection{XOR Gate}
 \label{subsec:xorgate}
-Similarly to NOT gates, XOR gates are garbled for `free' in the Free XOR scheme. What this means in practice is that the \cevaluator directly computes the output wire label of an XOR gate using the input wire labels (as discussed in Section \ref{subsec:freexor}). There is no garbled table that the \cevaluator receives, and no decryption that takes place, and the security of the XOR gate depends directly on the secrecy of the circuit offset $\Delta$. As long as the adversary does not know $\Delta$, the method of computing XOR gates in Free XOR remains secure.
+Similarly to NOT gates, XOR gates are garbled for `free' in the Free XOR scheme. What this means in practice is that the \cevaluator directly computes the output wire label of an XOR gate using the input wire labels (as discussed in Section \ref{subsec:freexor}). There is no garbled table that the \cevaluator receives, and no decryption that takes place, and the security of the XOR gate depends directly on the secrecy of the circuit offset $\Delta$. As we will see in Section \ref{subsec:andgate}, AND gates generate their garbled tables using encryption schemes that are \acrshort{linrkkdm} secure. This means that the relation caused between wire labels by deriving the output wire label of an XOR gate by XORing the input wire labels that may both be functions of the offset $\Delta$ is accounted for in the underlying assumption we use to prove the security of an AND gate. That is to say, that even in this related-key and key-dependent message setting, there is no privacy loss from an XOR gate in the Free XOR scheme, if $\Delta$ remains secret.
 
 \subsection{AND Gate}
 \label{subsec:andgate}
 
-Since the privacy of the gates discussed so far is trivial, the privacy of the garbling of AND gates in the Free XOR scheme becomes the main focus of this work. As mentioned in Section \ref{subsec:freexor}, we base our \acrlong{ssp} on \citeauthor{JC:Applebaum16}'s proof in \cite{JC:Applebaum16}.
+The privacy of the garbling of AND gates in the Free XOR scheme becomes the main focus of this work. As mentioned in Section \ref{subsec:freexor}, we base our \acrlong{ssp} on \citeauthor{JC:Applebaum16}'s proof in \cite{JC:Applebaum16}.
 
 \input{figs/cryptocode/GameSim-FreeXOR-Real.tex}
 
@@ -55,13 +56,17 @@ The garbled table is then generated as described in Section \ref{subsec:freexor}
 \[\mathsf{Real}_s: (\Delta, M, b) \mapsto \enc_{S+\Delta}(M+bS) \text{, and,}\]
 \[\mathsf{Fake}_s: (\Delta, M, b) \mapsto \enc_{S+\Delta}(0^{l\times N}) \text{.}\]
 
-We redefine the same security notion to better fit our \acrshort{ssp} setting: An encryption scheme is said to be \acrshort{linrkkdm} secure if any adversary $\adv$ interacting with $G^{b}_{\mathsf{LIN-RK-KDM}}$ (Figure \ref{fig:linrkkdm-game}) in the real and ideal world cannot distinguish between them with more than negligible advantage, i.e.,
-\[ \advantage{}{\adv, G^{0}_{\mathsf{LIN-RK-KDM}}, G^{1}_{\mathsf{LIN-RK-KDM}}} \leq \negl \text{.}\]
-
+We redefine the same security notion to better fit our \acrshort{ssp} setting: 
+\begin{definition}\label{def:linrkkdmsecurity}
+    An encryption scheme is said to be \acrshort{linrkkdm} secure if any adversary $\adv$ interacting with $G^{b}_{\mathsf{LIN-RK-KDM}}$ (Figure \ref{fig:linrkkdm-game}) in the real and ideal world cannot distinguish between them with more than negligible advantage, i.e.,
+    \[ \mathsf{Adv}(\adv, G^{0}_{\mathsf{LIN-RK-KDM}}, G^{1}_{\mathsf{LIN-RK-KDM}}) \leq \negl \text{.}\]
+\end{definition}
 Our $G^{b}_{\mathsf{LIN-RK-KDM}}$ provides an interface $\mathsf{ENC}$ that takes the key, message and an extra parameter $z$ as input, and returns an encryption of the message in the real game, and an encryption of zeroes in the ideal game (Figure \ref{fig:linrkkdm-game}). It is important to note that the real \acrshort{linrkkdm} game does not simply return an encryption under the key used as input to the $\mathsf{ENC}$ oracle. It XORs this key by an offset of $\Delta$, and optionally XORs the same offset to the message, depending on the value of $z$.  
 
+Since we now have a base assumption to build from, we now try to reduce the security of the real and simulated garbling games (Figures \ref{fig:simfreexor-real-game} and \ref{fig:simfreexor-ideal-game}) to the \acrshort{linrkkdm} assumption. 
 \newacronym{ppt}{PPT}{probabilistic, polynomial-time}
-\begin{theorem}
+\Needspace{6\baselineskip}
+\begin{theorem}\label{thm:reduction}
     If $\enc$ is the \acrshort{linrkkdm} secure encryption scheme used in the Free XOR garbling scheme, then for f=\{AND\} and $\forall x\in \bin^2$, there exists a \acrfull{ppt} simulator $G^1_\mathsf{Sim\text{-}FreeXOR}$ and reduction $\rdv$ such that for all \acrshort{ppt} adversaries $\adv$,
     \[\mathsf{Adv}(\adv, G^0_\mathsf{Sim\text{-}FreeXOR}, G^1_\mathsf{Sim\text{-}FreeXOR}) \leq \mathsf{Adv}(\adv\to\rdv, G^{0}_{\mathsf{LIN-RK-KDM}}, G^{1}_{\mathsf{LIN-RK-KDM}}) \] 
 \end{theorem}
@@ -75,29 +80,79 @@ Since the simulator knows $f(x)$, the simulation strategy involves  mapping one 
 
 \input{figs/cryptocode/GameWrapper.tex}
 
-Another problem we quickly realise is that the two $\mathsf{GARBLE}$ oracles expect different inputs. $\mathsf{GARBLE}$ in the real game takes a circuit $f$, which in this case is a simple AND operation, and it also takes the inputs to the circuit, $x$. The $\mathsf{GARBLE}$ oracle in the ideal game however, takes $f(x)$ and $\Phi(f)$. To solve this incompatibility, we provide another game $G^{b}_{wrapper}$ that provides a shared interface `$GBL$' that can be composed with the real and ideal $G^b_\mathsf{Sim\text{-}FreeXOR}$ games. However, we do not include this in our proof in order to keep it simple to understand and translate into Domino code.
+Another problem we quickly realise is that the two $\mathsf{GARBLE}$ oracles expect different inputs. $\mathsf{GARBLE}$ in the real game takes a circuit $f$, which in this case is a simple AND operation, and it also takes the inputs to the circuit, $x$. The $\mathsf{GARBLE}$ oracle in the ideal game however, takes $f(x)$ and $\Phi(f)$. To solve this incompatibility, we provide another game $G^{b}_{wrapper}$ that provides a shared interface $\mathsf{GBL}$ that can be composed with the real and ideal $G^b_\mathsf{Sim\text{-}FreeXOR}$ games. However, we do not include this in our proof in order to keep it simple to understand and translate into Domino code.
 
-\begin{lemma}
-    Let $\rdv$ be the reduction defined in Figure \ref{fig:reduction}. Then, for all \acrshort{ppt} adversaries $\adv$,
-    \[\mathsf{Adv}(\adv, G^0_\mathsf{Sim\text{-}FreeXOR}, G^1_\mathsf{Sim\text{-}FreeXOR}) = \mathsf{Adv}(\adv \to \rdv, G^{0}_{\mathsf{LIN-RK-KDM}}, G^{1}_{\mathsf{LIN-RK-KDM}}) \]
+\Needspace{6\baselineskip}
+\begin{lemma}\label{lemma:realcodeeq}\textnormal{(Real code equivalence).}
+    Let $\rdv$ be the reduction defined in Figure \ref{fig:reduction}. Then, 
+    \[ \rdv \to G^{0}_{\mathsf{LIN-RK-KDM}} \codeequiv G^0_{\mathsf{Sim\text{-}FreeXOR}}\text{.}
+\]
 \end{lemma}
-
 \input{figs/cryptocode/Reduction.tex}
 
-We now describe the reduction $\rdv$. The interface to the reduction is a $\mathsf{GARBLE}$ oracle. It initially computes $f(x)$ and samples three bitstrings $A_a$, $B_b$ and $C_c$ of length $\secpar$ assuming $a$,$b$ and $c$ are the active wire labels. It also samples four random bitstrings of length $\secpar$, just like the real $G^0_\mathsf{Sim\text{-}FreeXOR}$. However, unlike that game, the reduction does not sample its own $\Delta$. This is because $\Delta$ is part of the state of the \acrshort{linrkkdm} game, and therefore, the reduction must rely on $\mathsf{ENC}$ oracle access from the \acrshort{linrkkdm} game in order to generate any of the ciphertexts that require inactive wire labels. The rest of the reduction follows the same steps as $G^0_\mathsf{Sim\text{-}FreeXOR}$, and inlining the $\mathsf{ENC}$ oracle gives us code that is equivalent to $G^0_\mathsf{Sim\text{-}FreeXOR}$, except for one important difference. For the calculation of $F[a\xor 1][b]$, $\rdv$ encrypts the output wire label in the first ciphertext, as opposed to the second one which is where $G^0_\mathsf{Sim\text{-}FreeXOR}$ encrypts it.
+We describe the reduction $\rdv$ which can be composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$. The interface to the reduction is a $\mathsf{GARBLE}$ oracle. It initially computes $f(x)$ and samples three bitstrings $A_a$, $B_b$ and $C_c$ of length $\secpar$ assuming $a$,$b$ and $c$ are the active wire labels. It also samples four random bitstrings of length $\secpar$, just like the real $G^0_\mathsf{Sim\text{-}FreeXOR}$. However, unlike that game, the reduction does not sample its own $\Delta$. This is because $\Delta$ is part of the state of the \acrshort{linrkkdm} game, and therefore, the reduction must rely on calling the $\mathsf{ENC}$ oracle of the \acrshort{linrkkdm} game in order to generate any of the ciphertexts that require inactive wire labels. The rest of the reduction follows the same steps as $G^0_\mathsf{Sim\text{-}FreeXOR}$, and inlining the $\mathsf{ENC}$ oracle gives us code that is equivalent ($\codeequiv$) to $G^0_\mathsf{Sim\text{-}FreeXOR}$, except for one important difference. For the calculation of $F[a\xor 1][b]$, $\rdv$ encrypts the output wire label in the first ciphertext, as opposed to the second one which is where $G^0_\mathsf{Sim\text{-}FreeXOR}$ encrypts it. This is done because only the first encryption calls the $\mathsf{ENC}$ oracle, which can add an offset of $\Delta$ to the message. The correctness of the scheme still remains intact since XORing the messages still returns the correct value of the output wire label.
 
-\textcolor{red}{wip - the argument to show that }
-\[F[a\xor 1][b]\sample (\mathsf{ENC}(A_{a}, R_{10} \xor C_{c}, {(a\xor 1)\land(b)}),  \enc(B_b, R_{10}))\]
-\[\implies F[a\xor 1][b]\sample (Enc(A_{a\xor 1}, R_{10} \xor C_{c} \xor S*(a\xor1)\land(b)),  \enc(B_b, R_{10}))\], 
-\[\implies F[a\xor 1][b]\sample (Enc(A_{a\xor 1}, R_{10} \xor C_{c\xor((a\xor 1) \land b)}),  \enc(B_b, R_{10}))\], 
+Thus, Lemma \ref{lemma:informationtheoreticassumptionreal} provides a sufficient condition for the the code equivalence established in Lemma \ref{lemma:realcodeeq} to hold. Specifically, 
+\begin{lemma}\label{lemma:informationtheoreticassumptionreal}
+    Let $\enc$ be a LIN-RK-KDM secure encryption scheme. Then,
+    \[
+    \begin{aligned}
+        &(\enc(A_{a\xor 1}, R_{10} \xor C_{c\xor((a\xor 1) \land b)}),
+        &&\enc(B_b, R_{10})) \\
+        \cindist\quad &(\enc(A_{a\xor 1}, R_{10}),
+        &&\enc(B_b, R_{10}           \xor C_{({a\xor 1})\land b}))
+    \end{aligned}
+    \]
+    \[\implies \rdv\to G^{0}_{\mathsf{LIN-RK-KDM}} \codeequiv G^0_\mathsf{Sim\text{-}FreeXOR} \]
+\end{lemma} 
 
-and 
-\[        F[a\xor 1][b]       \sample (\enc(A_{a\xor 1}, R_{10}),  \enc(B_b, R_{10}           \xor C_{({a\xor 1})\land b}))         \]
-are identically distributed.
+Now, we move on to showing code equivalence between the ideal games. 
+\Needspace{6\baselineskip}
+\begin{lemma}\label{lemma:idealcodeeq}\textnormal{(Ideal code equivalence).}
+    Let $\rdv$ be the reduction defined in Figure \ref{fig:reduction}. Then, 
+    \[ \rdv \to G^{1}_{\mathsf{LIN-RK-KDM}} \codeequiv G^1_{\mathsf{Sim\text{-}FreeXOR}}\text{.}
+\]
+\end{lemma}
+On inlining oracle $\mathsf{ENC}$ of $G^{1}_{\mathsf{LIN-RK-KDM}}$ into $\rdv$, we obtain code that is very similar to $G^1_{\mathsf{Sim\text{-}FreeXOR}}$. This is not immediately obvious, so we define the code of $\rdv \to G^{1}_{\mathsf{LIN-RK-KDM}}$ in Appendix \ref{app:sec:reduction-composed-linrkkdmideal}. $G^{1}_\mathsf{Sim\text{-}FreeXOR}$ also requires some small transformations to show code equivalence, and therefore we define Game $G^{1\prime}_\mathsf{Sim\text{-}FreeXOR}$ in Appendix \ref{app:sec:simfreexor-ideal-game-code-eq-1}. Here, we would like to discuss the transformations we have made. The composition of $\rdv$ to oracle $\mathsf{ENC}$ is quite straightforward, we inherit a state from $G^{1}_{\mathsf{LIN-RK-KDM}}$ which stores the global offset $\Delta$. We also add code to $\rdv$ to sample $\Delta$, however, this can be inlined without the check for an already existing $\Delta$, since $ENC$ is not called from outside of this game, and therefore we will never need to redefine it. 
 
-TODO:
-\begin{itemize}
-    \item Write about the code equivalence of $R->G_LINRKKDM-1 = G-SimFreeXOR1$
-    \item List all the game hops that were discussed above and the contradiction argument on the reduction
-    \item Done for this section
-\end{itemize}
+\input{figs/cryptocode/gamehopping.tex}
+
+When rearranging $G^{1}_{\mathsf{Sim\text{-}FreeXOR}}$ into $G^{1\prime}_{\mathsf{Sim\text{-}FreeXOR}}$, we define constant variables $a$ and $b$ which are set to $0$, simply to match the code in $\rdv \to G^{1}_{\mathsf{LIN-RK-KDM}}$. We also modify all the wire labels so that we refer to their bit-values using $a$, $b$ and $c$ instead of zeroes and ones.
+After making these changes, we can assert the following:
+\begin{lemma}\label{lemma:informationtheoreticassumptionideal}
+    Let $\enc$ be a LIN-RK-KDM secure encryption scheme. Then,
+    \[
+    \begin{aligned}
+        &(\enc(A_{a}\xor\Delta, 0^\secpar),
+        &&\enc(B_b, R_{10})) \\
+        \cindist\quad &(\enc(A_{a}\xor\Delta, 0^\secpar),
+        &&\enc(B_b, R_{10} \xor C_{c} \xor \Delta))
+    \end{aligned}
+    \]
+    \[\implies \rdv\to G^{1}_{\mathsf{LIN-RK-KDM}} \codeequiv G^{1}_\mathsf{Sim\text{-}FreeXOR} \]
+\end{lemma} 
+
+Therefore, under the following assumptions \ref{assumption:row2real} and  \ref{assumption:row2ideal} (which are the respective hypotheses of lemmata \ref{lemma:informationtheoreticassumptionreal} and \ref{lemma:informationtheoreticassumptionideal}), lemmata \ref{lemma:realcodeeq} and \ref{lemma:idealcodeeq} follow:
+\begin{assumption}\label{assumption:row2real}
+    \[\enc(A_{a\xor 1}, R_{10} \xor C_{c\xor((a\xor 1) \land b)}), \enc(B_b, R_{10}) \cindist \enc(A_{a\xor 1}, R_{10}), \enc(B_b, R_{10}           \xor C_{({a\xor 1})\land b})\]
+\end{assumption}
+\begin{assumption}\label{assumption:row2ideal}
+\[(\enc(A_{a}\xor\Delta, 0^\secpar),\enc(B_b, R_{10})) \cindist (\enc(A_{a}\xor\Delta, 0^\secpar),\enc(B_b, R_{10} \xor C_{c} \xor \Delta))\]
+\end{assumption}
+
+Now, we make the following assumption to prove Theorem \ref{thm:reduction} by contradiction:
+\begin{assumption}\label{assumption:contradiction}
+    There exists a successful adversary $\adv$ that can break the security of $G^{b}_\mathsf{Sim\text{-}FreeXOR}$, i.e.,
+    \[\mathsf{Adv}(\adv, G^{0}_\mathsf{Sim\text{-}FreeXOR}, G^{1}_\mathsf{Sim\text{-}FreeXOR}) > \negl\]  
+\end{assumption}
+However, since 
+\[\begin{aligned}
+    &G^{0}_\mathsf{Sim\text{-}FreeXOR} &&\codeequiv \rdv\to G^{0}_{\mathsf{LIN-RK-KDM}} &&&\text{(Lemma \ref{lemma:realcodeeq})} \\
+    \text{and }&G^{1}_\mathsf{Sim\text{-}FreeXOR} &&\codeequiv \rdv\to G^{1}_{\mathsf{LIN-RK-KDM}} &&&\text{(Lemma \ref{lemma:idealcodeeq})}
+\end{aligned}\]
+we can rewrite Assumption \ref{assumption:contradiction} as
+\[\mathsf{Adv}(\adv, \rdv\to G^{0}_{\mathsf{LIN-RK-KDM}}, \rdv\to G^{1}_{\mathsf{LIN-RK-KDM}}) > \negl\]
+Package composition is associative, since the states of the packages are separated from each other in a \acrlong{ssp} \cite[Section III(C)]{CSF:BrzOec23}. Therefore, we can rewrite Assumption \ref{assumption:contradiction} once again, as
+\[\mathsf{Adv}(\adv\to\rdv, G^{0}_{\mathsf{LIN-RK-KDM}}, G^{1}_{\mathsf{LIN-RK-KDM}}) > \negl\text{.}\]
+The above statement implies that there exists a \acrshort{ppt} adversary $\adv\to\rdv$ that achieves non-negligible advantage against the \acrshort{linrkkdm} security game, contradicting Definition \ref{def:linrkkdmsecurity}. 
+Therefore, Assumption \ref{assumption:contradiction} is false. Hence, the advantage of any \acrshort{ppt} adversary against $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ is negligible, and Theorem \ref{thm:reduction} follows. $\qed$

@@ -299,6 +299,7 @@
 \newtheorem{example}[theorem]{Example}
 \newtheorem{recommendation}{Recommendation}
 \newtheorem{question}{Question}
+\newtheorem{assumption}{Assumption}[chapter]
 
 \newcommand\xqed[1]{%
   \leavevmode\unskip\penalty9999 \hbox{}\nobreak\hfill
@@ -334,7 +335,7 @@
 
 %diagrams
 \RequirePackage{circuitikz}
-
+\usetikzlibrary{positioning, fit, backgrounds}
 
 % Page style
 \makepagestyle{ruled}
