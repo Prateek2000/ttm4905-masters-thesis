@@ -1,17 +1,26 @@
-\chapter{Coding Free XOR in Domino}
+\chapter{Formalizing Free XOR in Domino}
 \label{chp:domino}
-This chapter introduces Domino, the proof-helper for \acrlong{ssp}s. We first discuss the tool, its architecture and its features. Then we discuss how to set a environment up with Domino, and finally, discuss our attempt to encode the \acrshort{ssp} from the previous chapter in Domino.
-\textcolor{red}{testing}
+This chapter describes the formalization of the \acrshort{ssp} introduced in the previous chapter using Domino. We first introduce the aspects of Domino related to the formalization, including its project structure and mechanisms used to represent cryptographic constructions and their security arguments. We then describe how the Free XOR construction was translated from its pen-and-paper description to Domino. While the reduction can be successfully checked by Domino, the equivalence relations could not be fully verified. Therefore, we discuss the invariants and randomness mappings required by these equivalences, as well as the limitations encountered during formalization.
 
-\section{What is Domino?}
+\section{Domino}
 \label{sec:whatisdomino}
-What is domino and how does it work? The layers that exist, and the design in general.
-\\
 Domino is a proof assistant for State-separating proofs (SSPs) that allows the user to validate a SSP using familiar synatax, and an underlying SMT solver. It uses very similar syntax and constructs as SSPs, such as packages, games and theorems. The explicit relation between these games is defined using invariant files, written in the SMT-LIB language. These games are then checked against different lemmata that are needed to fulfil the relation that the user wants to establish.
 
 Domino is published as a rust package available on Github. The domino program/crate itself contains a compiler that has its own defined language that intentionally tries to be very similar the SSP syntax defined in \cite{brzuska_state_2018}. 
+\subsection{Architecture}
+\label{subsec:architecture}
 
-\section{Using Domino}
+\subsection{Packages}
+\label{subsec:packages}
+
+\subsection{Compositions}
+\label{subsec:compositions}
+
+\subsection{Theorems}
+\label{subsec:theorems}
+
+
+\section{Setting up Domino}
 \label{sec:usingdomino}
 \subsection{Dependencies}
 \label{subsec:dependencies}
@@ -28,14 +37,27 @@ Each of these folders can then contain one or more files. Domino checks packages
 
 In older versions of Domino, theorems were called proofs, and the folder and file header for proofs were named as such.
 
+\section{Encoding the Free XOR SSP}
+\label{sec:freexorindomino}
 
+\subsection{From SSP to Domino}
+\label{subsec:fromssptodomino}
 
-\section{Coding Free XOR in Domino}
-\label{sec:halfgatesindomino}
 \subsection{Packages}
+\label{subsec:packages}
 
 \subsection{Compositions}
+\label{subsec:compositions}
+
+\subsection{Security Assumptions}
+\label{subsec:secassumptions}
+
+\subsection{Reductions}
+\label{subsec:reductions}
 
 \subsection{Equivalences}
-\subsubsection{Invariants and Randomness Mapping}
+\label{subsec:equivalences}
+%Since invariants and randomness mappings are part of equivalences, they go here 
 
+\subsection{Verification Results}
+\label{subsec:results}

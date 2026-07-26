@@ -9,7 +9,10 @@ In this chapter, we discuss the advantages and challenges when using Domino comp
     \item what does the acceptance of the reduction game hop mean 
     \item why did it not accept them? - the information theoretic assumption where we swap the output wire label to the 1st ciphertext was difficult to model since statistical assumptions are hard. what would it take to model that? (another game hop with an assumption that those two games are computationally indistinguishable)
 \end{itemize}
-\section{Domino - Advantages and Challenges}
+\section{From Applebaum's proof to SSP}
+\label{sec:discussionapplebaumtossp}
+\section{From SSP to Domino}
+\label{sec:discussionssptodomino}
 \begin{itemize}
     \item Advantages:
     \item Simplicity of the syntax and examples of mappings to SSP syntax
@@ -22,13 +25,23 @@ In this chapter, we discuss the advantages and challenges when using Domino comp
     \item inline invoke commands for oracle calls
     \item index tuples by index to access their elements
     \item can't explicitly define random functions like enc so we have to use $enc(k,m,rand)$ and we needed to map the randomness between games explicitly (which is very clunky and there's probably a better way to do this)
+    \item all or nothing style of proofs where the oracle is treated as a single unit, so its hard to reason and debug about what is happening inside the oracle. its not very helpful in assisting thinking of assumptions needed to prove an equivalence. 
     \item need a way to initialize Bits(n) tuples without using Tables
     \item randomness sampling is not aware of conditional blocks so we had to use very dirty randomness syntax
     \item 
 \end{itemize}
+\section{Verification results}
+\label{sec:discuussionverificationresults}
+Reformulate Applebaum's Free XOR proof as an SSP	Achieved
+Encode the SSP in Domino	Achieved
+Encode the security assumption	Achieved
+Encode the reduction	Achieved; verification succeeds
+Encode the game equivalences	Partially achieved
+Verify the complete security argument	Not achieved
+\section{Challenges and limitations}
+\label{sec:discussionchallengesandlimitations}
 \section{Future Work}
 \label{sec:futurework}
-\textcolor{red}{wip}
 \begin{itemize}
     \item Proof of privacy when Point and Permute is added to this and special correctness is not required anymore
     \item Proof of privacy of Free XOR in a hash based model could be interesting
