@@ -7,6 +7,7 @@
         (a, b) \gets x \\
         \Delta \sample \bin^\secpar \\
         A_a, B_b, C_c \sample \bin^\secpar \\
+        A_{a\xor 1} \gets A_a \xor \Delta; B_{b\xor 1} \gets B_b \xor \Delta; C_{c\xor 1} \gets C_c \xor \Delta \\
         R_{00}, R_{01}, R_{10}, R_{11} \sample \bin^\secpar \\
         F: \text{Table} \\
         F[a][b]             \sample (\enc(A_a, R_{00}),          \enc(B_b, R_{00}           \xor C_{a\land b}))                 \\

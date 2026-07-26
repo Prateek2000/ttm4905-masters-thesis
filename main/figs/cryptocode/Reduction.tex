@@ -11,7 +11,8 @@
         F[a][b]             \sample (\enc(A_a, R_{00}),          \enc(B_b, R_{00}           \xor C_{c}))                 \\
         F[a][b\xor 1]       \sample (\enc(A_a, R_{01}),          \mathsf{ENC}(B_{b}, R_{01}\xor C_{c}, {a\land (b\xor 1)}))          \\
         F[a\xor 1][b]       \sample (\mathsf{ENC}(A_{a}, R_{10} \xor C_{c}, {(a\xor 1)\land(b)}),  \enc(B_b, R_{10}))         \\
-        F[a\xor 1][b\xor 1] \sample (\mathsf{ENC}(A_{a}, R_{11}, {(a\xor 1)\land(b \xor 1)}),  \mathsf{ENC}(B_{b}, R_{11}\xor C_{c}, {(a\xor 1)\land(b\xor 1)})) \\
+        F[a\xor 1][b\xor 1] \sample (\mathsf{ENC}(A_{a}, R_{11}, {(a\xor 1)\land(b \xor 1)}),\\
+        \t\t\t\t\t\t\t\t\t  \mathsf{ENC}(B_{b}, R_{11}\xor C_{c}, {(a\xor 1)\land(b\xor 1)})) \\
         X \gets (A_a, B_b) \\
         d \gets  \{C_c: c\} \\
         \pcreturn (F,X,d) \\

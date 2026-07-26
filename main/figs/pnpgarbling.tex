@@ -7,11 +7,11 @@
         \centering
         \begin{tabular}{cccccc}
             \toprule
-            $l_a$ & corresp. $A_a$ & $l_b$ & corresp. $B_b$ & $C_c = C_{a \land b}$ & Ciphertext\\
+            $l_a$ & corresp. $A'_a$ & $l_b$ & corresp. $B'_b$ & $C'_c = C'_{a \land b}$ & Ciphertext\\
             \midrule
             $0$ & $A'_1$ & $0$ & $B'_1$ & $C'_1$ & $\enc(A'_1, \enc(B'_1, C'_1))$\\
-            $0$ & $A'_1$ & $1$ & $B'_0$ & $C'_0$ & $\enc(A'_0, \enc(B'_1, C'_0))$\\
-            $1$ & $A'_0$ & $0$ & $B'_1$ & $C'_0$ & $\enc(A'_1, \enc(B'_0, C'_0))$\\
+            $0$ & $A'_1$ & $1$ & $B'_0$ & $C'_0$ & $\enc(A'_1, \enc(B'_0, C'_0))$\\
+            $1$ & $A'_0$ & $0$ & $B'_1$ & $C'_0$ & $\enc(A'_0, \enc(B'_1, C'_0))$\\
             $1$ & $A'_0$ & $1$ & $B'_0$ & $C'_0$ & $\enc(A'_0, \enc(B'_0, C'_0))$\\
             \bottomrule
         \end{tabular}

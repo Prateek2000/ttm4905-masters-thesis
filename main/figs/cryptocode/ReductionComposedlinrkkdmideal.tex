@@ -1,0 +1,28 @@
+\begin{figure}[ht]
+\setlength{\abovecaptionskip}{0pt}
+\centering
+    \procedureblock[]{$\rdv \to G^{1}_{\mathsf{LIN-RK-KDM}}$}{
+        \underline{\text{State:}} \\
+        \Delta :\text{global circuit offset}\\
+%
+        \underline{\underline{\mathsf{GARBLE\mathit{(f, x)}}}} \\
+        c \gets f(x) \\
+        \pcif \Delta = \bot : \pccomment{Always runs at the start once when $\Delta$ is unset }  \\
+        \t \Delta \sample \bin^{\secpar} \pccomment{Sample  a fresh $\Delta$}  \\
+        (a, b) \gets x \\
+        A_a, B_b, C_c \sample \bin^\secpar \\
+        R_{00}, R_{01}, R_{10}, R_{11} \sample \bin^\secpar \\
+        F: \text{Table} \\
+        F[a][b]             \sample (\enc(A_a, R_{00}),          \enc(B_b, R_{00}           \xor C_{c}))                 \\
+        F[a][b\xor 1]       \sample (\enc(A_a, R_{01}),          \enc(B_{b}\xor\Delta, 0^\secpar))          \\
+        {\color{red}\pcbox{\color{black}F[a\xor 1][b]       \sample (\enc(A_{a}\xor\Delta, 0^\secpar),  \enc(B_b, R_{10})) } }       \\
+        F[a\xor 1][b\xor 1] \sample (\enc(A_{a}\xor\Delta, 0^\secpar), \enc(B_{b}\xor\Delta, 0^\secpar)) \\
+        X \gets (A_a, B_b) \\
+        d \gets  \{C_c: c\} \\
+        \pcreturn (F,X,d) \\
+       % 
+    }
+
+\caption{Code for $\rdv \to G^{1}_{\mathsf{LIN-RK-KDM}}$}
+\label{fig:reduction-composed-linrkkdmideal}
+\end{figure}
