@@ -1,2 +1,18 @@
 \chapter{Conclusion}
 \label{chp:conclusion}
+\section{Conclusion}
+\label{sec:conclusion}
+This thesis investigated the use of \citeauthor{JC:Applebaum16}'s Free XOR proof to construct a pen-and-paper \acrshort{ssp} to establish the privacy of an AND gate. Then, it encoded the \acrshort{ssp} into Domino, and attempted to formally validate the correctness of the encoding of the \acrshort{ssp}. It was able to successfully establish the privacy of an AND gate under specific assumptions. The assumptions, games and reduction were successfully encoded in Domino, and the reduction was validated by Domino. However, the equivalence relations could not be fully verified, and therefore, the complete security argument was not formally established. 
+
+Nevertheless, this work demonstrates the feasibility of constructing a \acrshort{ssp} from a different framework, and then expressing it in Domino, while leaving a part of the proof as an open problem.
+
+\section{Future Work}
+\label{sec:futurework}
+The most immediate direction for future work is to complete the verification of the game equivalence relations that remain unresolved in the current formalization. We list a few other interesting directions worth investigating: 
+\begin{itemize}
+    \item Whether the Assumptions \ref{assumption:row2real} and \ref{assumption:row2ideal} that were made when writing the SSP can already be derived from \citeauthor{JC:Applebaum16}'s notion of \acrshort{linrkkdm} security?
+    \item Whether it is possible to prove the security of an AND gate in the Free XOR scheme with the \acrlong{pnp} optimization?
+    \item Whether this security proof can be extended to a proof of security of a larger circuit?
+    \item Whether it is possible to prove the security of the Half-Gates garbling scheme in the SSP framework based on a more complete proof of security of the Free XOR scheme?
+\end{itemize}
+ 

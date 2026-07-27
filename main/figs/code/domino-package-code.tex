@@ -1,0 +1,35 @@
+\lstdefinelanguage{Domino}{
+    % morecomment=[s]{/*}{*/},
+    moredelim=[is][\color{gray}]{@@}{@@}
+}
+\begin{lstlisting}[
+    language=Domino,
+    caption={Example Domino package},
+    label={lst:domino-pkg-example},
+    commentstyle=\small\rmfamily\itshape,
+    basicstyle=\small\ttfamily,
+    columns=fixed]
+    package Reduction {
+    params {
+        @@/* an integer parameter */@@
+        n: Integer, 
+        @@/* a function parameter that maps two @@
+        @@bitstrings of length n to a bitstring of length m */@@
+        fn1: fn Bits(n), Bits(n), -> Bits(m),
+    }
+    @@/*state of the package*/@@
+    state {
+        x: Bits(n),  
+    }
+    @@/*external oracles used in this package*/@@
+    import oracles {
+        EXT1(param1: Integer) -> Bits(m),
+    }
+    @@/*an oracle of this package*/@@
+    oracle ORA(f: Bits(*), x: (Bool, Bool)) -> (Bits(m),Bits(m)) 
+    {
+        temp <- invoke EXT1(n);
+        temp2 <- fn1(n);
+        return (temp,temp2);
+    }}
+\end{lstlisting}

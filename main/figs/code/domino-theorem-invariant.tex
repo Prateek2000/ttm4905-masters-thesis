@@ -1,0 +1,48 @@
+\begin{lstlisting}[
+    language=Lisp,
+    caption={Invariant and randomness mapping used in the theorem},
+    label={lst:domino-theorem-equivalence-invariant},
+    commentstyle=\small\rmfamily\itshape,
+    basicstyle=\small\ttfamily,
+    columns=fixed]
+    (define-fun randomness-mapping-GARBLE
+    (
+        (sample-id-left SampleId)
+        (sample-id-right SampleId)
+        (sample-offset-left Int)
+        (sample-offset-right Int)
+    )
+    Bool
+    (or
+        (and
+            (= sample-id-left (sample-id "R" "GARBLE" "R_00"))
+            (= sample-id-right (
+                sample-id "SimFreeXOR0" 
+                "GARBLE" "R_00")
+            )
+            (= sample-offset-left 0)
+            (= sample-offset-right 0)
+        )
+        (and
+            (= sample-id-left (
+                sample-id "LINRKKDM" 
+                "ENC" "delta")
+            )
+            (= sample-id-right (
+                sample-id "SimFreeXOR0" 
+                "GARBLE" "delta")
+            )
+            (= sample-offset-left 0)
+            (= sample-offset-right 0)
+        )
+    )
+    )
+    (define-state-relation invariant
+    (left-game right-game) 
+    (and
+        (= 
+            (maybe-get left-game.GLINRKKDM.delta) 
+            (right-game.SimFreeXOR0.delta))
+    )
+    )
+\end{lstlisting}

@@ -1,0 +1,18 @@
+\lstdefinelanguage{Domino}{
+    % morecomment=[s]{/*}{*/},
+    moredelim=[is][\color{gray}]{@@}{@@}
+}
+\begin{lstlisting}[
+    language=Domino,
+    caption={Importing Oracle \code{ENC}},
+    label={lst:importoracle},
+    commentstyle=\small\rmfamily\itshape,
+    basicstyle=\small\ttfamily,
+    columns=fixed]
+    package Reduction {
+    @@ ... @@
+    import oracles {
+        ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m),}
+    @@ ... @@
+    }
+\end{lstlisting}

@@ -1,0 +1,35 @@
+\lstdefinelanguage{Domino}{
+    % morecomment=[s]{/*}{*/},
+    moredelim=[is][\color{gray}]{@@}{@@}
+}
+\begin{lstlisting}[
+    language=Domino,
+    caption={Example Domino game},
+    label={lst:domino-game-example},
+    commentstyle=\small\rmfamily\itshape,
+    basicstyle=\small\ttfamily,
+    columns=fixed]
+    composition R_Pkg1 {
+    @@/* an integer const parameter passed @@
+    @@ to instances */@@
+    const n: Integer;
+    @@/* a const function that is passed to @@
+    @@ package instances */@@
+    const fn1: fn Bits(n), Bits(n), -> Bits(m);
+    instance R = Reduction{
+    @@    /*instantiate package Reduction@@
+    @@     with the following parameters*/@@
+        params { n: n, fn1: fn1, }
+    }
+    instance Pkg1 = Package1{
+        params { n: n, }
+    }
+    compose {
+    @@    /*Adversary has access to oracle ORA @@
+    @@     of Reduction instance R*/ @@
+        adversary: { ORA: R },
+    @@    /*R has access to oracle EXT1  @@
+    @@     of Package1 instance Pkg1*/@@
+        R: { EXT1: Pkg1 }
+    }}
+\end{lstlisting}

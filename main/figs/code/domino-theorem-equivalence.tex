@@ -1,0 +1,26 @@
+\lstdefinelanguage{Domino}{
+    % morecomment=[s]{/*}{*/},
+    moredelim=[is][\color{gray}]{@@}{@@}
+}
+\begin{lstlisting}[
+    language=Domino,
+    caption={Equivalence game hop in the theorem},
+    label={lst:domino-theorem-equivalence-gamehop},
+    commentstyle=\small\rmfamily\itshape,
+    basicstyle=\small\ttfamily,
+    columns=fixed]
+    theorem freexor {
+    @@ ... @@
+    gamehops{
+    equivalence RcompGLINRKKDM0 GSimFreeXORReal {
+            GARBLE: {
+                invariant: [
+                    ./theorem/real_game_invariant.smt2
+                ]
+                lemmas {
+                    invariant: [no-abort]
+                    equal-aborts: []
+                    same-output: [no-abort]
+                }
+    }}}}
+\end{lstlisting}

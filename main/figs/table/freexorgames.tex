@@ -1,0 +1,15 @@
+\begin{table}[ht]
+    \centering
+    \caption{Mapping between the games in the pen-and-paper reduction and their Domino representations.}
+    \label{tab:freexor-domino-games}
+    \begin{tabularx}{\textwidth}{l l X}
+        \toprule
+        \textbf{\makecell{Pen-and-paper \\game}} & \textbf{\makecell{Domino representation\\(.comp.ssp)}} & \textbf{Purpose} \\
+        \midrule
+        $G^{0}_\mathsf{Sim\text{-}FreeXOR}$ & \texttt{GSimFreeXORReal} & The real SimFreeXOR game \\
+        $G^{1}_\mathsf{Sim\text{-}FreeXOR}$ & \texttt{GSimFreeXORIdeal} & The ideal SimFreeXOR game \\
+        $G^{b}_{\mathsf{LIN-RK-KDM}}$ & \texttt{GLINRKKDM} & Both \acrshort{linrkkdm} games \\
+        $\rdv\to G^{b}_{\mathsf{LIN-RK-KDM}}$ & \texttt{RcompGLINRKKDM.comp} & The reduction composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}

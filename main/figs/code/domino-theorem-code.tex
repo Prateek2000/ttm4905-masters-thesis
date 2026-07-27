@@ -1,0 +1,47 @@
+\lstdefinelanguage{Domino}{
+    % morecomment=[s]{/*}{*/},
+    moredelim=[is][\color{gray}]{@@}{@@}
+}
+\begin{lstlisting}[
+    language=Domino,
+    caption={Example Domino theorem},
+    label={lst:domino-theorem-example},
+    commentstyle=\small\rmfamily\itshape,
+    basicstyle=\small\ttfamily,
+    columns=fixed]
+    theorem Theorem1 {
+    @@/* an integer const parameter passed @@
+    @@ to game instances */@@
+    const n: Integer;
+    @@/* a const function that is passed to @@
+    @@ game instances */@@
+    const fn1: fn Bits(n), Bits(n), -> Bits(m);
+    instance LeftGame = R_Pkg1{
+        params { n: n, fn1: fn1 }
+    }
+    instance RightGame = Game2{
+        params { n:n, fn1: fn1 }
+    }
+    instance BaseLGame = Game3{
+        params { n:n, fn1: fn1 }
+    }
+    instance BaseRGame = Game4{
+        params { n:n, fn1: fn1 }
+    }
+    @@/*... other games...*/@@
+    assumptions {BaseGame: BaseLGame ~ BaseRGame}
+    gamehops {
+            reduction LeftGame RightGame {
+                assumption BaseGame
+            }
+            map {
+                @@/*map packages of LeftGame and BaseLGame*/@@
+            }
+            map {
+                @@/*map packages of RightGame and BaseRGame*/@@
+            }
+            equivalence GameN GameM {
+                @@...@@
+            }
+    }}
+\end{lstlisting}
