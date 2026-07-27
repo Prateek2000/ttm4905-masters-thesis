@@ -5,7 +5,7 @@ Subsequent optimizations such as Point‑and‑Permute, Half‑Gates and the Fre
 
 Formal verification of cryptographic constructions is essential to ensure correctness and prevent subtle vulnerabilities arising from unchecked corner cases. Brzuska and Oechsner \cite{CSF:BrzOec23} developed a state‑separating pen‑and‑paper reduction proof for Yao’s original garbling scheme. State‑separating proofs model protocol components as isolated “packages” with private state and oracle interfaces, allowing for structured security reductions. Their work established security by reducing the garbling scheme to the IND‑CPA security of the encryption primitive used for gate tables.
 
-Domino is an automated verification tool specifically designed for state‑separating proofs. It has been used to reason about complex real‑world protocols such as TLS \cite{rajabi_towards_2025} and WPA2 \cite{AC:BDEFKK22}. Domino offers a high level of automation and readability because proof scripts resemble the pseudocode found in traditional cryptographic proofs.
+Domino is an automated verification tool specifically designed for state‑separating proofs. It has been used to reason about complex real‑world protocols such as TLS \cite{rajabi_towards_2025} and WPA2 \cite{domino:paper}. Domino offers a high level of automation and readability because proof scripts resemble the pseudocode found in traditional cryptographic proofs.
 
 Furthermore, the above mentioned proof for Yao's garbling scheme by Brzuska and Oechsner \cite{CSF:BrzOec23} was later formalized in Domino \cite{domino:paper}. It can serve as a good starting point for the thesis to observe how games may be converted from pen-and-paper proofs to Domino code.
 
