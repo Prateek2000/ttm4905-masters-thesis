@@ -1,7 +1,10 @@
 \pagestyle{empty}
 %\selectlanguage{english}
 \begin{abstract}
-\noindent \textcolor{red}{Use some stuff from problem desc here}% Replace this by your own text
+\noindent 
+Garbling schemes are a core building block of Two-party Computation (2PC) protocols, enabling two parties to jointly compute a function while keeping their inputs private. While numerous optimizations to garbling schemes have been proposed since Yao's original construction, verifying the security of these schemes remains challenging, as manual proof review is error-prone and difficult to scale to large, complex arguments. State-separating proofs (SSPs) offer a modular framework for structuring such security arguments, and Domino is a proof assistant that allows SSPs to be encoded and formally verified. Prior work has expressed Yao's original garbling scheme as an SSP, but no such treatment exists for Free XOR, a widely used optimization that underlies later schemes such as Half-Gates and Three-Halves.
+
+This thesis addresses this gap by using Applebaum's \acrshort{linrkkdm}-based proof of the Free XOR garbling scheme to construct a pen-and-paper SSP establishing the privacy of an AND gate, and by encoding this proof in Domino. The assumptions, games, and reduction were successfully formalized and encoded, and Domino was able to validate the reduction step. However, the game equivalence relations required to complete the proof could not be fully verified, leaving part of the security argument unresolved. These results demonstrate the feasibility of translating a Free XOR security proof into the SSP framework and encoding it in Domino, while identifying the remaining verification gap as a concrete direction for future work, including extending the proof to larger circuits and to the Half-Gates scheme.
 \end{abstract}
 \cleardoublepage
 \resetlanguage
