@@ -15,7 +15,17 @@ package SimFreeXORIdealANDONLY {
     }
 
     /* Do i need to split the second return arg into a and b here itself? */
-    oracle GARBLE(y: Bool, topo_F: Bits(*)) -> (((Bits(m),Bits(m)),(Bits(m),Bits(m)),(Bits(m),Bits(m)),(Bits(m),Bits(m))),(Bits(n),Bits(n)),Table(Bits(n),Bool))
+    oracle GARBLE(y: Bool, topo_F: Bits(*)) -> 
+    (
+        (
+            (Bits(m),Bits(m)),
+            (Bits(m),Bits(m)),
+            (Bits(m),Bits(m)),
+            (Bits(m),Bits(m))
+        ),
+        (Bits(n),Bits(n)),
+        Table(Bits(n),Bool)
+    )
     /* F: AND gate, x[0]=A, x[1]=B || Bits(*) -> Garbled Table (4*2n here), garbled Inputs(2n here), decoder */
     {
         /* c <- solve(F,x); This was done in the if else blocks*/
@@ -37,22 +47,22 @@ package SimFreeXORIdealANDONLY {
         
         /* Active row */
         /* a,b */
-        r <-$ Bits(n);
-        r1 <-$ Bits(n);
+        r <-$ Bits(n) sample-name randrow0enc1;
+        r1 <-$ Bits(n) sample-name randrow0enc2;
         GarbledRow0 <- (enc(A_0, R_00, r), enc(B_0, xor_(R_00, C_0), r1));
         
         /* Inactive rows */
         /* a,b+1 */
-        r <-$ Bits(n);
-        r1 <-$ Bits(n);
+        r <-$ Bits(n) sample-name randrow1enc1;
+        r1 <-$ Bits(n) sample-name randrow1enc2;
         GarbledRow1 <- (enc(A_0, R_01, r), enc(B_1, 0_n, r1));
         /* a+1,b */
-        r <-$ Bits(n);
-        r1 <-$ Bits(n);
+        r <-$ Bits(n) sample-name randrow2enc1;
+        r1 <-$ Bits(n) sample-name randrow2enc2;
         GarbledRow2 <- (enc(A_1, 0_n, r), enc(B_0, R_10, r1));
         /* a+1,b+1 */
-        r <-$ Bits(n);
-        r1 <-$ Bits(n);
+        r <-$ Bits(n) sample-name randrow3enc1;
+        r1 <-$ Bits(n) sample-name randrow3enc2;
         GarbledRow3 <- (enc(A_1, 0_n, r), enc(B_1, 0_n, r1));
         C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
         X_ <- (A_0, B_0);

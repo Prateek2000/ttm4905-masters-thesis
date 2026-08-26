@@ -6,11 +6,22 @@ package Reduction {
         xor_: fn Bits(n), Bits(n) -> Bits(n),
     }
     import oracles {
-        ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m),
+        ENC(key: Bits(n), msg: Bits(n), z: Bool, r: Bits(n)) -> Bits(m),
     }
     
     /*DISCUSS: the interfaces for real and ideal game are different (f,x) vs (y,topo(f)) -> maybe it needs an outer layer*/
-    oracle GARBLE(f: Bits(*), x: (Bool, Bool)) -> (((Bits(m), Bits(m)),(Bits(m), Bits(m)),(Bits(m), Bits(m)),(Bits(m), Bits(m))),(Bits(n), Bits(n)),Table(Bits(n), Bool)) {
+    oracle GARBLE(f: Bits(*), x: (Bool, Bool)) -> 
+    (
+        (
+            (Bits(m), Bits(m)),
+            (Bits(m), Bits(m)),
+            (Bits(m), Bits(m)),
+            (Bits(m), Bits(m))
+        ),
+        (Bits(n), Bits(n)),
+        Table(Bits(n), Bool)
+    ) 
+    {
         (a,b) <- x;
         R_00 <-$ Bits(n) sample-name R_00; /* row 0 randomness */
         R_01 <-$ Bits(n) sample-name R_01; /* row 1 randomness */
@@ -26,6 +37,14 @@ package Reduction {
         tempsample2 <-$ Bits(n) sample-name B_0;
         tempsample3 <-$ Bits(n) sample-name C_0;
         
+        r01 <-$ Bits(n) sample-name randrow0enc1;
+        r02 <-$ Bits(n) sample-name randrow0enc2;
+        r11 <-$ Bits(n) sample-name randrow1enc1;
+        r12 <-$ Bits(n) sample-name randrow1enc2;
+        r21 <-$ Bits(n) sample-name randrow2enc1;
+        r22 <-$ Bits(n) sample-name randrow2enc2;
+        r31 <-$ Bits(n) sample-name randrow3enc1;
+        r32 <-$ Bits(n) sample-name randrow3enc2;
         
 
         if ((a==false) and (b==false)) {
@@ -38,23 +57,19 @@ package Reduction {
             /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
             /* Active row */
             /* a,b */
-            r <-$ Bits(n);
-            r1 <-$ Bits(n);
-            GarbledRow0 <- (enc(A_0, R_00, r), enc(B_0, xor_(R_00, C_0), r1));
+            GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02));
             
             /* Inactive rows */
             /* a,b+1 */
-            r <-$ Bits(n);
-            temp <- invoke ENC(B_0, xor_(R_01, C_0), false);
-            GarbledRow1 <- (enc(A_0, R_01, r), temp);
+            temp <- invoke ENC(B_0, xor_(R_01, C_0), false, r12);
+            GarbledRow1 <- (enc(A_0, R_01, r11), temp);
             /* a+1,b */
-            r <-$ Bits(n);
-            temp <- invoke ENC(A_0, xor_(R_10, C_0), false);
-            GarbledRow2 <- (temp, enc(B_0, R_10, r)); /*The weird part 1 part 2 flip ind thing we need to prove*/
+            temp <- invoke ENC(A_0, xor_(R_10, C_0), false, r21);
+            GarbledRow2 <- (temp, enc(B_0, R_10, r22)); /*The weird part 1 part 2 flip ind thing we need to prove*/
             /*C_[2] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
-            temp <- invoke ENC(A_0, R_11, false);
-            temp2 <- invoke ENC(B_0, xor_(R_11, C_0), true);
+            temp <- invoke ENC(A_0, R_11, false, r31);
+            temp2 <- invoke ENC(B_0, xor_(R_11, C_0), true, r32);
             GarbledRow3 <- (temp, temp2);
             C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
             X_ <- (A_0, B_0);
@@ -70,23 +85,19 @@ package Reduction {
             /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
             /* Active row */
             /* a,b */
-            r <-$ Bits(n);
-            r1 <-$ Bits(n);
-            GarbledRow1 <- (enc(A_0, R_01, r), enc(B_1, xor_(R_01, C_0), r1));
+            GarbledRow1 <- (enc(A_0, R_01, r01), enc(B_1, xor_(R_01, C_0), r02));
 
             /* Inactive rows */
             /* a,b+1 */
-            r <-$ Bits(n);
-            temp <- invoke ENC(B_1, xor_(R_00, C_0), false);
-            GarbledRow0 <- (enc(A_0, R_00, r), temp);
+            temp <- invoke ENC(B_1, xor_(R_00, C_0), false, r12);
+            GarbledRow0 <- (enc(A_0, R_00, r11), temp);
             /* a+1,b */
-            r <-$ Bits(n);
-            temp <- invoke ENC(A_0, xor_(R_11, C_0), true);
-            GarbledRow3 <- (temp, enc(B_1, R_11, r)); /*The weird part 1 part 2 flip ind thing we need to prove*/
+            temp <- invoke ENC(A_0, xor_(R_11, C_0), true, r21);
+            GarbledRow3 <- (temp, enc(B_1, R_11, r22)); /*The weird part 1 part 2 flip ind thing we need to prove*/
             /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
-            temp <- invoke ENC(A_0, R_10, false);
-            temp2 <- invoke ENC(B_1, xor_(R_10, C_0), false);
+            temp <- invoke ENC(A_0, R_10, false, r31);
+            temp2 <- invoke ENC(B_1, xor_(R_10, C_0), false, r32);
             GarbledRow2 <- (temp, temp2);
 
             C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
@@ -103,23 +114,19 @@ package Reduction {
             /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
             /* Active row */
             /* a,b */
-            r <-$ Bits(n);
-            r1 <-$ Bits(n);
-            GarbledRow2 <- (enc(A_1, R_10, r), enc(B_0, xor_(R_10, C_0), r1));
+            GarbledRow2 <- (enc(A_1, R_10, r01), enc(B_0, xor_(R_10, C_0), r02));
 
             /* Inactive rows */
             /* a,b+1 */
-            r <-$ Bits(n);
-            temp <- invoke ENC(B_0, xor_(R_11, C_0), true);
-            GarbledRow3 <- (enc(A_1, R_11, r), temp);
+            temp <- invoke ENC(B_0, xor_(R_11, C_0), true, r12);
+            GarbledRow3 <- (enc(A_1, R_11, r11), temp);
             /* a+1,b */
-            r <-$ Bits(n);
-            temp <- invoke ENC(A_1, xor_(R_00, C_0), false);
-            GarbledRow0 <- (temp, enc(B_0, R_00, r)); /*The weird part 1 part 2 flip ind thing we need to prove*/
+            temp <- invoke ENC(A_1, xor_(R_00, C_0), false, r21);
+            GarbledRow0 <- (temp, enc(B_0, R_00, r22)); /*The weird part 1 part 2 flip ind thing we need to prove*/
             /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
-            temp <- invoke ENC(A_1, R_01, false);
-            temp2 <- invoke ENC(B_0, xor_(R_01, C_0), false);
+            temp <- invoke ENC(A_1, R_01, false, r31);
+            temp2 <- invoke ENC(B_0, xor_(R_01, C_0), false, r32);
             GarbledRow1 <- (temp, temp2);
 
             C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
@@ -136,23 +143,19 @@ package Reduction {
             /*z = (c + op(rowidx_bit1,rowidx_bit2))*/
             /* Active row */
             /* a,b */
-            r <-$ Bits(n);
-            r1 <-$ Bits(n);
-            GarbledRow3 <- (enc(A_1, R_11, r), enc(B_1, xor_(R_11, C_1), r1));
+            GarbledRow3 <- (enc(A_1, R_11, r01), enc(B_1, xor_(R_11, C_1), r02));
 
             /* Inactive rows */
             /* a,b+1 */
-            r <-$ Bits(n);
-            temp <- invoke ENC(B_1, xor_(R_10, C_1), true);
-            GarbledRow2 <- (enc(A_1, R_10, r), temp);
+            temp <- invoke ENC(B_1, xor_(R_10, C_1), true, r12);
+            GarbledRow2 <- (enc(A_1, R_10, r11), temp);
             /* a+1,b */
-            r <-$ Bits(n);
-            temp <- invoke ENC(A_1, xor_(R_01, C_1), true);
-            GarbledRow1 <- (temp, enc(B_1, R_01, r)); /*The weird part 1 part 2 flip ind thing we need to prove*/
+            temp <- invoke ENC(A_1, xor_(R_01, C_1), true, r21);
+            GarbledRow1 <- (temp, enc(B_1, R_01, r22)); /*The weird part 1 part 2 flip ind thing we need to prove*/
             /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
-            temp <- invoke ENC(A_1, R_00, false);
-            temp2 <- invoke ENC(B_1, xor_(R_00, C_1), true);
+            temp <- invoke ENC(A_1, R_00, false, r31);
+            temp2 <- invoke ENC(B_1, xor_(R_00, C_1), true, r32);
             GarbledRow0 <- (temp, temp2);
 
             C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);

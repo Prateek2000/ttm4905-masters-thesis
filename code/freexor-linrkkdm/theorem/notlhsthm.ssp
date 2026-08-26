@@ -44,15 +44,6 @@ theorem freexor {
         }
     }
 
-    instance GSimFreeXORReal = GSimFreeXORReal {
-        params {
-            n: n,
-            m: m,
-            enc: enc,
-            xor_: xor_
-        }
-    }
-
     instance GSimFreeXORIdeal = GSimFreeXORIdeal {
         params {
             n: n,
@@ -67,36 +58,6 @@ theorem freexor {
     }
 
     gamehops {
-        equivalence RcompGLINRKKDM0 GSimFreeXORReal {
-            GARBLE: {
-                invariant: [
-                    ./theorem/real_game_invariant.smt2
-                ]
-
-                lemmas {
-                    invariant: [no-abort]
-                    equal-aborts: []
-                    same-output: [no-abort]
-                }
-            }
-        }
-
-        /* equivalence RcompGLINRKKDM0 GSimFreeXORReal {
-            GARBLE: {
-                invariant: [
-                    ./theorem/ideal_game_invariant.smt2
-                    ./theorem/ideal_game_randomness.smt2
-
-                ]
-
-                lemmas {
-                    same-output: [no-abort]
-                    equal-aborts: []
-                    invariant: [no-abort]
-                }
-            }
-        } */
-
 
         reduction RcompGLINRKKDM0 RcompGLINRKKDM1 {
             assumption lin_rk_kdm
@@ -109,5 +70,23 @@ theorem freexor {
                 GLINRKKDM: GLINRKKDM
             }
         }
+
+
+        equivalence RcompGLINRKKDM1 GSimFreeXORIdeal {
+            GARBLE: {
+                invariant: [
+                    ./theorem/invariants/freexorideal.smt2
+                ]
+
+                lemmas {
+                    invariant: [no-abort]
+                    equal-aborts: []
+                    same-output: [no-abort]
+                }
+            }
+        }
+
+
+        
     }
 }

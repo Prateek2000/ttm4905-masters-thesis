@@ -4,7 +4,7 @@ composition GSimFreeXORIdeal {
         const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
         const xor_: fn Bits(n), Bits(n) -> Bits(n);
 
-    instance SimFreeXOR0 = SimFreeXORIdealANDONLY {
+    instance SimFreeXOR1 = SimFreeXORIdealANDONLY {
         params {
             n: n,
             m:m,
@@ -15,7 +15,7 @@ composition GSimFreeXORIdeal {
 
     compose {
         adversary: {
-            GARBLE: SimFreeXOR0,
+            GARBLE: SimFreeXOR1,
         }
     }
 }

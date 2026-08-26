@@ -67,7 +67,7 @@ theorem lhsthm {
         equivalence GSimFreeXORReal R1compHybridReal {
             GARBLE: {
                 invariant: [
-                    ./theorem/hybridreal.smt2
+                    ./theorem/invariants/hybridreal.smt2
                 ]
 
                 lemmas {
@@ -81,8 +81,7 @@ theorem lhsthm {
         equivalence R1compHybridIdeal RcompGLINRKKDM0 {
             GARBLE: {
                 invariant: [
-                    ./theorem/hybridideal.smt2
-
+                    ./theorem/invariants/hybridideal.smt2
                 ]
 
                 lemmas {
