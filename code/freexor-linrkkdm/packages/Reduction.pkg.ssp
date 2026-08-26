@@ -17,10 +17,8 @@ package Reduction {
         R_10 <-$ Bits(n) sample-name R_10; /* row 2 randomness */
         R_11 <-$ Bits(n) sample-name R_11; /* row 3 randomness */
 
-        o <-$ Bits(m); /*To generate placeholder C_ for the parser -> akin to initialization*/
-        oo <-$ Bits(n); /*To generate placeholder X_ for the parser -> akin to initialization*/
-        C_ <- ((o, o),(o, o),(o, o),(o, o));
-        X_ <- (oo, oo);
+        C_ <- ((0_m, 0_m),(0_m, 0_m),(0_m, 0_m),(0_m, 0_m));
+        X_ <- (0_n, 0_n);
         d <- new Table(Bits(n),Bool);
 
         /*We sample the following in advance since we cannot reuse sample names later*/

@@ -1,4 +1,4 @@
-package SimFreeXORRealANDONLY {
+package Reduction1 {
     params {
         n: Integer, /* secpar */
         m: Integer, /* message length */
@@ -10,7 +10,11 @@ package SimFreeXORRealANDONLY {
     state {
         delta: Bits(n),
     }
-    /*since we dont model the adversary, we dont need to model what is G-Sim-FreeXOR0 or 1 on paper */
+    import oracles {
+        GETRANDOMS(C_0: Bits(n)) -> (Bits(n), Bits(n)),
+    }
+    
+        /*since we dont model the adversary, we dont need to model what is G-Sim-FreeXOR0 or 1 on paper */
     /*we just need to have two games that return Gbl and Sim outputs and */
     /*prove them computationally indistinguishable */
     /*G-Sim-FreeXOR is basically the distinguishing adversary*/
@@ -32,7 +36,7 @@ package SimFreeXORRealANDONLY {
         C_1 <- xor_(C_0, delta);
         R_00 <-$ Bits(n) sample-name R_00; /* row 0 randomness */
         R_01 <-$ Bits(n) sample-name R_01; /* row 1 randomness */
-        R_10 <-$ Bits(n) sample-name R_10; /* row 2 randomness */
+        /* row 2 randomness is in Hybrid*/
         R_11 <-$ Bits(n) sample-name R_11; /* row 3 randomness */
         
         C_ <- ((0_m, 0_m),(0_m, 0_m),(0_m, 0_m),(0_m, 0_m));
@@ -49,7 +53,8 @@ package SimFreeXORRealANDONLY {
 
         r <-$ Bits(n) sample-name randrow2enc1;
         r1 <-$ Bits(n) sample-name randrow2enc2;
-        GarbledRow2 <- (enc(A_1, R_10, r), enc(B_0, xor_(R_10, C_0), r1));
+        (M_1, M_2) <- invoke GETRANDOMS(C_0); /*does it make more sense to sample R outside or inside?*/
+        GarbledRow2 <- (enc(A_1, M_1, r), enc(B_0, M_2, r1));
 
         r <-$ Bits(n) sample-name randrow3enc1;
         r1 <-$ Bits(n) sample-name randrow3enc2;

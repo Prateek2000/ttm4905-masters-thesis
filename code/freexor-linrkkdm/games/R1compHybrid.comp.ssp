@@ -1,0 +1,32 @@
+composition R1compHybrid {
+        const n: Integer; /* secpar */
+        const m: Integer;  /* message length */
+        const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
+        const b: Bool; /* switch for real and ideal behaviour of ENC*/
+        const xor_: fn Bits(n), Bits(n) -> Bits(n);
+
+    instance GHybrid = Hybrid {
+        params {
+            n: n,
+            b: b,
+            xor_:xor_,
+        }
+    }
+    instance R1 = Reduction1 {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_:xor_,
+        }
+    }
+
+    compose {
+        adversary: {
+            GARBLE: R1,
+        },
+        R1: {
+            GETRANDOMS: GHybrid,
+        }
+    }
+}

@@ -1,0 +1,109 @@
+theorem lhsthm {
+    const n: Integer; /* secpar */
+    const m: Integer; /* message length */
+    const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
+    const xor_: fn Bits(n), Bits(n) -> Bits(n);
+
+    instance GHybridReal = GHybrid {
+        params {
+            n: n,
+            b: false,
+            xor_: xor_,
+        }
+    }
+
+    instance GHybridIdeal = GHybrid {
+        params {
+            n: n,
+            b: true,
+            xor_: xor_,
+        }
+    } 
+
+    instance GSimFreeXORReal = GSimFreeXORReal {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_: xor_
+        }
+    }
+
+    instance R1compHybridReal = R1compHybrid {
+        params {
+            n: n,
+            m: m,
+            b: false,
+            enc: enc,
+            xor_: xor_
+        }
+    }
+
+    instance R1compHybridIdeal = R1compHybrid {
+        params {
+            n: n,
+            m: m,
+            b: true,
+            enc: enc,
+            xor_: xor_
+        }
+    }
+
+    instance RcompGLINRKKDM0 = RcompGLINRKKDM {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            b: false,
+            xor_: xor_
+        }
+    }
+
+    assumptions {
+        hybrid: GHybridReal ~ GHybridIdeal 
+    }
+
+    gamehops {
+        equivalence GSimFreeXORReal R1compHybridReal {
+            GARBLE: {
+                invariant: [
+                    ./theorem/hybridreal.smt2
+                ]
+
+                lemmas {
+                    invariant: [no-abort]
+                    equal-aborts: []
+                    same-output: [no-abort]
+                }
+            }
+        }
+
+        equivalence R1compHybridIdeal RcompGLINRKKDM0 {
+            GARBLE: {
+                invariant: [
+                    ./theorem/hybridideal.smt2
+
+                ]
+
+                lemmas {
+                    same-output: [no-abort]
+                    equal-aborts: []
+                    invariant: [no-abort]
+                }
+            }
+        }
+
+        
+        reduction R1compHybridReal R1compHybridIdeal {
+            assumption hybrid
+
+            map GHybridReal R1compHybridReal {
+                GHybrid: GHybrid
+            }
+
+            map GHybridIdeal R1compHybridIdeal {
+                GHybrid: GHybrid
+            }
+        }
+    }
+}

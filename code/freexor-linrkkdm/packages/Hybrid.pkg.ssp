@@ -1,0 +1,16 @@
+package Hybrid {
+    params {
+        n: Integer, /* secpar */
+        b: Bool, /* switch for real and ideal behaviour of ENC*/
+        xor_: fn Bits(n), Bits(n) -> Bits(n),
+    }
+    oracle GETRANDOMS(C_0: Bits(n)) -> (Bits(n), Bits(n)) {
+        R_10 <-$ Bits(n);
+        if b {
+            return (xor_(C_0, R_10), R_10); 
+        } else {
+            return (R_10, xor_(C_0, R_10)); 
+        }
+    }
+}
+

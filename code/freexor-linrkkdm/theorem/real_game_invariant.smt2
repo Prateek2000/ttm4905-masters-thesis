@@ -62,11 +62,8 @@
 )
 
 (define-state-relation invariant
-    (
-        (left-game <GameState_RcompGLINRKKDM_<$<!n!><!m!>$>>)
-        (right-game <GameState_GSimFreeXORReal_<$<!n!><!m!>$>>) 
+    (left-game right-game) 
         ;relate the state of game.packageinstance.state_param
-    )
     (and
         (= (maybe-get left-game.GLINRKKDM.delta) right-game.SimFreeXOR0.delta)
     )
