@@ -1,4 +1,4 @@
-package SimFreeXORIdealANDONLY {
+package Simulator {
     params {
         n: Integer, /* secpar */
         m: Integer,  /* message length */
@@ -13,10 +13,10 @@ package SimFreeXORIdealANDONLY {
     state {
         delta: Bits(n),
     }
-
+    /*make an oracle GARBLEAND() that */
     /* Do i need to split the second return arg into a and b here itself? */
-    oracle GARBLE(y: Bool, topo_F: Bits(*)) -> 
-    (
+    oracle GARBLE(y: Bool) -> 
+    ( /*remove topology as well since its trivial (fixed)*/
         (
             (Bits(m),Bits(m)),
             (Bits(m),Bits(m)),

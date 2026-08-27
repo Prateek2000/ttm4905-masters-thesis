@@ -1,0 +1,48 @@
+package SimFreeXORIdeal {
+    params {
+        n: Integer, /* secpar */
+        m: Integer,  /* message length */
+    }
+    /*since we dont model the adversary, we dont need to model what is G-Sim-FreeXOR0 or 1 on paper */
+    /*we just need to have two games that return Gbl and Sim outputs and */
+    /*prove them computationally indistinguishable */
+    /*G-Sim-FreeXOR is basically the distinguishing adversary*/
+    import oracles {
+        GARBLE(y: Bool) -> (((Bits(m),Bits(m)),(Bits(m),Bits(m)),(Bits(m),Bits(m)),(Bits(m),Bits(m))),(Bits(n),Bits(n)),Table(Bits(n),Bool)),
+    }
+    /*make an oracle GARBLEAND() that */
+    /* Do i need to split the second return arg into a and b here itself? */
+    oracle GARBLEAND(x: (Bool, Bool)) -> 
+    ( 
+        (
+            (Bits(m),Bits(m)),
+            (Bits(m),Bits(m)),
+            (Bits(m),Bits(m)),
+            (Bits(m),Bits(m))
+        ),
+        (Bits(n),Bits(n)),
+        Table(Bits(n),Bool)
+    )
+    /*remove topo_F as well since its trivial (fixed)*/
+    /* F: AND gate, x[0]=A, x[1]=B || Bits(*) -> Garbled Table (4*2n here), garbled Inputs(2n here), decoder */
+    {
+        (a,b) <- x;
+        y <- false; /*placeholder*/
+        /* c <- solve(F,x); This was done in the if else blocks*/
+        if ((a==false) and (b==false)) {
+            y <- false;
+        }
+        if ((a==false) and (b==true)) {
+            y <- false;
+        }
+        if ((a==true) and (b==false)) {
+            y <- false;
+        }
+        if ((a==true) and (b==true)) {
+            y <- true;
+        }
+        (C_, X_, d) <- invoke GARBLE(y);
+        
+        return (C_,X_,d);
+    }
+}

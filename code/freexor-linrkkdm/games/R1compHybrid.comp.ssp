@@ -23,7 +23,7 @@ composition R1compHybrid {
 
     compose {
         adversary: {
-            GARBLE: R1,
+            GARBLEAND: R1,
         },
         R1: {
             GETRANDOMS: GHybrid,

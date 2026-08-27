@@ -10,18 +10,19 @@ package LINRKKDM {
         delta: Maybe(Bits(n)),  /*change it to delta*/
     }
 
-    oracle ENC(key: Bits(n), msg: Bits(n), z: Bool, r: Bits(n)) -> Bits(m) {
+    oracle ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m) {
         if (delta == None) {
             tmp <-$ Bits(n) sample-name delta;
             delta <- Some(tmp);
         } 
+        r <-$ Bits(n) sample-name r;
         if b {
-            return enc(xor_(Unwrap(delta),key), 0_n, r); 
+            return enc(xor_(key, Unwrap(delta)), 0_n, r); 
         } else {
             if z {
-                return enc(xor_(Unwrap(delta),key), xor_(msg,Unwrap(delta)), r); 
+                return enc(xor_(key, Unwrap(delta)), xor_(msg,Unwrap(delta)), r); 
             } else {
-                return enc(xor_(Unwrap(delta), key), msg, r);
+                return enc(xor_(key, Unwrap(delta)), msg, r);
             }
         }
     }

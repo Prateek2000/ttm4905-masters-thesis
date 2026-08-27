@@ -25,7 +25,7 @@ composition RcompGLINRKKDM {
 
     compose {
         adversary: {
-            GARBLE: R,
+            GARBLEAND: R,
         },
         R: {
             ENC: GLINRKKDM,

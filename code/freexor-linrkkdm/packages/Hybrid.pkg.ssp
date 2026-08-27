@@ -5,11 +5,11 @@ package Hybrid {
         xor_: fn Bits(n), Bits(n) -> Bits(n),
     }
     oracle GETRANDOMS(C_0: Bits(n)) -> (Bits(n), Bits(n)) {
-        R_10 <-$ Bits(n);
+        R_10 <-$ Bits(n) sample-name R_10;
         if b {
-            return (xor_(C_0, R_10), R_10); 
+            return (xor_(R_10, C_0), R_10); 
         } else {
-            return (R_10, xor_(C_0, R_10)); 
+            return (R_10, xor_(R_10, C_0)); 
         }
     }
 }

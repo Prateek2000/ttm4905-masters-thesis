@@ -65,7 +65,7 @@ theorem lhsthm {
 
     gamehops {
         equivalence GSimFreeXORReal R1compHybridReal {
-            GARBLE: {
+            GARBLEAND: {
                 invariant: [
                     ./theorem/invariants/hybridreal.smt2
                 ]
@@ -74,25 +74,11 @@ theorem lhsthm {
                     invariant: [no-abort]
                     equal-aborts: []
                     same-output: [no-abort]
+
                 }
             }
         }
 
-        equivalence R1compHybridIdeal RcompGLINRKKDM0 {
-            GARBLE: {
-                invariant: [
-                    ./theorem/invariants/hybridideal.smt2
-                ]
-
-                lemmas {
-                    same-output: [no-abort]
-                    equal-aborts: []
-                    invariant: [no-abort]
-                }
-            }
-        }
-
-        
         reduction R1compHybridReal R1compHybridIdeal {
             assumption hybrid
 
@@ -104,5 +90,21 @@ theorem lhsthm {
                 GHybrid: GHybrid
             }
         }
+
+
+        equivalence R1compHybridIdeal RcompGLINRKKDM0 {
+            GARBLEAND: {
+                invariant: [
+                    ./theorem/invariants/hybridideal.smt2
+                ]
+
+                lemmas {
+                    invariant: [no-abort]
+                    same-output: [no-abort]
+                    equal-aborts: []
+                }
+            }
+        }
+
     }
 }
