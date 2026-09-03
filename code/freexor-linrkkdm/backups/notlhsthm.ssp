@@ -73,11 +73,10 @@ theorem freexor {
 
 
         equivalence RcompGLINRKKDM1 GSimFreeXORIdeal {
-            GARBLE: {
-                invariant: [
-                    ./theorem/invariants/freexorideal.smt2
-                ]
-
+            invariant: [
+                ./theorem/invariants/freexorideal.smt2
+            ]
+            GARBLEAND: {
                 lemmas {
                     invariant: [no-abort]
                     equal-aborts: []

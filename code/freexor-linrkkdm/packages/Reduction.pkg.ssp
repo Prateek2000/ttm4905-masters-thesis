@@ -5,6 +5,9 @@ package Reduction {
         enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m),
         xor_: fn Bits(n), Bits(n) -> Bits(n),
     }
+    state {
+        called: Bool,
+    }
     import oracles {
         ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m),
     }

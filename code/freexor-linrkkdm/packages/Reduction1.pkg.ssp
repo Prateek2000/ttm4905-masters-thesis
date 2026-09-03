@@ -8,7 +8,7 @@ package Reduction1 {
 
     }
     state {
-        delta: Bits(n),
+        delta: Maybe(Bits(n)),
     }
     import oracles {
         GETRANDOMS(C_0: Bits(n)) -> (Bits(n), Bits(n)),
@@ -26,14 +26,16 @@ package Reduction1 {
         /* c <- solve(f,x); This was done in the if else blocks on a case by case basis*/
         (a,b) <- x;
         c <- false;
-        
-        delta <-$ Bits(n) sample-name delta; /* sample secret offset sfor garbling this circuit */
+        if (delta == None) {
+            tmp <-$ Bits(n) sample-name delta; /* sample secret offset sfor garbling this circuit */
+            delta <- Some(tmp);
+        }
         A_0 <-$ Bits(n) sample-name A_0;
         B_0 <-$ Bits(n) sample-name B_0;
         C_0 <-$ Bits(n) sample-name C_0;
-        A_1 <- xor_(A_0, delta);
-        B_1 <- xor_(B_0, delta);
-        C_1 <- xor_(C_0, delta);
+        A_1 <- xor_(A_0, Unwrap(delta));
+        B_1 <- xor_(B_0, Unwrap(delta));
+        C_1 <- xor_(C_0, Unwrap(delta));
         R_00 <-$ Bits(n) sample-name R_00; /* row 0 randomness */
         R_01 <-$ Bits(n) sample-name R_01; /* row 1 randomness */
         /* row 2 randomness is in Hybrid*/
