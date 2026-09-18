@@ -131,7 +131,25 @@
 ;(=> (not(is-mk-none linrkkdm.delta)) (= linrkkdm.delta (mk-some simfreexor0.delta)))
 ;turn the rhs into an option type and compare (would still fail at induction start)
 
-(assert (forall ((x Bits_n) (y Bits_n) (z Bits_n)) (= (<<func-xor_>> x (<<func-xor_>> y z)) (<<func-xor_>> (<<func-xor_>> x y) z))))
+;(assert (forall ((x Bits_n) (y Bits_n) (z Bits_n)) (= (<<func-xor_>> x (<<func-xor_>> y z)) (<<func-xor_>> (<<func-xor_>> x y) z))))
 ; (assert (forall ((x Bits_n) (y Bits_n)) (= (<<func-xor_>> x y) (<<func-xor_>> y x))))
 ; instead of using a universal quantifier, if we were able to use the randomness and state to get the exact cases where this
 ;relation is needed, that would reduce the runtime, look into this
+(assert 
+    (= 
+        (<<func-xor_>> 
+            (sample-id "R1" "GARBLEAND" "R_11") 
+            (<<func-xor_>> 
+                (sample-id "R1" "GARBLEAND" "C_0") 
+                (mk-some (sample-id "R1" "GARBLEAND" "delta"))
+            )
+        ) 
+        (<<func-xor_>> 
+                (sample-id "R1" "GARBLEAND" "R_11") 
+                (<<func-xor_>> 
+                    (sample-id "R1" "GARBLEAND" "C_0") 
+                    (mk-some (sample-id "R1" "GARBLEAND" "delta"))
+                )
+        )
+    )
+)

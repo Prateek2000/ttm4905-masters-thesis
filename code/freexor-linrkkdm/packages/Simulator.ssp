@@ -50,23 +50,23 @@ package Simulator {
         
         /* Active row */
         /* a,b */
-        r <-$ Bits(n) sample-name randrow0enc1;
-        r1 <-$ Bits(n) sample-name randrow0enc2;
-        GarbledRow0 <- (enc(A_0, R_00, r), enc(B_0, xor_(R_00, C_0), r1));
+        r01 <-$ Bits(n) sample-name randrow0enc1;
+        r02 <-$ Bits(n) sample-name randrow0enc2;
+        GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02));
         
         /* Inactive rows */
         /* a,b+1 */
-        r <-$ Bits(n) sample-name randrow1enc1;
-        r1 <-$ Bits(n) sample-name randrow1enc2;
-        GarbledRow1 <- (enc(A_0, R_01, r), enc(B_1, 0_n, r1));
+        r11 <-$ Bits(n) sample-name randrow1enc1;
+        r12 <-$ Bits(n) sample-name randrow1enc2;
+        GarbledRow1 <- (enc(A_0, R_01, r11), enc(B_1, 0_n, r12));
         /* a+1,b */
-        r <-$ Bits(n) sample-name randrow2enc1;
-        r1 <-$ Bits(n) sample-name randrow2enc2;
-        GarbledRow2 <- (enc(A_1, 0_n, r), enc(B_0, R_10, r1));
+        r21 <-$ Bits(n) sample-name randrow2enc1;
+        r22 <-$ Bits(n) sample-name randrow2enc2;
+        GarbledRow2 <- (enc(A_1, 0_n, r21), enc(B_0, R_10, r22));
         /* a+1,b+1 */
-        r <-$ Bits(n) sample-name randrow3enc1;
-        r1 <-$ Bits(n) sample-name randrow3enc2;
-        GarbledRow3 <- (enc(A_1, 0_n, r), enc(B_1, 0_n, r1));
+        r31 <-$ Bits(n) sample-name randrow3enc1;
+        r32 <-$ Bits(n) sample-name randrow3enc2;
+        GarbledRow3 <- (enc(A_1, 0_n, r31), enc(B_1, 0_n, r32));
         C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
         X_ <- (A_0, B_0);
         d[C_0] <- Some(c);
