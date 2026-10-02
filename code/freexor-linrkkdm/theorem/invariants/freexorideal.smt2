@@ -119,5 +119,10 @@
         (= left-game.GLINRKKDM.delta right-game.Sim.delta)
     )
 )
+;(assert ...
+;(let ((left-game <<game-state-R1compHybridIdeal-new-GARBLEAND>>) (more things to alias))
+;whatever condition using left-game.state.... and right-game....
+;)
+;)
 
 (assert (forall ((x Bits_n) (y Bits_n) (z Bits_n)) (= (<<func-xor_>> x (<<func-xor_>> y z)) (<<func-xor_>> (<<func-xor_>> x y) z))))

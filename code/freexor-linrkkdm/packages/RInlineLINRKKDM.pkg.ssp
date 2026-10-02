@@ -13,7 +13,6 @@ package RInlineLINRKKDM {
         ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m),
     }
     
-    /*DISCUSS: the interfaces for real and ideal game are different (f,x) vs (y,topo(f)) -> maybe it needs an outer layer*/
     oracle GARBLEAND(x: (Bool, Bool)) -> 
     (
         (

@@ -135,21 +135,21 @@
 ; (assert (forall ((x Bits_n) (y Bits_n)) (= (<<func-xor_>> x y) (<<func-xor_>> y x))))
 ; instead of using a universal quantifier, if we were able to use the randomness and state to get the exact cases where this
 ;relation is needed, that would reduce the runtime, look into this
-(assert 
-    (= 
-        (<<func-xor_>> 
-            (sample-id "R1" "GARBLEAND" "R_11") 
-            (<<func-xor_>> 
-                (sample-id "R1" "GARBLEAND" "C_0") 
-                (mk-some (sample-id "R1" "GARBLEAND" "delta"))
-            )
-        ) 
-        (<<func-xor_>> 
-                (sample-id "R1" "GARBLEAND" "R_11") 
-                (<<func-xor_>> 
-                    (sample-id "R1" "GARBLEAND" "C_0") 
-                    (mk-some (sample-id "R1" "GARBLEAND" "delta"))
-                )
-        )
-    )
-)
+;(assert 
+;    (= 
+;        (<<func-xor_>> 
+;            (sample-id "R1" "GARBLEAND" "R_11") 
+;            (<<func-xor_>> 
+;                (sample-id "R1" "GARBLEAND" "C_0") 
+;                (mk-some (sample-id "R1" "GARBLEAND" "delta"))
+;            )
+;        ) 
+;        (<<func-xor_>> 
+;                (sample-id "R1" "GARBLEAND" "R_11") 
+;                (<<func-xor_>> 
+;                    (sample-id "R1" "GARBLEAND" "C_0") 
+;                    (mk-some (sample-id "R1" "GARBLEAND" "delta"))
+;                )
+;        )
+;    )
+;)

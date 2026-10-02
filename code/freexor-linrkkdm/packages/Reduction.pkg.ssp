@@ -13,12 +13,7 @@ package Reduction {
     /*DISCUSS: the interfaces for real and ideal game are different (f,x) vs (y,topo(f)) -> maybe it needs an outer layer*/
     oracle GARBLEAND(x: (Bool, Bool)) -> 
     (
-        (
-            (Bits(m), Bits(m)),
-            (Bits(m), Bits(m)),
-            (Bits(m), Bits(m)),
-            (Bits(m), Bits(m))
-        ),
+        Table((Bits(m),Bits(m)), ()),
         (Bits(n), Bits(n)),
         Table(Bits(n), Bool)
     ) 
@@ -29,7 +24,7 @@ package Reduction {
         R_10 <-$ Bits(n) sample-name R_10; /* row 2 randomness */
         R_11 <-$ Bits(n) sample-name R_11; /* row 3 randomness */
 
-        C_ <- ((0_m, 0_m),(0_m, 0_m),(0_m, 0_m),(0_m, 0_m));
+        C_ <- new Table((Bits(m),Bits(m)), ());
         X_ <- (0_n, 0_n);
         d <- new Table(Bits(n),Bool);
 
@@ -67,7 +62,10 @@ package Reduction {
             temp <- invoke ENC(A_0, R_11, false);
             temp2 <- invoke ENC(B_0, xor_(R_11, C_0), true);
             GarbledRow3 <- (temp, temp2);
-            C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
             X_ <- (A_0, B_0);
             d[C_0] <- Some(c);
 
@@ -96,7 +94,10 @@ package Reduction {
             temp2 <- invoke ENC(B_1, xor_(R_10, C_0), false);
             GarbledRow2 <- (temp, temp2);
 
-            C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
             X_ <- (A_0, B_1);
             d[C_0] <- Some(c);
 
@@ -125,7 +126,10 @@ package Reduction {
             temp2 <- invoke ENC(B_0, xor_(R_01, C_0), false);
             GarbledRow1 <- (temp, temp2);
 
-            C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
             X_ <- (A_1, B_0);
             d[C_0] <- Some(c);
 
@@ -154,7 +158,10 @@ package Reduction {
             temp2 <- invoke ENC(B_1, xor_(R_00, C_1), true);
             GarbledRow0 <- (temp, temp2);
 
-            C_ <- (GarbledRow0, GarbledRow1, GarbledRow2, GarbledRow3);
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
             X_ <- (A_1, B_1);
             d[C_1] <- Some(c);
         }
