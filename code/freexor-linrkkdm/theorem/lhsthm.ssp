@@ -59,6 +59,15 @@ theorem lhsthm {
         }
     }
 
+    instance GHybridWithCases = GHybridWithCases {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_: xor_
+        }
+    }
+
     assumptions {
         hybrid: GHybridReal ~ GHybridIdeal 
     }
@@ -90,10 +99,23 @@ theorem lhsthm {
             }
         }
 
-
-        equivalence R1compHybridIdeal RcompGLINRKKDM0 {
+        equivalence R1compHybridIdeal GHybridWithCases {
             invariant: [
-                    ./theorem/invariants/hybridideal.smt2
+                    ./theorem/invariants/hybrididealpart1.smt2
+                ]
+            GARBLEAND: {
+                lemmas {
+                    invariant: [no-abort]
+                    same-output: [no-abort]
+                    equal-aborts: []
+                }
+            }
+        }
+
+
+        equivalence GHybridWithCases RcompGLINRKKDM0 {
+            invariant: [
+                    ./theorem/invariants/hybrididealpart2.smt2
                 ]
             GARBLEAND: {
                 lemmas {

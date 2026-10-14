@@ -1,0 +1,21 @@
+composition GHybridWithCases {
+        const n: Integer; /* secpar */
+        const m: Integer;  /* message length */
+        const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
+        const xor_: fn Bits(n), Bits(n) -> Bits(n);
+
+    instance GHybridWithCases = HybridWithCases {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_:xor_,
+        }
+    }
+
+    compose {
+        adversary: {
+            GARBLEAND: GHybridWithCases,
+        },
+    }
+}
