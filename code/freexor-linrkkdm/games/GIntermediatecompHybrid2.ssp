@@ -1,0 +1,33 @@
+composition GIntermediatecompHybrid2 {
+        const n: Integer; /* secpar */
+        const m: Integer;  /* message length */
+        const b: Bool;
+        const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
+        const xor_: fn Bits(n), Bits(n) -> Bits(n);
+
+    instance GIntermediate = Intermediate {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_:xor_,
+        }
+    }
+
+    instance GHybrid2 = Hybrid2 {
+        params {
+            n: n,
+            b: b,
+            xor_:xor_,
+        }
+    }
+
+    compose {
+        adversary: {
+            GARBLEAND: GIntermediate,
+        },
+        GIntermediate: {
+            GETRANDOMWIRELABEL: GHybrid2,
+        }
+    }
+}

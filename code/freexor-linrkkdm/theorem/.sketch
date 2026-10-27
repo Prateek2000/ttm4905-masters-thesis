@@ -1,0 +1,9 @@
+GSimFreeXOR0 ---codeeq--- R1->Hybrid1 Real 
+~ (Hybrid Assumption)
+R1->Hybrid1 Ideal ---codeeq--- R->GLINRKKDM Real
+~
+R->GLINRKKDM Ideal ---codeeq--- RinlineLINRKKDM
+
+
+
+GSimFreeXORIdeal ----- 

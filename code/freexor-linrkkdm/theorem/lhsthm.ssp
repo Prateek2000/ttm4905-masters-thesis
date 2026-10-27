@@ -68,10 +68,61 @@ theorem lhsthm {
         }
     }
 
-    assumptions {
-        hybrid: GHybridReal ~ GHybridIdeal 
+    instance GHybridWithCasesWithSampling = GHybridWithCasesWithSampling {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_: xor_
+        }
     }
 
+    instance GHybrid2Ideal = GHybrid2 {
+        params {
+            n: n,
+            b: true,
+            xor_: xor_
+        }
+    }
+
+    instance GHybrid2Real = GHybrid2 {
+        params {
+            n: n,
+            b: false,
+            xor_: xor_
+        }
+    }
+    
+    instance GIntermediatecompHybrid2Real = GIntermediatecompHybrid2 {
+        params {
+            n: n,
+            m: m,
+            b: false,
+            enc: enc,
+            xor_: xor_
+        }
+    }
+
+    instance GIntermediatecompHybrid2Ideal = GIntermediatecompHybrid2 {
+        params {
+            n: n,
+            m: m,
+            b: true,
+            enc: enc,
+            xor_: xor_
+        }
+    }
+
+    assumptions {
+        hybrid: GHybridReal ~ GHybridIdeal
+        hybrid2: GHybrid2Real ~ GHybrid2Ideal
+    }
+
+    /* conjecture { 
+        agoodwordformovingthingsintoifblocks: GHybridWithCases ~ GHybridWithCasesWIthIfBlockTHingREnamethis
+    }
+    */
+    
     gamehops {
         equivalence GSimFreeXORReal R1compHybridReal {
             invariant: [
@@ -85,7 +136,7 @@ theorem lhsthm {
 
                 }
             }
-        }
+        }   
 
         reduction R1compHybridReal R1compHybridIdeal {
             assumption hybrid
@@ -112,8 +163,43 @@ theorem lhsthm {
             }
         }
 
+        conjecture GHybridWithCases GHybridWithCasesWithSampling
 
-        equivalence GHybridWithCases RcompGLINRKKDM0 {
+        equivalence GHybridWithCasesWithSampling GIntermediatecompHybrid2Real {
+            invariant: [
+                    ./theorem/invariants/hybridintermediate.smt2
+                    ./theorem/invariants/lemma-hybridintermediate.smt2
+                ]
+            GARBLEAND: {
+                lemmas {
+                    case-x-is-false-false: [no-abort]
+                    case-x-is-false-true: [no-abort]
+                    case-x-is-true-false: [no-abort]
+                    case-x-is-true-true: [no-abort]
+                    same-output: [no-abort, case-x-is-false-false, case-x-is-false-true, case-x-is-true-false, case-x-is-true-true]
+                    invariant: [no-abort]
+                    abort-case-x-is-false-false: []
+                    abort-case-x-is-false-true: []
+                    abort-case-x-is-true-false: []
+                    abort-case-x-is-true-true: []
+                    equal-aborts: [abort-case-x-is-false-false, abort-case-x-is-false-true, abort-case-x-is-true-false, abort-case-x-is-true-true]
+                }
+            }
+        }
+
+        reduction GIntermediatecompHybrid2Real GIntermediatecompHybrid2Ideal {
+            assumption hybrid2
+
+            map GHybrid2Real GIntermediatecompHybrid2Real {
+                GHybrid2: GHybrid2
+            }
+
+            map GHybrid2Ideal GIntermediatecompHybrid2Ideal {
+                GHybrid2: GHybrid2
+            }
+        }
+
+        equivalence GIntermediatecompHybrid2Ideal RcompGLINRKKDM0 {
             invariant: [
                     ./theorem/invariants/hybrididealpart2.smt2
                 ]

@@ -1,0 +1,164 @@
+package Intermediate {
+     params {
+        n: Integer, /* secpar */
+        m: Integer, /* message length */
+        enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m), /*DISCUSS: message/ct is length n for our purposes maybe, since wire labels without pnp are length n */
+        /*for a randomized algorithm, the randomness needs to be one of the inputs (add a parameter) and the output needs to be larger*/
+        xor_: fn Bits(n), Bits(n) -> Bits(n),
+
+    }
+    import oracles {
+        GETRANDOMWIRELABEL(delta: Maybe(Bits(n))) -> Bits(n),
+    }
+    state {
+        delta: Maybe(Bits(n)),
+    }
+    oracle GARBLEAND(x: (Bool, Bool)) -> (Table((Bits(m),Bits(m)), ()) ,(Bits(n),Bits(n)), Table(Bits(n),Bool))
+    {
+        (a,b) <- x;
+        c <- false;
+        if (delta == None) {
+            tmp <-$ Bits(n) sample-name delta; /* sample secret offset sfor garbling this circuit */
+            delta <- Some(tmp);
+        }        
+        R_00 <-$ Bits(n) sample-name R_00;  /*we got rid of position locked 'rows'*/
+        R_01 <-$ Bits(n) sample-name R_01; 
+        R_10 <-$ Bits(n) sample-name R_10;
+        R_11 <-$ Bits(n) sample-name R_11; 
+        
+        C_ <- new Table((Bits(m),Bits(m)), ());
+        X_ <- (0_n, 0_n);
+        d <- new Table(Bits(n), Bool);
+        
+        r01 <-$ Bits(n) sample-name randrow0enc1;
+        r02 <-$ Bits(n) sample-name randrow0enc2;
+        r11 <-$ Bits(n) sample-name randrow1enc1;
+        r12 <-$ Bits(n) sample-name randrow1enc2;
+        r21 <-$ Bits(n) sample-name randrow2enc1;
+        r22 <-$ Bits(n) sample-name randrow2enc2;
+        r31 <-$ Bits(n) sample-name randrow3enc1;
+        r32 <-$ Bits(n) sample-name randrow3enc2;
+
+        if ((a==false) and (b==false)) { /*do i need to make randomness sampling relations in the smt based on the values of a and b?? */
+            tempsample1 <-$ Bits(n) sample-name A_00;
+            tempsample2 <-$ Bits(n) sample-name B_00;
+            tempsample3 <-$ Bits(n) sample-name C_00;
+            A_0 <- tempsample1;
+            B_0 <- tempsample2;
+            C_0 <- tempsample3;
+            A_1 <- xor_(A_0, Unwrap(delta));
+            B_1 <- xor_(B_0, Unwrap(delta));
+            C_1 <- xor_(C_0, Unwrap(delta));
+            
+            c <- false;
+           
+            GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02));
+            temp <-  enc(B_1, xor_(R_01, C_0), r12);
+            GarbledRow1 <- (enc(A_0, R_01, r11), temp);
+            temp <- enc(A_1, xor_(R_10, C_0), r21);
+            GarbledRow2 <- (temp, enc(B_0, R_10, r22));
+            temp <- enc(A_1, R_11, r31);
+            temp2 <- enc(B_1, xor_(R_11, C_1), r32);
+            GarbledRow3 <- (temp, temp2);
+
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
+            X_ <- (A_0, B_0);
+            d[C_0] <- Some(c);
+
+        } 
+        if ((a==false) and (b==true)) {
+            tempsample1 <-$ Bits(n) sample-name A_01;
+            tempsample2 <- invoke GETRANDOMWIRELABEL(delta);
+            tempsample3 <-$ Bits(n) sample-name C_01;
+            A_0 <- tempsample1;
+            B_0 <- tempsample2; 
+            C_0 <- tempsample3;
+            A_1 <- xor_(A_0, Unwrap(delta));
+            B_1 <- xor_(B_0, Unwrap(delta));
+            C_1 <- xor_(C_0, Unwrap(delta));
+            
+            c <- false;
+
+            GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02));
+            temp <-  enc(B_1, xor_(R_01, C_0), r12);
+            GarbledRow1 <- (enc(A_0, R_01, r11), temp);
+            temp <- enc(A_1, xor_(R_10, C_0), r21);
+            GarbledRow2 <- (temp, enc(B_0, R_10, r22));
+            temp <- enc(A_1, R_11, r31);
+            temp2 <- enc(B_1, xor_(R_11, C_1), r32);
+            GarbledRow3 <- (temp, temp2);
+
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
+            X_ <- (A_0, B_1);
+            d[C_0] <- Some(c);
+
+        } 
+        if ((a==true) and (b==false)) {  
+            tempsample1 <- invoke GETRANDOMWIRELABEL(delta);
+            tempsample2 <-$ Bits(n) sample-name B_02;
+            tempsample3 <-$ Bits(n) sample-name C_02;
+            A_0 <- tempsample1; 
+            B_0 <- tempsample2;
+            C_0 <- tempsample3;   
+            A_1 <- xor_(A_0, Unwrap(delta));
+            B_1 <- xor_(B_0, Unwrap(delta));
+            C_1 <- xor_(C_0, Unwrap(delta));        
+            
+            c <- false;
+            
+            GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02)); 
+            temp <-  enc(B_1, xor_(R_01, C_0), r12);
+            GarbledRow1 <- (enc(A_0, R_01, r11), temp);
+            temp <- enc(A_1, xor_(R_10, C_0), r21); 
+            /*did we fuck up putting the 'move C to first term' with A_1 and B_0 here? should this order be reconsidered?*/
+            GarbledRow2 <- (temp, enc(B_0, R_10, r22));
+            temp <- enc(A_1, R_11, r31);
+            temp2 <- enc(B_1, xor_(R_11, C_1), r32);
+            GarbledRow3 <- (temp, temp2);
+
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
+            X_ <- (A_1, B_0);
+            d[C_0] <- Some(c);
+        }
+        /* if ((a==true) and (b==true)) {   
+            tempsample1 <- invoke GETRANDOMWIRELABEL(delta);
+            tempsample2 <- invoke GETRANDOMWIRELABEL(delta);
+            tempsample3 <- invoke GETRANDOMWIRELABEL(delta);
+            A_0 <- tempsample1;
+            B_0 <- tempsample2;
+            C_0 <- tempsample3;
+            A_1 <- xor_(A_0, Unwrap(delta));
+            B_1 <- xor_(B_0, Unwrap(delta));
+            C_1 <- xor_(C_0, Unwrap(delta));
+           
+            c <- true;
+
+            GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02));
+            temp <-  enc(B_1, xor_(R_01, C_0), r12);
+            GarbledRow1 <- (enc(A_0, R_01, r11), temp);
+            temp <- enc(A_1, xor_(R_10, C_0), r21);
+            GarbledRow2 <- (temp, enc(B_0, R_10, r22));
+            temp <- enc(A_1, R_11, r31);
+            temp2 <- enc(B_1, xor_(R_11, C_1), r32);
+            GarbledRow3 <- (temp, temp2);
+
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
+            X_ <- (A_1, B_1);
+            d[C_1] <- Some(c);
+        } */
+        return (C_,X_,d);
+    }
+}
+

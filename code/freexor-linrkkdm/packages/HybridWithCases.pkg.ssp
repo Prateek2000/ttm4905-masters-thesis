@@ -23,7 +23,7 @@ package HybridWithCases {
         tempsample3 <-$ Bits(n) sample-name C_0;
 
         
-        R_00 <-$ Bits(n) sample-name R_00; 
+        R_00 <-$ Bits(n) sample-name R_00;  /*we got rid of position locked 'rows'*/
         R_01 <-$ Bits(n) sample-name R_01; 
         R_10 <-$ Bits(n) sample-name R_10;
         R_11 <-$ Bits(n) sample-name R_11; 
@@ -50,13 +50,15 @@ package HybridWithCases {
             C_1 <- xor_(C_0, Unwrap(delta));
             
             c <- false;
+           
             GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02));
-
-            GarbledRow1 <- (enc(A_0, R_01, r11), enc(B_1, xor_(R_01, C_0), r12));
-
-            GarbledRow2 <- (enc(A_1, xor_(R_10, C_0), r21), enc(B_0, R_10, r22));
-
-            GarbledRow3 <- (enc(A_1, R_11, r31), enc(B_1, xor_(R_11, C_1), r32));
+            temp <-  enc(B_1, xor_(R_01, C_0), r12);
+            GarbledRow1 <- (enc(A_0, R_01, r11), temp);
+            temp <- enc(A_1, xor_(R_10, C_0), r21);
+            GarbledRow2 <- (temp, enc(B_0, R_10, r22));
+            temp <- enc(A_1, R_11, r31);
+            temp2 <- enc(B_1, xor_(R_11, C_1), r32);
+            GarbledRow3 <- (temp, temp2);
 
             C_[GarbledRow0] <- Some(());
             C_[GarbledRow1] <- Some(());
@@ -68,26 +70,22 @@ package HybridWithCases {
         } 
         if ((a==false) and (b==true)) {
             A_0 <- tempsample1;
-            B_0 <- tempsample2; /*we cant have this*/
-            /*so do we sample the other thing, and relate it to the right game as an assertion 'this sample + delta = that sample'*/
-            /*since we know this value, if we somehow got the value if B_1 as well, the scheme would be broken*/
-            /*so we cannot have an oracle that returns B_1 here*/
-            /*if we assign this sample to B_1 instead, it would mean that B_1 would be equal to B_0 from the right game, and */
-            /*i feel like the logic would still be correct because distribution of B_0,delta,B_0+delta*/
-            /*but the notation would be wrong below. */
-            /*we need move convoluted randomness relations*/
+            B_0 <- tempsample2;
             C_0 <- tempsample3;
             A_1 <- xor_(A_0, Unwrap(delta));
             B_1 <- xor_(B_0, Unwrap(delta));
             C_1 <- xor_(C_0, Unwrap(delta));
+            
             c <- false;
+
             GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02));
-
-            GarbledRow1 <- (enc(A_0, R_01, r11), enc(B_1, xor_(R_01, C_0), r12));
-
-            GarbledRow2 <- (enc(A_1, xor_(R_10, C_0), r21), enc(B_0, R_10, r22));
-
-            GarbledRow3 <- (enc(A_1, R_11, r31), enc(B_1, xor_(R_11, C_1), r32));
+            temp <-  enc(B_1, xor_(R_01, C_0), r12);
+            GarbledRow1 <- (enc(A_0, R_01, r11), temp);
+            temp <- enc(A_1, xor_(R_10, C_0), r21);
+            GarbledRow2 <- (temp, enc(B_0, R_10, r22));
+            temp <- enc(A_1, R_11, r31);
+            temp2 <- enc(B_1, xor_(R_11, C_1), r32);
+            GarbledRow3 <- (temp, temp2);
 
             C_[GarbledRow0] <- Some(());
             C_[GarbledRow1] <- Some(());
@@ -98,20 +96,23 @@ package HybridWithCases {
 
         } 
         if ((a==true) and (b==false)) {  
-            A_0 <- tempsample1; /*we cant have this*/
+            A_0 <- tempsample1; 
             B_0 <- tempsample2;
             C_0 <- tempsample3;   
             A_1 <- xor_(A_0, Unwrap(delta));
             B_1 <- xor_(B_0, Unwrap(delta));
             C_1 <- xor_(C_0, Unwrap(delta));        
+            
             c <- false;
+            
             GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02));
-
-            GarbledRow1 <- (enc(A_0, R_01, r11), enc(B_1, xor_(R_01, C_0), r12));
-
-            GarbledRow2 <- (enc(A_1, xor_(R_10, C_0), r21), enc(B_0, R_10, r22));
-
-            GarbledRow3 <- (enc(A_1, R_11, r31), enc(B_1, xor_(R_11, C_1), r32));
+            temp <-  enc(B_1, xor_(R_01, C_0), r12);
+            GarbledRow1 <- (enc(A_0, R_01, r11), temp);
+            temp <- enc(A_1, xor_(R_10, C_0), r21);
+            GarbledRow2 <- (temp, enc(B_0, R_10, r22));
+            temp <- enc(A_1, R_11, r31);
+            temp2 <- enc(B_1, xor_(R_11, C_1), r32);
+            GarbledRow3 <- (temp, temp2);
 
             C_[GarbledRow0] <- Some(());
             C_[GarbledRow1] <- Some(());
@@ -122,20 +123,23 @@ package HybridWithCases {
 
         }
         if ((a==true) and (b==true)) {   
-            A_0 <- tempsample1;/*we cant have this*/
-            B_0 <- tempsample2;/*we cant have this*/
-            C_0 <- tempsample3;/*we cant have this*/
+            A_0 <- tempsample1;
+            B_0 <- tempsample2;
+            C_0 <- tempsample3;
             A_1 <- xor_(A_0, Unwrap(delta));
             B_1 <- xor_(B_0, Unwrap(delta));
             C_1 <- xor_(C_0, Unwrap(delta));
+           
             c <- true;
+
             GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02));
-
-            GarbledRow1 <- (enc(A_0, R_01, r11), enc(B_1, xor_(R_01, C_0), r12));
-
-            GarbledRow2 <- (enc(A_1, xor_(R_10, C_0), r21), enc(B_0, R_10, r22));
-
-            GarbledRow3 <- (enc(A_1, R_11, r31), enc(B_1, xor_(R_11, C_1), r32));
+            temp <-  enc(B_1, xor_(R_01, C_0), r12);
+            GarbledRow1 <- (enc(A_0, R_01, r11), temp);
+            temp <- enc(A_1, xor_(R_10, C_0), r21);
+            GarbledRow2 <- (temp, enc(B_0, R_10, r22));
+            temp <- enc(A_1, R_11, r31);
+            temp2 <- enc(B_1, xor_(R_11, C_1), r32);
+            GarbledRow3 <- (temp, temp2);
 
             C_[GarbledRow0] <- Some(());
             C_[GarbledRow1] <- Some(());

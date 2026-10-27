@@ -1,0 +1,16 @@
+package Hybrid2 {
+    params {
+        n: Integer, /* secpar */
+        b: Bool, /* switch for real and ideal behaviour of ENC*/
+        xor_: fn Bits(n), Bits(n) -> Bits(n),
+    }
+    oracle GETRANDOMWIRELABEL(delta: Maybe(Bits(n))) -> Bits(n) {
+        wirelabel <-$ Bits(n) sample-name R;
+        if b {
+            return xor_(wirelabel, Unwrap(delta)); 
+        } else {
+            return wirelabel; 
+        }
+    }
+}
+
