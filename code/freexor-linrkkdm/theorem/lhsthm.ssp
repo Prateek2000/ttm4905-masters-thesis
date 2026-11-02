@@ -242,12 +242,21 @@ theorem lhsthm {
         equivalence GIntermediatecompHybrid2Ideal RcompGLINRKKDM0 {
             invariant: [
                     ./theorem/invariants/hybrididealpart2.smt2
+                    ./theorem/invariants/lemma-hybridintermediate.smt2
                 ]
             GARBLEAND: {
                 lemmas {
+                    case-x-is-false-false: [no-abort]
+                    case-x-is-false-true: [no-abort]
+                    case-x-is-true-false: [no-abort]
+                    case-x-is-true-true: [no-abort]
+                    same-output: [no-abort, case-x-is-false-false, case-x-is-false-true, case-x-is-true-false, case-x-is-true-true]
                     invariant: [no-abort]
-                    same-output: [no-abort]
-                    equal-aborts: []
+                    abort-case-x-is-false-false: []
+                    abort-case-x-is-false-true: []
+                    abort-case-x-is-true-false: []
+                    abort-case-x-is-true-true: []
+                    equal-aborts: [abort-case-x-is-false-false, abort-case-x-is-false-true, abort-case-x-is-true-false, abort-case-x-is-true-true]
                 }
             }
         }
@@ -268,12 +277,21 @@ theorem lhsthm {
         equivalence RcompGLINRKKDM1 GSimFreeXORIdeal {
             invariant: [
                 ./theorem/invariants/freexorideal.smt2
+                ./theorem/invariants/lemma-hybridintermediate.smt2
             ]
             GARBLEAND: {
                 lemmas {
+                    case-x-is-false-false: [no-abort]
+                    case-x-is-false-true: [no-abort]
+                    case-x-is-true-false: [no-abort]
+                    case-x-is-true-true: [no-abort]
+                    same-output: [no-abort, case-x-is-false-false, case-x-is-false-true, case-x-is-true-false, case-x-is-true-true]
                     invariant: [no-abort]
-                    equal-aborts: []
-                    same-output: [no-abort]
+                    abort-case-x-is-false-false: []
+                    abort-case-x-is-false-true: []
+                    abort-case-x-is-true-false: []
+                    abort-case-x-is-true-true: []
+                    equal-aborts: [abort-case-x-is-false-false, abort-case-x-is-false-true, abort-case-x-is-true-false, abort-case-x-is-true-true]
                 }
             }
         }

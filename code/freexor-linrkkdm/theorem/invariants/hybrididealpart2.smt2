@@ -332,35 +332,141 @@
     )
 )
 
-(assert 
-    (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) false true))
-        ( let   
-            (
-                (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
-                (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 0 ))
-            )
-            (= 
-                (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
-                sampledvalue0
-            )
-        )
-    )
-)
+; (assert 
+;     (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) false true))
+;         ( let   
+;             (
+;                 (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
+;                 (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 0 ))
+;             )
+;             (= 
+;                 (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
+;                 sampledvalue0
+;             )
+;         )
+;     )
+; )
 
-(assert 
-    (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) true false))
-        ( let   
-            (
-                (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
-                (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 0 ))
-            )
-            (= 
-                (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
-                sampledvalue0
-            )
-        )
-    )
-)
+; (assert 
+;     (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) true false))
+;         ( let   
+;             (
+;                 (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
+;                 (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 0 ))
+;             )
+;             (= 
+;                 (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
+;                 sampledvalue0
+;             )
+;         )
+;     )
+; )
+
+; (assert 
+;     (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) true true))
+;         ( let   
+;             (
+;                 (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
+;                 (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 0 ))
+;             )
+;             (= 
+;                 (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
+;                 sampledvalue0
+;             )
+;         )
+;     )
+; )
+
+
+; (assert 
+;     (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) false true))
+;         ( let   
+;             (
+;                 (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
+;                 (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 1 ))
+;             )
+;             (= 
+;                 (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
+;                 sampledvalue0
+;             )
+;         )
+;     )
+; )
+
+; (assert 
+;     (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) true false))
+;         ( let   
+;             (
+;                 (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
+;                 (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 1 ))
+;             )
+;             (= 
+;                 (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
+;                 sampledvalue0
+;             )
+;         )
+;     )
+; )
+
+; (assert 
+;     (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) true true))
+;         ( let   
+;             (
+;                 (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
+;                 (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 1 ))
+;             )
+;             (= 
+;                 (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
+;                 sampledvalue0
+;             )
+;         )
+;     )
+; )
+
+; (assert 
+;     (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) false true))
+;         ( let   
+;             (
+;                 (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
+;                 (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 2 ))
+;             )
+;             (= 
+;                 (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
+;                 sampledvalue0
+;             )
+;         )
+;     )
+; )
+
+; (assert 
+;     (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) true false))
+;         ( let   
+;             (
+;                 (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
+;                 (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 2 ))
+;             )
+;             (= 
+;                 (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
+;                 sampledvalue0
+;             )
+;         )
+;     )
+; )
+
+; (assert 
+;     (=> (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) true true))
+;         ( let   
+;             (
+;                 (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
+;                 (sampledvalue0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "R") 2 ))
+;             )
+;             (= 
+;                 (<<func-xor_>> (<<func-xor_>> sampledvalue0 (maybe-get delta)) (maybe-get delta))
+;                 sampledvalue0
+;             )
+;         )
+;     )
+; )
 
 ; (assert 
 ;     (
@@ -386,6 +492,24 @@
 ;         )
 ;     )
 ; )
+
+;enabling this helps sometimes with basic associativity, but if there are other complex elements, cvc5 starts returning unknown: incomplete INCOMPLETE QUANTIFIERS, so we should avoid this
+; (assert (forall ((x Bits_n) (y Bits_n) (z Bits_n)) (= (<<func-xor_>> x (<<func-xor_>> y z)) (<<func-xor_>> (<<func-xor_>> x y) z))))
+;this is for case false true, to try and map the returned B wire labels on both sides, but it returns unknown
+; (assert 
+;     ( => (= <arg-GIntermediatecompHybrid2-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) false true))
+;         (
+;             let (
+;                     (delta (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate> (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-GIntermediatecompHybrid2Ideal-GARBLEAND>))))
+;                     (R_B_1 (__sample-rand-RcompGLINRKKDM0-Bits_n (sample-id "R" "GARBLEAND" "B_0") 0 ))
+;                     (L_sampledval (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GHybrid2" "GETRANDOMWIRELABEL" "wirelabel") 0 ))        
+;                 )
+;             (= (<<func-xor_>> (<<func-xor_>> L_sampledval (maybe-get delta)) (maybe-get delta)) R_B_1)
+;         )
+;     )
+; )
+
+;xor_(R_11, xor_(C_00, Unwrap(delta))) = xor_(xor_(R_11, C_0),Unwrap(delta))
 ; (assert 
 ;     (
 ;         let (
@@ -440,16 +564,16 @@
 ; )
 
 ;rhs
-(assert 
-    (
-        let (
-                (delta (<pkg-state-LINRKKDM-<$<!m!><!n!>$>-delta> (<game-RcompGLINRKKDM-<$<!n!><!m!>$>-pkgstate-GLINRKKDM> (<oracle-return-RcompGLINRKKDM-<$<!n!><!m!>$>-Reduction-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-RcompGLINRKKDM0-GARBLEAND>))))
-                (r_11 (__sample-rand-RcompGLINRKKDM0-Bits_n (sample-id "RcompGLINRKDKM" "GARBLEAND" "R_11") 0 ))
-                (c_0 (__sample-rand-RcompGLINRKKDM0-Bits_n (sample-id "RcompGLINRKKDM" "GARBLEAND" "C_0") 0 ))        
-    )
-        (= 
-            (<<func-xor_>> r_11 (<<func-xor_>> c_0 (maybe-get delta))) 
-            (<<func-xor_>> (<<func-xor_>> r_11 c_0) (maybe-get delta))
-        )
-    )
-)
+; (assert 
+;     (
+;         let (
+;                 (delta (<pkg-state-LINRKKDM-<$<!m!><!n!>$>-delta> (<game-RcompGLINRKKDM-<$<!n!><!m!>$>-pkgstate-GLINRKKDM> (<oracle-return-RcompGLINRKKDM-<$<!n!><!m!>$>-Reduction-<$<!m!><!n!>$>-GARBLEAND-game-state> <return-RcompGLINRKKDM0-GARBLEAND>))))
+;                 (r_11 (__sample-rand-RcompGLINRKKDM0-Bits_n (sample-id "RcompGLINRKDKM" "GARBLEAND" "R_11") 0 ))
+;                 (c_0 (__sample-rand-RcompGLINRKKDM0-Bits_n (sample-id "RcompGLINRKKDM" "GARBLEAND" "C_0") 0 ))        
+;     )
+;         (= 
+;             (<<func-xor_>> r_11 (<<func-xor_>> c_0 (maybe-get delta))) 
+;             (<<func-xor_>> (<<func-xor_>> r_11 c_0) (maybe-get delta))
+;         )
+;     )
+; )
