@@ -114,7 +114,7 @@ package Reduction {
             d[C_0] <- Some(c);
 
         }
-        /* if ((a==true) and (b==true)) {
+        if ((a==true) and (b==true)) {
             c <- true; 
             A_1 <-tempsample1;
             B_1 <-tempsample2;
@@ -139,7 +139,7 @@ package Reduction {
             C_[GarbledRow3] <- Some(());
             X_ <- (A_1, B_1);
             d[C_1] <- Some(c);
-        } */
+        }
         return (C_,X_,d);
     }
 }

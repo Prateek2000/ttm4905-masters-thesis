@@ -113,9 +113,49 @@ theorem lhsthm {
         }
     }
 
+    instance GLINRKKDM0 = GLINRKKDM {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            b: false,
+            xor_: xor_,
+        }
+    }
+
+    instance GLINRKKDM1 = GLINRKKDM {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            b: true,
+            xor_: xor_,
+        }
+    }
+
+    instance RcompGLINRKKDM1 = RcompGLINRKKDM {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            b: true,
+            xor_: xor_
+        }
+    }
+
+    instance GSimFreeXORIdeal = GSimFreeXORIdeal {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_: xor_
+        }
+    }
+
     assumptions {
         hybrid: GHybridReal ~ GHybridIdeal
         hybrid2: GHybrid2Real ~ GHybrid2Ideal
+        lin_rk_kdm: GLINRKKDM0 ~ GLINRKKDM1 /*Under the LPN assumption*/
     }
 
     /* conjecture { 
@@ -208,6 +248,32 @@ theorem lhsthm {
                     invariant: [no-abort]
                     same-output: [no-abort]
                     equal-aborts: []
+                }
+            }
+        }
+
+        reduction RcompGLINRKKDM0 RcompGLINRKKDM1 {
+            assumption lin_rk_kdm
+
+            map GLINRKKDM0 RcompGLINRKKDM0 {
+                GLINRKKDM: GLINRKKDM
+            }
+
+            map GLINRKKDM1 RcompGLINRKKDM1 {
+                GLINRKKDM: GLINRKKDM
+            }
+        }
+
+
+        equivalence RcompGLINRKKDM1 GSimFreeXORIdeal {
+            invariant: [
+                ./theorem/invariants/freexorideal.smt2
+            ]
+            GARBLEAND: {
+                lemmas {
+                    invariant: [no-abort]
+                    equal-aborts: []
+                    same-output: [no-abort]
                 }
             }
         }

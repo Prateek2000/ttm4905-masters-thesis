@@ -12,26 +12,8 @@
     ;Left -> R:GARBLE, GLINRKKDM:ENC
     ;Right -> SimFreeXOR1:GARBLEAND, Sim:GARBLE
         (and
-            (= sample-id-left (sample-id "R" "GARBLEAND" "R_00"))
-            (= sample-id-right (sample-id "Sim" "GARBLE" "R_00"))
-            (= sample-offset-left 0)
-            (= sample-offset-right 0)
-        )
-        (and
-            (= sample-id-left (sample-id "R" "GARBLEAND" "R_01"))
-            (= sample-id-right (sample-id "Sim" "GARBLE" "R_01"))
-            (= sample-offset-left 0)
-            (= sample-offset-right 0)
-        )
-        (and
-            (= sample-id-left (sample-id "R" "GARBLEAND" "R_10"))
-            (= sample-id-right (sample-id "Sim" "GARBLE" "R_10"))
-            (= sample-offset-left 0)
-            (= sample-offset-right 0)
-        )
-        (and
-            (= sample-id-left (sample-id "R" "GARBLEAND" "R_11"))
-            (= sample-id-right (sample-id "Sim" "GARBLE" "R_11"))
+            (= sample-id-left (sample-id "GLINRKKDM" "ENC" "delta"))
+            (= sample-id-right (sample-id "Sim" "GARBLE" "delta"))
             (= sample-offset-left 0)
             (= sample-offset-right 0)
         )
@@ -53,7 +35,6 @@
             (= sample-offset-left 0)
             (= sample-offset-right 0)
         )
-        ; randomness mappings of encryption
         (and
             (= sample-id-left (sample-id "R" "GARBLEAND" "randrow0enc1"))
             (= sample-id-right (sample-id "Sim" "GARBLE" "randrow0enc1"))
@@ -102,12 +83,119 @@
             (= sample-offset-left 3)
             (= sample-offset-right 0)
         )
-        ;do we need to map delta's sampling too? as follows
-        (and
-            (= sample-id-left (sample-id "GLINRKKDM" "ENC" "delta"))
-            (= sample-id-right (sample-id "Sim" "GARBLE" "delta"))
-            (= sample-offset-left 0)
-            (= sample-offset-right 0)
+        ; randomness mappings of encryption - might need to be conditional on x 
+        (ite
+            (= <arg-RcompGLINRKKDM-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) false false)) 
+            (or
+                (and
+                    (= sample-id-left (sample-id "R" "GARBLEAND" "R_00"))
+                    (= sample-id-right (sample-id "Sim" "GARBLE" "R_00"))
+                    (= sample-offset-left 0)
+                    (= sample-offset-right 0)
+                )
+                (and
+                    (= sample-id-left (sample-id "R" "GARBLEAND" "R_01"))
+                    (= sample-id-right (sample-id "Sim" "GARBLE" "R_01"))
+                    (= sample-offset-left 0)
+                    (= sample-offset-right 0)
+                )
+                (and
+                    (= sample-id-left (sample-id "R" "GARBLEAND" "R_10"))
+                    (= sample-id-right (sample-id "Sim" "GARBLE" "R_10"))
+                    (= sample-offset-left 0)
+                    (= sample-offset-right 0)
+                )
+                (and
+                    (= sample-id-left (sample-id "R" "GARBLEAND" "R_11"))
+                    (= sample-id-right (sample-id "Sim" "GARBLE" "R_11"))
+                    (= sample-offset-left 0)
+                    (= sample-offset-right 0)
+                )
+            )
+            (ite
+                (= <arg-RcompGLINRKKDM-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) false true)) 
+                (or
+                    (and
+                        (= sample-id-left (sample-id "R" "GARBLEAND" "R_01"))
+                        (= sample-id-right (sample-id "Sim" "GARBLE" "R_00"))
+                        (= sample-offset-left 0)
+                        (= sample-offset-right 0)
+                    )
+                    (and
+                        (= sample-id-left (sample-id "R" "GARBLEAND" "R_00"))
+                        (= sample-id-right (sample-id "Sim" "GARBLE" "R_01"))
+                        (= sample-offset-left 0)
+                        (= sample-offset-right 0)
+                    )
+                    (and
+                        (= sample-id-left (sample-id "R" "GARBLEAND" "R_11"))
+                        (= sample-id-right (sample-id "Sim" "GARBLE" "R_10"))
+                        (= sample-offset-left 0)
+                        (= sample-offset-right 0)
+                    )
+                    (and
+                        (= sample-id-left (sample-id "R" "GARBLEAND" "R_10"))
+                        (= sample-id-right (sample-id "Sim" "GARBLE" "R_11"))
+                        (= sample-offset-left 0)
+                        (= sample-offset-right 0)
+                    )
+                )
+                (ite
+                    (= <arg-RcompGLINRKKDM-GARBLEAND-x> ((as mk-tuple2 (Tuple2 Bool Bool)) true false)) 
+                    (or
+                        (and
+                            (= sample-id-left (sample-id "R" "GARBLEAND" "R_10"))
+                            (= sample-id-right (sample-id "Sim" "GARBLE" "R_00"))
+                            (= sample-offset-left 0)
+                            (= sample-offset-right 0)
+                        )
+                        (and
+                            (= sample-id-left (sample-id "R" "GARBLEAND" "R_11"))
+                            (= sample-id-right (sample-id "Sim" "GARBLE" "R_01"))
+                            (= sample-offset-left 0)
+                            (= sample-offset-right 0)
+                        )
+                        (and
+                            (= sample-id-left (sample-id "R" "GARBLEAND" "R_00"))
+                            (= sample-id-right (sample-id "Sim" "GARBLE" "R_10"))
+                            (= sample-offset-left 0)
+                            (= sample-offset-right 0)
+                        )
+                        (and
+                            (= sample-id-left (sample-id "R" "GARBLEAND" "R_01"))
+                            (= sample-id-right (sample-id "Sim" "GARBLE" "R_11"))
+                            (= sample-offset-left 0)
+                            (= sample-offset-right 0)
+                        )
+                    )
+                    (or
+                        (and
+                            (= sample-id-left (sample-id "R" "GARBLEAND" "R_11"))
+                            (= sample-id-right (sample-id "Sim" "GARBLE" "R_00"))
+                            (= sample-offset-left 0)
+                            (= sample-offset-right 0)
+                        )
+                        (and
+                            (= sample-id-left (sample-id "R" "GARBLEAND" "R_10"))
+                            (= sample-id-right (sample-id "Sim" "GARBLE" "R_01"))
+                            (= sample-offset-left 0)
+                            (= sample-offset-right 0)
+                        )
+                        (and
+                            (= sample-id-left (sample-id "R" "GARBLEAND" "R_01"))
+                            (= sample-id-right (sample-id "Sim" "GARBLE" "R_10"))
+                            (= sample-offset-left 0)
+                            (= sample-offset-right 0)
+                        )
+                        (and
+                            (= sample-id-left (sample-id "R" "GARBLEAND" "R_00"))
+                            (= sample-id-right (sample-id "Sim" "GARBLE" "R_11"))
+                            (= sample-offset-left 0)
+                            (= sample-offset-right 0)
+                        )
+                    )
+                )
+            )
         )
     )
 )
@@ -125,4 +213,4 @@
 ;)
 ;)
 
-(assert (forall ((x Bits_n) (y Bits_n) (z Bits_n)) (= (<<func-xor_>> x (<<func-xor_>> y z)) (<<func-xor_>> (<<func-xor_>> x y) z))))
+; (assert (forall ((x Bits_n) (y Bits_n) (z Bits_n)) (= (<<func-xor_>> x (<<func-xor_>> y z)) (<<func-xor_>> (<<func-xor_>> x y) z))))
