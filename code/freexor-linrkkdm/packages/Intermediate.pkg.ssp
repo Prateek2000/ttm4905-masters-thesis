@@ -129,7 +129,7 @@ package Intermediate {
             X_ <- (A_1, B_0);
             d[C_0] <- Some(c);
         }
-        /* if ((a==true) and (b==true)) {   
+        if ((a==true) and (b==true)) {   
             tempsample1 <- invoke GETRANDOMWIRELABEL(delta);
             tempsample2 <- invoke GETRANDOMWIRELABEL(delta);
             tempsample3 <- invoke GETRANDOMWIRELABEL(delta);
@@ -157,7 +157,7 @@ package Intermediate {
             C_[GarbledRow3] <- Some(());
             X_ <- (A_1, B_1);
             d[C_1] <- Some(c);
-        } */
+        }
         return (C_,X_,d);
     }
 }
