@@ -1,0 +1,14 @@
+GSimFreeXOR0 ---codeeq--- GSimFreeXORRealWithCases
+GSimFreeXORRealWithCases -----codeeq----- R1->Hybrid Real (has cases already)
+~ (Hybrid Assumption)
+R1->Hybrid1 Ideal ---codeeq--- HybridWithCases
+HybridWithCases ---conjecture1--- HybridWithCasesWithSampling
+HybridWithCasesWithSampling ---codeeq--- Intermediate->Hybrid2Real
+~ (Hybrid2 Assumption)
+Intermediate->Hybrid2Ideal ---codeeq--- R->GLINRKKDM Real
+~
+R->GLINRKKDM Ideal ---codeeq--- 
+
+
+-------
+GSimFreeXORIdeal  

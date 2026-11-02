@@ -1,0 +1,34 @@
+composition RcompGLINRKKDM {
+        const n: Integer; /* secpar */
+        const m: Integer;  /* message length */
+        const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); /*NOTE: message is length n for our purposes maybe, since wire labels without pnp are length n */
+        const b: Bool; /* switch for real and ideal behaviour of ENC*/
+        const xor_: fn Bits(n), Bits(n) -> Bits(n);
+
+    instance GLINRKKDM = LINRKKDM {
+        params {
+            n: n,
+            m:m,
+            enc: enc,
+            b: b,
+            xor_:xor_,
+        }
+    }
+    instance R = Reduction {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_:xor_,
+        }
+    }
+
+    compose {
+        adversary: {
+            GARBLEAND: R,
+        },
+        R: {
+            ENC: GLINRKKDM,
+        }
+    }
+}

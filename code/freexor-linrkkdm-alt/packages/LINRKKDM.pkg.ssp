@@ -1,0 +1,29 @@
+package LINRKKDM {
+    params {
+        n: Integer, /* secpar */
+        m: Integer,  /* message length */
+        enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m), /*NOTE: message/ct is length n for our purposes maybe, since wire labels without pnp are length n */
+        b: Bool, /* switch for real and ideal behaviour of ENC*/
+        xor_: fn Bits(n), Bits(n) -> Bits(n),
+    }
+    state {
+        delta: Maybe(Bits(n)),  /*change it to delta*/
+    }
+
+    oracle ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m) {
+        if (delta == None) {
+            tmp <-$ Bits(n) sample-name delta;
+            delta <- Some(tmp);
+        } 
+        r <-$ Bits(n) sample-name r;
+        if b {
+            return enc(xor_(key, Unwrap(delta)), 0_n, r); 
+        } else {
+            if z {
+                return enc(xor_(key, Unwrap(delta)), xor_(msg,Unwrap(delta)), r); 
+            } else {
+                return enc(xor_(key, Unwrap(delta)), msg, r);
+            }
+        }
+    }
+}

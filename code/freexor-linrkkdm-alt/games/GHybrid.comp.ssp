@@ -1,0 +1,19 @@
+composition GHybrid {
+        const n: Integer; /* secpar */
+        const b: Bool; /* switch for real and ideal behaviour of ENC*/
+        const xor_: fn Bits(n), Bits(n) -> Bits(n);
+
+    instance GHybrid = Hybrid {
+        params {
+            n: n,
+            b: b,
+            xor_:xor_,
+        }
+    }
+
+    compose {
+        adversary: {
+            GETRANDOMS: GHybrid,
+        }
+    }
+}

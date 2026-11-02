@@ -1,0 +1,150 @@
+package HybridwithCasesTransformed {
+     params {
+        n: Integer, /* secpar */
+        m: Integer, /* message length */
+        enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m), /*DISCUSS: message/ct is length n for our purposes maybe, since wire labels without pnp are length n */
+        /*for a randomized algorithm, the randomness needs to be one of the inputs (add a parameter) and the output needs to be larger*/
+        xor_: fn Bits(n), Bits(n) -> Bits(n),
+
+    }
+    state {
+        delta: Maybe(Bits(n)),
+    }
+     oracle GARBLEAND(x: (Bool, Bool)) -> (Table((Bits(m),Bits(m)), ()) ,(Bits(n),Bits(n)), Table(Bits(n),Bool))
+    {
+        (a,b) <- x;
+        c <- false;
+        if (delta == None) {
+            tmp <-$ Bits(n) sample-name delta; /* sample secret offset sfor garbling this circuit */
+            delta <- Some(tmp);
+        }
+        tempsample1 <-$ Bits(n) sample-name A_0;
+        tempsample2 <-$ Bits(n) sample-name B_0;
+        tempsample3 <-$ Bits(n) sample-name C_0;
+
+        
+        R_00 <-$ Bits(n) sample-name R_00; 
+        R_01 <-$ Bits(n) sample-name R_01; 
+        R_10 <-$ Bits(n) sample-name R_10;
+        R_11 <-$ Bits(n) sample-name R_11; 
+        
+        C_ <- new Table((Bits(m),Bits(m)), ());
+        X_ <- (0_n, 0_n);
+        d <- new Table(Bits(n), Bool);
+        
+        r01 <-$ Bits(n) sample-name randrow0enc1;
+        r02 <-$ Bits(n) sample-name randrow0enc2;
+        r11 <-$ Bits(n) sample-name randrow1enc1;
+        r12 <-$ Bits(n) sample-name randrow1enc2;
+        r21 <-$ Bits(n) sample-name randrow2enc1;
+        r22 <-$ Bits(n) sample-name randrow2enc2;
+        r31 <-$ Bits(n) sample-name randrow3enc1;
+        r32 <-$ Bits(n) sample-name randrow3enc2;
+
+        if ((a==false) and (b==false)) { /*do i need to make randomness sampling relations in the smt based on the values of a and b?? */
+            A_0 <- tempsample1;
+            B_0 <- tempsample2;
+            C_0 <- tempsample3;
+            A_1 <- xor_(A_0, Unwrap(delta));
+            B_1 <- xor_(B_0, Unwrap(delta));
+            C_1 <- xor_(C_0, Unwrap(delta));
+            
+            c <- false;
+            GarbledRow0 <- (enc(A_0, R_00, r), enc(B_0, xor_(R_00, C_0), r1));
+
+            GarbledRow1 <- (enc(A_0, R_01, r), enc(B_1, xor_(R_01, C_0), r1));
+
+            GarbledRow2 <- (enc(A_1, xor_(R_10, C_0), r), enc(B_0, R_10, r1));
+
+            GarbledRow3 <- (enc(A_1, R_11, r), enc(B_1, xor_(R_11, C_1), r1));
+
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
+            X_ <- (A_0, B_0);
+            d[C_0] <- Some(c);
+
+        } 
+        if ((a==false) and (b==true)) {
+            A_0 <- tempsample1;
+            B_0 <- tempsample2; /*we cant have this*/
+            /*so do we sample the other thing, and relate it to the right game as an assertion 'this sample + delta = that sample'*/
+            /*since we know this value, if we somehow got the value if B_1 as well, the scheme would be broken*/
+            /*so we cannot have an oracle that returns B_1 here*/
+            /*if we assign this sample to B_1 instead, it would mean that B_1 would be equal to B_0 from the right game, and */
+            /*i feel like the logic would still be correct because distribution of B_0,delta,B_0+delta*/
+            /*but the notation would be wrong below. */
+            /*we need move convoluted randomness relations*/
+            C_0 <- tempsample3;
+            A_1 <- xor_(A_0, Unwrap(delta));
+            B_1 <- xor_(B_0, Unwrap(delta));
+            C_1 <- xor_(C_0, Unwrap(delta));
+            c <- false;
+            GarbledRow0 <- (enc(A_0, R_00, r), enc(B_0, xor_(R_00, C_0), r1));
+
+            GarbledRow1 <- (enc(A_0, R_01, r), enc(B_1, xor_(R_01, C_0), r1));
+
+            GarbledRow2 <- (enc(A_1, xor_(R_10, C_0), r), enc(B_0, R_10, r1));
+
+            GarbledRow3 <- (enc(A_1, R_11, r), enc(B_1, xor_(R_11, C_1), r1));
+
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
+            X_ <- (A_0, B_1);
+            d[C_0] <- Some(c);
+
+        } 
+        if ((a==true) and (b==false)) {  
+            A_0 <- tempsample1; /*we cant have this*/
+            B_0 <- tempsample2;
+            C_0 <- tempsample3;   
+            A_1 <- xor_(A_0, Unwrap(delta));
+            B_1 <- xor_(B_0, Unwrap(delta));
+            C_1 <- xor_(C_0, Unwrap(delta));        
+            c <- false;
+            GarbledRow0 <- (enc(A_0, R_00, r), enc(B_0, xor_(R_00, C_0), r1));
+
+            GarbledRow1 <- (enc(A_0, R_01, r), enc(B_1, xor_(R_01, C_0), r1));
+
+            GarbledRow2 <- (enc(A_1, xor_(R_10, C_0), r), enc(B_0, R_10, r1));
+
+            GarbledRow3 <- (enc(A_1, R_11, r), enc(B_1, xor_(R_11, C_1), r1));
+
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
+            X_ <- (A_1, B_0);
+            d[C_0] <- Some(c);
+
+        }
+        if ((a==true) and (b==true)) {   
+            A_0 <- tempsample1;/*we cant have this*/
+            B_0 <- tempsample2;/*we cant have this*/
+            C_0 <- tempsample3;/*we cant have this*/
+            A_1 <- xor_(A_0, Unwrap(delta));
+            B_1 <- xor_(B_0, Unwrap(delta));
+            C_1 <- xor_(C_0, Unwrap(delta));
+            c <- true;
+            GarbledRow0 <- (enc(A_0, R_00, r), enc(B_0, xor_(R_00, C_0), r1));
+
+            GarbledRow1 <- (enc(A_0, R_01, r), enc(B_1, xor_(R_01, C_0), r1));
+
+            GarbledRow2 <- (enc(A_1, xor_(R_10, C_0), r), enc(B_0, R_10, r1));
+
+            GarbledRow3 <- (enc(A_1, R_11, r), enc(B_1, xor_(R_11, C_1), r1));
+
+            C_[GarbledRow0] <- Some(());
+            C_[GarbledRow1] <- Some(());
+            C_[GarbledRow2] <- Some(());
+            C_[GarbledRow3] <- Some(());
+            X_ <- (A_1, B_1);
+            d[C_1] <- Some(c);
+        }
+        return (C_,X_,d);
+    }
+}
+
