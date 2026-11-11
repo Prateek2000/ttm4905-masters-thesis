@@ -15,7 +15,7 @@ package LINRKKDM {
             tmp <-$ Bits(n) sample-name delta;
             delta <- Some(tmp);
         } 
-        r <-$ Bits(n) sample-name r;
+        r <-$ Bits(n) sample-name r; /*the randomness for probabilistic encryption used below*/
         if b {
             return enc(xor_(key, Unwrap(delta)), 0_n, r); 
         } else {

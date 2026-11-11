@@ -1,0 +1,33 @@
+\begin{figure}[ht]
+\setlength{\abovecaptionskip}{0pt}
+\centering
+    
+
+\begin{minipage}[t]{0.4\linewidth}
+    \procedureblock[]{$G^b_\mathsf{Hybrid}$}{
+        \underline{\underline{\mathsf{GETRANDOMS\mathit{(w)}}}} \\
+        R \sample \bin^\secpar \\
+        \pcif b \pcthen \\
+        \t r_1 \gets R\xor w; r_2 \gets R \\
+        \pcelse \\
+        \t r_1 \gets R; r_2 \gets R\xor w \\
+        \pcreturn (r_1, r_2) \\
+       % 
+    }
+\end{minipage}
+\begin{minipage}[t]{0.4\linewidth}
+    \procedureblock[]{$G^b_\mathsf{Hybrid}$}{
+        \underline{\underline{\mathsf{GETRANDOMS2\mathit{(w)}}}} \\
+        R \sample \bin^\secpar \\
+        \pcif b \pcthen \\
+        \t r_1 \gets 0^\secpar ; r_2 \gets R \\
+        \pcelse \\
+        \t r_1 \gets 0^\secpar ; r_2 \gets R\xor w \\
+        \pcreturn (r_1, r_2) \\
+       % 
+    }
+\end{minipage}
+
+\caption{Code for $G^b_\mathsf{Hybrid}$}
+\label{fig:hybridgetrandoms}
+\end{figure}
