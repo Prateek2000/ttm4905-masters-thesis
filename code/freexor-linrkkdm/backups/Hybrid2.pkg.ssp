@@ -7,13 +7,12 @@ package Hybrid2 {
         xor_: fn Bits(n), Bits(n) -> Bits(n),
     }
     state {
-        delta: Maybe(Bits(n)),  /*change it to delta*/
+        delta: Maybe(Bits(n)), 
     }
     import oracles {
         ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m),
     }
     
-    /*DISCUSS: the interfaces for real and ideal game are different (f,x) vs (y,topo(f)) -> maybe it needs an outer layer*/
     oracle GARBLEAND(x: (Bool, Bool)) -> 
     (
         (
@@ -82,7 +81,6 @@ package Hybrid2 {
             } else {
                 GarbledRow2 <- (enc(xor_(A_0, Unwrap(delta)), xor_(R_10, C_0), r21), enc(B_0, R_10, r22));
             }
-            /*C_[2] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
             if bit {
                 GarbledRow3 <- (enc(xor_(A_0, Unwrap(delta)), 0_n, r31), enc(xor_(B_0, Unwrap(delta)), 0_n, r32));
@@ -122,7 +120,6 @@ package Hybrid2 {
                 GarbledRow3 <- (enc(xor_(A_0, Unwrap(delta)), xor_(xor_(R_11, C_0),Unwrap(delta)), r21), enc(B_1, R_11, r22));            
             }
 
-            /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
             if bit {
                 GarbledRow2 <- (enc(xor_(A_0, Unwrap(delta)), 0_n, r31), enc(xor_(B_1, Unwrap(delta)), 0_n, r32));
@@ -161,8 +158,6 @@ package Hybrid2 {
             } else {
                 GarbledRow0 <- (enc(xor_(A_1, Unwrap(delta)), xor_(R_00, C_0), r21), enc(B_0, R_00, r22));
             }
-            /*The weird part 1 part 2 flip ind thing we need to prove*/
-            /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
             if bit {
                 temp <- invoke ENC(A_1, R_01, false);
@@ -206,7 +201,6 @@ package Hybrid2 {
             } else {
                 GarbledRow1 <- (enc(xor_(A_1, Unwrap(delta)), xor_(xor_(R_01, C_1),Unwrap(delta)), r21), enc(B_1, R_01, r22));
             }
-             /*The weird part 1 part 2 flip ind thing we need to prove*/
             /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
             if bit {

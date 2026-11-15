@@ -7,7 +7,7 @@ package LINRKKDM {
         xor_: fn Bits(n), Bits(n) -> Bits(n),
     }
     state {
-        delta: Maybe(Bits(n)),  /*change it to delta*/
+        delta: Maybe(Bits(n)), 
     }
 
     oracle ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m) {

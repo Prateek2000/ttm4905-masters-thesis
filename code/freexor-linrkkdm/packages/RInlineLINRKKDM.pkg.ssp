@@ -7,7 +7,7 @@ package RInlineLINRKKDM {
         xor_: fn Bits(n), Bits(n) -> Bits(n),
     }
     state {
-        delta: Maybe(Bits(n)),  /*change it to delta*/
+        delta: Maybe(Bits(n)),
     }
     import oracles {
         ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m),
@@ -81,7 +81,6 @@ package RInlineLINRKKDM {
             } else {
                 GarbledRow2 <- (enc(xor_(A_0, Unwrap(delta)), xor_(R_10, C_0), r21), enc(B_0, R_10, r22));
             }
-            /*C_[2] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
             if bit {
                 GarbledRow3 <- (enc(xor_(A_0, Unwrap(delta)), 0_n, r31), enc(xor_(B_0, Unwrap(delta)), 0_n, r32));
@@ -109,7 +108,7 @@ package RInlineLINRKKDM {
             /* a,b+1 */
             if bit {
                 GarbledRow0 <- (enc(A_0, R_00, r01), enc(xor_(B_1, Unwrap(delta)), 0_n, r02));            
-                /*do we need to define XOR(A,XOR(A,B))=B, or associativity+identity*/
+                /*TODO:remove later; do we need to define XOR(A,XOR(A,B))=B, or associativity+identity*/
                 /*can 2nd enc be written as enc(B_1 xor delta, 0_n, r02)*/
                 /*only if we outline this and swap out the enc(0_n) to enc(msg xor delta) using ENC(B_0,R_00 xor C_0, r02) - this is going to a real game*/
                 /*same but reverse swap for Garbled row 1, term 2? - idk this seems weird because this one is going to an ideal game */
@@ -121,13 +120,11 @@ package RInlineLINRKKDM {
             /* a+1,b */
             if bit {
                 GarbledRow3 <- (enc(xor_(A_0, Unwrap(delta)), 0_n, r31), enc(B_1, R_11, r32));    
-                /*this feels very wrong since the non invoke ENC term is messing things up*/        
             } else {
                 temp <- invoke ENC(A_0, xor_(R_11, C_0), true);
                 GarbledRow3 <- (enc(xor_(A_0, Unwrap(delta)), xor_(xor_(R_11, C_0),Unwrap(delta)), r31), enc(B_1, R_11, r32));            
             }
 
-            /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
             if bit {
                 GarbledRow2 <- (enc(xor_(A_0, Unwrap(delta)), 0_n, r21), enc(xor_(B_1, Unwrap(delta)), 0_n, r22));
@@ -166,8 +163,6 @@ package RInlineLINRKKDM {
             } else {
                 GarbledRow0 <- (enc(xor_(A_1, Unwrap(delta)), xor_(R_00, C_0), r01), enc(B_0, R_00, r02));
             }
-            /*The weird part 1 part 2 flip ind thing we need to prove*/
-            /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
             if bit {
 
@@ -209,8 +204,6 @@ package RInlineLINRKKDM {
             } else {
                 GarbledRow1 <- (enc(xor_(A_1, Unwrap(delta)), xor_(xor_(R_01, C_1),Unwrap(delta)), r21), enc(B_1, R_01, r22));
             }
-             /*The weird part 1 part 2 flip ind thing we need to prove*/
-            /*C_[3] is comp-ind from enc(A_0+s, R_10),enc(B_0, xor_(R_10,C_0))*/
             /* a+1,b+1 */
             if bit {
                 GarbledRow0 <- (enc(xor_(A_1, Unwrap(delta)), 0_n, r31), enc(xor_(B_1, Unwrap(delta)), 0_n, r32));
@@ -221,7 +214,6 @@ package RInlineLINRKKDM {
             X_ <- (A_1, B_1);
             d[C_1] <- Some(c);
         }
-        /*what am i supposed to do with this, row 0 is encrypting zeroes here.. fix this*/
         return (C_,X_,d);
     }
 }
