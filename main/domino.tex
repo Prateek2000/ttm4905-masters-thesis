@@ -1,5 +1,5 @@
 \newcommand{\code}[1]{%
-  \colorbox{gray!10}{\texttt{#1}}%
+  \colorbox{gray!10}{\texttt{\detokenize{#1}}}%
 }
 \chapter{Formalizing Free XOR in Domino}
 \label{chp:domino}
@@ -7,16 +7,35 @@ This chapter describes the formalization of the \acrshort{ssp} introduced in the
 \section{Domino}
 \label{sec:whatisdomino}
 \newacronym{z3}{Z3}{Z3 theorem prover}
-Domino is a proof assistant for State-separating proofs (SSPs) (Section \ref{sec:ssp}) that allows the user to validate the correctness of a SSP using simple and familiar syntax. To allow this, it converts the SSP-style Domino language code into corresponding code in SMT-LIB, a language used by programs called SMT solvers that use a variety of mathematical theorems and constrains to determine if the given problem is satisfiable with any possible inputs, or not, under specific constraints. In the former case, a SMT solver can also return the inputs that make the problem satisfiable. Domino requires a SMT solver to be installed on the system - either \acrfull{z3} \cite{de_moura_z3_2008}, or CVC5, in order to process these SMT-LIB files that are generated. 
+Domino is a proof assistant for State-separating proofs (SSPs) (Section \ref{sec:ssp}) that allows the user to validate the correctness of a SSP using simple and familiar syntax. To allow this, it converts the SSP-style Domino language code into corresponding code in SMT-LIB, a language used by programs called SMT solvers that use a variety of mathematical theorems to determine if a given problem is satisfiable with some possible combination of inputs under specific constraints. If the problem is satisfiable, the SMT solver can also return the inputs that make the problem satisfiable. Domino requires a SMT solver to be installed on the system - either \acrfull{z3} \cite{de_moura_z3_2008}, or CVC5, in order to process these SMT-LIB files that are generated. 
 
-The SSP-style Domino syntax was designed to use very similar keywords and constructs as those in SSPs -- packages, games, and theorems. Packages are composed into games, and these games are used to build a theorem. The explicit relation between the games used in the theorem are defined in the form of game hops. Functional equivalence of pairs of games is argued using invariants that relate their states, and mappings between the randomnesses sampled in either game \cite{domino:paper}. These invariants and randomness mappings are written directly in the SMT-LIB language. An equivalence relation that Domino tries to verify as part of a theorem is referred to as a lemma. In order to establish functional equivalence, games are then checked against various lemmata, depending on the relations needed in order to prove the correctness of the theorem.
-\subsection{Architecture}
+The SSP-style Domino syntax was designed to use very similar keywords and constructs as those in SSPs -- packages, games, and theorems. Packages are composed into games, and these games are used to build a theorem. The explicit relation between the games used in the theorem are defined in the form of game hops. Functional equivalence of pairs of games is argued using invariants that relate their states, and mappings between the randomnesses sampled in either game \cite{domino:paper}. These invariants and randomness mappings are written directly in the SMT-LIB language. An equivalence relation that Domino tries to verify as part of a theorem is referred to as a lemma. In order to establish functional equivalence, games are then checked against one of many in-built and custom lemmata depending on the relations needed in order to prove the correctness of the theorem.
+
+\subsection{The Domino binary}
 \label{subsec:architecture}
-The main Domino program is exposed as a command line binary. It has two main commands that we use in our formalization: 
+Domino is published as a Rust crate and is available on GitHub. At the time of writing, Domino is under active development, and its API and language features are subject to frequent changes, including breaking changes between versions.
+
+The main Domino program is exposed as a command line binary. We use two main subcommands in our formalization: 
 \begin{itemize}
-    \item \code{domino latex} is primarily used to generate \LaTeX  code for the packages, games, theorems and graphs that show how these are related to each other. It uses an underlying \acrshort{smt} solver to draw the reduction graphs, and generates \lstinline|.tex| files that define these graphs, as well as the pseudocode for the games and packages. \acrshort{z3} is used as the default \acrshort{smt} solver in this version of Domino \cite{domino:code}. The \code{.tex} files are stored in the \code{\_build\\latex} subdirectory.
-    \item \code{domino prove} is used to validate each of the game hops that are defined in the theorem file. It also uses the SMT solver to validate the reduction and equivalence game hops. Equivalence game hops require an additional randomness mapping step, and may require a separate invariant file. The randomness mapping and invariants are coded in SMT-LIB in \code{.smt2} files, and these are passed to the SMT solver when Domino runs.
+    \item \code{domino latex} is used to generate \LaTeX  code for the packages, games, theorems and graphs that show how these are related to each other. It uses the underlying \acrshort{smt} solver to generate code that draws the reduction graphs when the output \lstinline|.tex| files are compiled. This command also generates pseudocode for every package that is used in the theorem. \acrshort{z3} is the default \acrshort{smt} solver used in this version of Domino \cite{domino:code}. The \code{.tex} files are stored in the \code{\_build\latex} subdirectory.
+    \item \code{domino prove} is used to validate each of the game hops that are defined in the theorem file. It also uses the SMT solver to validate the reduction and equivalence game hops. Equivalence game hops require an additional randomness mapping step, and may require a separate invariant file. \code{domino prove} accepts parameters, and the following are used in this project:
+    \begin{itemize}
+        \item \code{-t} generates transcripts which can be used to review the outputs of the SMT solver.
+        \item \colorbox{gray!10}{\texttt{-\kern0pt-proof}} selects a specifc theorem to be proven and is useful if the proof code is split into multiple theorems and the user needs to prove a specific one. It is followed by a string parameter with the name of the theorem.
+        \item \colorbox{gray!10}{\texttt{-\kern0pt-proofstep}} selects the proof step to be proven in the selected theorem. It is followed by a integer which is the index of the proof step to be proven. Indexing starts at 0.
+        \item \colorbox{gray!10}{\texttt{-\kern0pt-claim}} selects the lemma to be proven in the selected proofstep. It takes a string parameter that is the full name of the lemma to be proven. 
+    \end{itemize}
 \end{itemize}  
+
+Domino has two main dependencies:
+\begin{itemize}
+    \item A recent Rust toolchain. Instructions on setting this up can be found at \cite{rust_install}.
+    \item A functioning \acrshort{z3} and CVC5 installation and the executables on \code{PATH}. The installation instructions for these can be found at the respective websites of the projects \cite{cvc5_install,z3_install}.
+\end{itemize} 
+It is important to note that the current version of Domino prefers \acrshort{z3} for running \code{domino latex} since it is faster at generating the dependency graphs. The \code{-s cvc5} option can be used to force it to use CVC5 for graph resolution.  However, for \code{domino prove}, CVC5 is the default \acrshort{smt} solver, and \acrshort{z3} is only supported using an adaptor script which was not tested by us \cite{domino:paper}.
+
+After setting up these dependencies, Domino can be installed using the installation instructions in the Domino repository \cite{domino:code}.
+
 \subsection{Packages}
 \label{subsec:arch_packages}
 Packages in Domino are syntactically the same as packages in \acrshort{ssp}s. The core of a package are the oracles that it exposes. Each oracle defines what arguments it expects, and its return values. An SSP package can also be composed with other packages, and Domino allows this using an \code{import oracle} syntax that can be used to declare external oracles that can composed with this package. External oracle calls cannot be inlined, however, and must use an explicit \code{invoke <ORACLE-NAME>} syntax that assigns the value to some variable. Listing \ref{lst:domino-pkg-example} shows a sample Domino package with placeholders.
@@ -24,57 +43,43 @@ Packages in Domino are syntactically the same as packages in \acrshort{ssp}s. Th
 
 \subsection{Compositions}
 \label{subsec:arch_compositions}
-Compositions, or games, in Domino are syntactically equivalent to games in \acrshort{ssp}s. A game first defines constants that will be passed to package instances. Then, it defines instances of packages that are part of the game. It also defines the composition of one or more packages by declaring the oracles of each package instance that are accessible to other package instances in the composition. It also explicitly defines the oracles of specific instances that are exposed to the adversary. Listing \ref{lst:domino-game-example} shows a sample Domino game with placeholders.
+Compositions, or games, in Domino are syntactically equivalent to games in \acrshort{ssp}s. A game first defines constants that will be passed to package instances. Then, it defines instances of packages that are used in the definition of the game. The compose block is used to define the composition of one or more packages by declaring the oracles of each package instance that are accessible to other package instances in the composition. The compose block also has a special keyword 'adversary' which is used to define the specific package instances that are accessible to an adversary. Listing \ref{lst:domino-game-example} shows a sample Domino game with placeholders.
 \input{figs/code/domino-composition-code.tex}
 \subsection{Theorems}
 \label{subsec:theorems}
-Theorems primarily define the relations between different games in Domino. They first define constants that are passed to game instances defined later. Then, the games that we use in the theorem are instantiated with these constants. Following this, we define the assumptions under which the theorem is supposed to be proven. Finally, we need to define the game hops we need so that Domino can verify them. Game hops can either be reductions, which map games to each other based on some underlying assumption, or equivalences, which map games based on some other relation, which is expressed in terms of randomness mappings and invariant relations. Then, each of these equivalences is checked for specific lemmata such as \code{same-output} and \code{equal-aborts} (these two show input-output equivalence). Domino also supports custom definitions for lemmata in SMT-LIB. Listing \ref{lst:domino-theorem-example} shows a sample Domino theorem with placeholders.
+Theorems define the relations between different games in Domino. They first define constants that are passed to game instances defined right after. Then, the games that are used in the theorem are instantiated with these constants. Following this, the assumptions block is used to define the assumptions under which the theorem is supposed to be proven. Finally, the gamehops block defines the game hops used to relate the games that the theorem is trying to prove functionally equivalent. These game hops can either be reductions, conjectures, or equivalences. Reductions map two games to each other based on some underlying assumption which is defined in the assumption block earlier. Conjectures declare two games to be functionally equivalent without any further reasoning, and Domino accepts their equivalence as-is. Equivalences map games based on lemmata, and are expressed in terms of randomness mappings and invariant relations. Each equivalence is checked for specific lemmata such as \code{same-output} and \code{equal-aborts} (these two together show input-output equivalence). An equivalence proof step may also contains references to other lemmata that need to be verified for that proof step to be valid. These custom definitions for lemmata are written in SMT-LIB. Listing \ref{lst:domino-theorem-example} shows a sample Domino theorem with placeholders, and without custom lemmata.
 \input{figs/code/domino-theorem-code.tex}
-
-\section{Setting up Domino}
-\label{sec:usingdomino}
-Domino is published as a Rust crate and is available on GitHub. At the time of writing, Domino is under active development, and its API and language features are subject to frequent changes, including breaking changes between versions.
-
-Domino has two main dependencies:
-\begin{itemize}
-    \item A recent Rust toolchain. Instructions on setting this up can be found at \cite{rust_install}.
-    \item A functioning \acrshort{z3} and CVC5 installation and the executables on \code{PATH}. The installation instructions for these can be found at the respective websites of the projects \cite{cvc5_install,z3_install}.
-\end{itemize} 
-It is important to note that the current version of Domino prefers \acrshort{z3} for running \code{domino latex} since it is faster at generating the dependency graphs. The \code{-s cvc5} option can be used to force it to use CVC5 for graph resolution.  However, for \code{domino prove}, CVC5 is the default \acrshort{smt} solver, and  \acrshort{z3} is only supported using an adaptor script \cite{domino:paper}.
-
-After setting up these dependencies, Domino can be installed using the installation instructions in the Domino repository \cite{domino:code}.
 
 \subsection{Project Structure}
 \label{subsec:projectstructure}
-A Domino project directory requires the presence of an empty \code{ssp.toml} file to indicate the project root. It allows SSP logic to be written into packages, games, and theorem files. These are all placed under their own directories, i.e., folders called \code{packages}, \code{games}, and \code{theorem}.
+A Domino project directory requires the presence of an empty \code{ssp.toml} file to indicate the project root. The project root contains three other mandatory folders - \code{packages}, \code{games}, and \code{theorem}, each of which contain their namesakes. Most Domino subcommands also take a \code{-{}-path} parameter, followed by a directory, to indicate the project root. 
 
-Each of these folders can then contain one or more files. Domino checks packages and games for syntactic correctness even if they are not used in a theorem. This is by design, since when writing state separating proofs, the components (packages and games) are usually set up before the actual proof, and it is helpful to verify their syntactic correctness before moving on to building larger compositions and theorems.
+Each of the three folders in a Domino project can contain one or more \code{.ssp} files. Domino checks packages and games for syntactic correctness even if they are not used in a theorem. This is by design, in order to help packages and games  be checked for syntax before setting up a complicated proof.
 
 \section{Encoding the Free XOR SSP}
 \label{sec:freexorindomino}
-In order to begin encoding the SSP from the previous chapter in Domino, we need to establish how we would like to represent the various packages, games, and the main theorem.
-\subsection{From SSP to Domino}
-\label{subsec:fromssptodomino}
-In our SSP, we do not directly discuss packages as much as we discuss games, but while encoding the proof in Domino, we must start with formulating packages. Then, we define games that may either be a composition of a reduction with a package, or just a package. It is also often possible to represent the real and ideal versions of a package or game in the same file, with a parameter bit to switch between the two different behaviors.
-\subsection{Packages}
-\label{subsec:encode_packages}
-The reduction described in the previous chapter consists of the games $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ and $G^{b}_{\mathsf{LIN-RK-KDM}}$, and the reduction $\rdv$. It also uses a composition $\rdv\to G^{b}_{\mathsf{LIN-RK-KDM}}$. 
-We represent the ideal and real instances of $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ as  two different packages in Domino, namely \code{SimFreeXORIdealANDONLY}  and \code{SimFreeXORRealANDONLY}. Both instances of $G^{b}_{\mathsf{LIN-RK-KDM}}$ are represented as one package \code{LINRKKDM} that takes an input parameter bit \code{b} that can be used to switch between the real and ideal behaviors. 
+Before we describe our encoding of the SSP from the previous chapter in Domino, it is important to note that the pen-and-paper SSP was written in pseudocode, which gives us a lot of freedom on how we represent variables and operations. However, since Domino has its own syntax, and is compiled into SMT-LIB, even small syntactical changes can change the program's behavior. Therefore, we reason a lot more about packages instead of games (or compositions). This also allows us to reflect on the Domino programming language and discuss it in the following chapter. We first discuss our representation of the original pen-and-paper SSP games in Domino, and then describe the other games and game-hops that were used, along with the reasons they were needed. 
+
+\subsection{Common parameters}
+The the use of the following paramteres remains consistent across many package and game files, and they are also seen in the theorem file, we discuss them before proceeding.
+\begin{itemize}
+    \item \code{n}: Parameter used to represent the security parameter $\secpar$.
+    \item \code{enc}: Parameter used as an abstract function to represent the encryption function $\enc$.
+    \item \code{m}: Parameter used to represent the output length of the function $\enc$. 
+    \item \code{b}: Parameter used to switch real and ideal behaviors in a few games. 
+    \item \code{xor_}: Parameter used as an abstract function used to represent the bitwise XOR operation, since Domino does not provide a real representation of the bitwise XOR operation. This is discussed in more detail in Section \ref{chp:discussion}.
+\end{itemize}
+
+\subsection{The FreeXOR and LIN-RK-KDM Games}
+\label{subsec:freexorandlinkrkkdmgames}
+The reduction described in Chapter \ref{chp:penpaperssp} consists of the games $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ and \allowbreak $G^{b}_{\mathsf{LIN-RK-KDM}}$, and the reduction $\rdv$. It also uses a composition $\rdv\to G^{b}_{\mathsf{LIN-RK-KDM}}$. 
+We represent the ideal and real instances of $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ as  two different packages in Domino, namely \code{SimFreeXORIdeal}  and \code{SimFreeXORReal}. Both instances of $G^{b}_{\mathsf{LIN-RK-KDM}}$ are represented as one package \code{LINRKKDM} that takes an input parameter bit \code{b} that can be used to switch between the real and ideal behaviors. 
 The reduction $\rdv$ is modeled as its own package \code{Reduction}.
 Table \ref{tab:freexor-domino-packages} shows this mapping.
 
 \input{figs/table/freexorpackages.tex}
 
-\subsubsection{LINRKKDM.pkg.ssp}
-This package file defines five parameters:
-\begin{itemize}
-    \item \code{n}: This parameter is used to represent the security parameter $\secpar$
-    \item \code{enc}: We use an abstract function to represent the encryption function $\enc$.
-    \item \code{m}: This parameter is used to represent the output length of the function $\enc$. 
-    \item \code{b}: This parameter is used to switch real and ideal behaviors in the $\mathsf{ENC}$ oracle. 
-    \item \code{xor\_}: An abstract function is also used to represent the bitwise XOR operation since Domino does not provide a real representation of the bitwise XOR operation.
-\end{itemize}
-These definitions are consistent for all the package files.
+
 
 Package LINRKKDM also contains a state variable \code{delta} that corresponds to $\Delta$ in the SSP representation. However, \code{delta} is wrapped in \code{Maybe\{...\}} since we need it to be an optionally undefined type, and must indicate such to the Domino compiler that converts the package to SMT-LIB for the SMT solver to understand.
 

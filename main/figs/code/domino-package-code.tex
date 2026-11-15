@@ -11,21 +11,21 @@
     columns=fixed]
     package Reduction {
     params {
-        @@/* an integer parameter */@@
+        @@/*an integer parameter*/@@
         n: Integer, 
-        @@/* a function parameter that maps two @@
-        @@bitstrings of length n to a bitstring of length m */@@
+        @@/*a function parameter that maps two @@
+        @@bitstrings of length n to a bitstring of length m*/@@
         fn1: fn Bits(n), Bits(n), -> Bits(m),
     }
     @@/*state of the package*/@@
     state {
         x: Bits(n),  
     }
-    @@/*external oracles used in this package*/@@
+    @@/*external oracles consumed in this package*/@@
     import oracles {
         EXT1(param1: Integer) -> Bits(m),
     }
-    @@/*an oracle of this package*/@@
+    @@/*an oracle exposed by this package*/@@
     oracle ORA(f: Bits(*), x: (Bool, Bool)) -> (Bits(m),Bits(m)) 
     {
         temp <- invoke EXT1(n);

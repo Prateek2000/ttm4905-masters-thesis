@@ -10,13 +10,14 @@
     basicstyle=\small\ttfamily,
     columns=fixed]
     theorem Theorem1 {
-    @@/* an integer const parameter passed @@
-    @@ to game instances */@@
+    @@/*an integer const parameter passed @@
+    @@ to game instances*/@@
     const n: Integer;
-    @@/* a const function that is passed to @@
-    @@ game instances */@@
+    @@/*a const function that is passed to @@
+    @@ game instances*/@@
     const fn1: fn Bits(n), Bits(n), -> Bits(m);
-    instance LeftGame = R_Pkg1{
+    @@/*Game instances used in the theorem*/@@
+    instance LeftGame = Game_R_Pkg1{
         params { n: n, fn1: fn1 }
     }
     instance RightGame = Game2{
@@ -31,17 +32,29 @@
     @@/*... other games...*/@@
     assumptions {BaseGame: BaseLGame ~ BaseRGame}
     gamehops {
-            reduction LeftGame RightGame {
-                assumption BaseGame
-            }
+        reduction LeftGame RightGame {
+            assumption BaseGame
             map {
                 @@/*map packages of LeftGame and BaseLGame*/@@
             }
             map {
                 @@/*map packages of RightGame and BaseRGame*/@@
             }
-            equivalence GameN GameM {
-                @@...@@
+        }
+        equivalence GameN GameM {
+            invariant: [
+                ./theorem/invariants/invariant.smt2
+            ]
+            ORACLE: {
+                lemmas {
+                    invariant: [no-abort]
+                    same-output: [no-abort]
+                    equal-aborts: []
+                    @@/*other lemmata*/@@
+
+                }
             }
+        }
+        @@...@@
     }}
 \end{lstlisting}
