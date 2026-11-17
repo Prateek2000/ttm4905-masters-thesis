@@ -56,9 +56,9 @@ A Domino project directory requires the presence of an empty \code{ssp.toml} fil
 
 Each of the three folders in a Domino project can contain one or more \code{.ssp} files. Domino checks packages and games for syntactic correctness even if they are not used in a theorem. This is by design, in order to help packages and games  be checked for syntax before setting up a complicated proof.
 
-\section{Encoding the Free XOR SSP}
+\section{Encoding the Free XOR SSP in Domino}
 \label{sec:freexorindomino}
-Before we describe our encoding of the SSP from the previous chapter in Domino, it is important to note that the pen-and-paper SSP was written in pseudocode, which gives us a lot of freedom on how we represent variables and operations. However, since Domino has its own syntax, and is compiled into SMT-LIB, even small syntactical changes can change the program's behavior. Therefore, we reason a lot more about packages instead of games (or compositions). This also allows us to reflect on the Domino programming language and discuss it in the following chapter. We first discuss our representation of the original pen-and-paper SSP games in Domino, and then describe the other games and game-hops that were used, along with the reasons they were needed. 
+Before we describe our encoding of the SSP from the previous chapter in Domino, it is important to note that the pen-and-paper SSP was written in pseudocode, which gives us a lot of freedom on how we represent variables and operations, and allows us to get away with not explicitly defining packages. However, since Domino has its own syntax, and is compiled into SMT-LIB, small syntactical changes in the package code can alter the program's behavior and make it difficult to debug. Therefore, we reason a lot more about packages instead of games (or compositions), and clearly differentiate between them in Domino code. This has the added benefit of allowing us to reflect on the nuances of the Domino programming language and discuss it in Chapter \ref{chp:discussion}. We first discuss our representation of the original pen-and-paper SSP games in Domino, and then describe the other games and game-hops that were used, along with the reasons they were needed. 
 
 \subsection{Common parameters}
 The the use of the following paramteres remains consistent across many package and game files, and they are also seen in the theorem file, we discuss them before proceeding.
@@ -70,7 +70,7 @@ The the use of the following paramteres remains consistent across many package a
     \item \code{xor_}: Parameter used as an abstract function used to represent the bitwise XOR operation, since Domino does not provide a real representation of the bitwise XOR operation. This is discussed in more detail in Section \ref{chp:discussion}.
 \end{itemize}
 
-\subsection{The FreeXOR and LIN-RK-KDM Games}
+\subsection{The FreeXOR, LIN-RK-KDM, and Reduction games}
 \label{subsec:freexorandlinkrkkdmgames}
 The reduction described in Chapter \ref{chp:penpaperssp} consists of the games $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ and \allowbreak $G^{b}_{\mathsf{LIN-RK-KDM}}$, and the reduction $\rdv$. It also uses a composition $\rdv\to G^{b}_{\mathsf{LIN-RK-KDM}}$. 
 We represent the ideal and real instances of $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ as  two different packages in Domino, namely \code{SimFreeXORIdeal}  and \code{SimFreeXORReal}. Both instances of $G^{b}_{\mathsf{LIN-RK-KDM}}$ are represented as one package \code{LINRKKDM} that takes an input parameter bit \code{b} that can be used to switch between the real and ideal behaviors. 
@@ -79,16 +79,33 @@ Table \ref{tab:freexor-domino-packages} shows this mapping.
 
 \input{figs/table/freexorpackages.tex}
 
+However, the Domino code for these packages is not a literal translation of the pseudocode from the pen-and-paper SSP packages. 
 
+\subsubsection{Representation of the LIN-RK-KDM game}
+\label{subsubsec:linrkkdm}
+In addition to the package parameters, package LINRKKDM also contains a state variable (a bitstring of length \code{n})  called \code{delta} that corresponds to $\Delta$ in the SSP representation. However, in the Domino package, \code{delta} is wrapped in \code{Maybe(...)}. This is because \code{Bits(n)} is not nullable, and therefore cannot be checked for an `unassigned' state, as we do in $G^{b}_{\mathsf{LIN-RK-KDM}}$. Domino provides a nullable type \code{Maybe(...)} that allows us to set \code{delta} to a \code{None} value which we use as a representation for an `unassigned' state.
 
-Package LINRKKDM also contains a state variable \code{delta} that corresponds to $\Delta$ in the SSP representation. However, \code{delta} is wrapped in \code{Maybe\{...\}} since we need it to be an optionally undefined type, and must indicate such to the Domino compiler that converts the package to SMT-LIB for the SMT solver to understand.
+It is also worth mentioning that for all subsequent games that use the state variable \code{delta}, we continue to use the \code{Maybe(Bits(n))} type instead of raw \code{Bits(n)}. This choice was made to reduce the number of type casts when comparing and relating game states in SMT-LIB (we discuss this in more detail when discussing invariants and randomness mappings). However, the tradeoff is that we need to use an \code{Unwrap} operator when trying to access the value of \code{delta} in the Domino code.
 
-Finally, the package contains the \code{ENC} oracle, which corresponds to the similarly named $\mathsf{ENC}$ oracle in the SSP representation. While it is quite similar, the SSP representation the value $z$ is a bit that is multiplied with bitstring $\Delta$ such that the expression evaluates to $\Delta$ if $z=1$, or the all-zero bitstring if $z=0$. Since Domino does not support multiplying booleans to bitstrings, we had to resort to using conditional branching on $z$ (Listing \ref{lst:conditionalbranching}) when translating this.
-\input{figs/code/domino-cond-branch.tex}
+The code for the \code{ENC} oracle in the \code{LINRKKDM} package also differs from the pen-and-paper SSP as it contains an extra conditional branch using \code{if-else} on the boolean variable \code{z}. This is because Domino does not allow us to multiply a boolean value $z$ with a bitstring $\Delta$, and we cannot represent ${msg} \xor {z}\cdot \Delta$ from $G^{b}_{\mathsf{LIN-RK-KDM}}$ directly.
 
-\subsubsection{Reduction.pkg.ssp}
-The parameters in this package file are defined in the same was as in \code{LINRKKDM.pkg} \code{.ssp}.
-Since the SSP representation of this package had an outgoing dependency on $\mathsf{ENC}$, we model this dependency using an import statement as in Listing \ref{lst:importoracle}.
+A final observation is that the \code{enc} parameter that represents the $\enc$ operation from $G^{b}_{\mathsf{LIN-RK-KDM}}$ contains three parameters instead of two. Because $\enc$ is a non-deterministic function, and the abstract functions we define in Domino as treated as deterministic, we introduce a third parameter that takes a freshly sampled random value to emulate the desired behaviour.
+%domino-cond-branch.tex this is unused but use if it helps explain something. We could add code snippets here.
+
+\subsubsection{Representation of the Reduction game}
+\label{subsubsec:reduction}
+The \code{Reduction} package begins with the package parameters and does not use a state variable, which is consistent with its pen-and-paper counterpart. However, since $\rdv$ is composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$, we use the \code{import oracle} syntax in \code{Reduction} to declare that this package is intended to be composed with another package that exposes a \code{ENC} oracle with a specific signature. This also allows us to invoke the \code{ENC} oracle in the oracles of \code{Reduction}. 
+
+\code{Reduction} exposes one oracle -- \code{GARBLEAND}, which maps to the $\mathsf{GARBLE}$ oracle of $\rdv$, but does not take $f$ as a paramter. This is because Domino does not allow equivalence relations between games that expose oracles with different oracle signatures, and one of the latter games in the equivalence relations we try to establish (specifically $G^{1}_\mathsf{Sim\text{-}FreeXOR}$ and its corresponding package \code{SimFreeXORIdeal}) require a modified oracle signature. We discuss this in more detail later in this subsection. We are able to get around not having $f$ as an input parameter since we already know that we are dealing with the garbling of an AND gate.
+
+Furthermore, since Domino support neither assignment operations to arbitrary boolean indexes (such as $A_a \sample \bin^\secpar $), nor operations between boolean and bitstrings, we got around it using conditional branching on the boolean variables \code{a} and \code{b}. This enabled us to compute the value of \code{c} or $f(x)$ in each branch separately by setting the value of \code{c} to a precomputed $a\land b$.
+
+talk about
+\begin{itemize}
+    \item enc random variables
+    \item sampling outside the conditional branches to simplify randomness mapping later
+    \item Some(()) for table value - used to emulate a set instead of an actual table
+\end{itemize}
 
 \input{figs/code/domino-import-oracle.tex}
 We also define the \code{GARBLE} oracle which encodes the code from $\mathsf{GARBLE}$ in the SSP. While randomly sampling variables, we can assign them a sample name, which is useful when we want to relate these randomnesses to the randomnesses generated in other packages and games. 
