@@ -67,7 +67,7 @@ The the use of the following paramteres remains consistent across many package a
     \item \code{enc}: Parameter used as an abstract function to represent the encryption function $\enc$.
     \item \code{m}: Parameter used to represent the output length of the function $\enc$. 
     \item \code{b}: Parameter used to switch real and ideal behaviors in a few games. 
-    \item \code{xor_}: Parameter used as an abstract function used to represent the bitwise XOR operation, since Domino does not provide a real representation of the bitwise XOR operation. This is discussed in more detail in Section \ref{chp:discussion}.
+    \item \code{xor_}: Parameter used as an abstract function used to represent the bitwise XOR operation, since Domino does not provide a real representation of the bitwise XOR operation. We discuss this in more detail in Section \ref{chp:discussion}.
 \end{itemize}
 
 \subsection{The FreeXOR, LIN-RK-KDM, and Reduction games}
@@ -81,19 +81,20 @@ Table \ref{tab:freexor-domino-packages} shows this mapping.
 
 However, the Domino code for these packages is not a literal translation of the pseudocode from the pen-and-paper SSP packages. 
 
-\subsubsection{Representation of the LIN-RK-KDM game}
+\subsubsection{LINRKKDM.pkg.ssp}
 \label{subsubsec:linrkkdm}
+\input{figs/code/freexor-pkg-linrkkdm.tex}
 In addition to the package parameters, package LINRKKDM also contains a state variable (a bitstring of length \code{n})  called \code{delta} that corresponds to $\Delta$ in the SSP representation. However, in the Domino package, \code{delta} is wrapped in \code{Maybe(...)}. This is because \code{Bits(n)} is not nullable, and therefore cannot be checked for an `unassigned' state, as we do in $G^{b}_{\mathsf{LIN-RK-KDM}}$. Domino provides a nullable type \code{Maybe(...)} that allows us to set \code{delta} to a \code{None} value which we use as a representation for an `unassigned' state.
 
 It is also worth mentioning that for all subsequent games that use the state variable \code{delta}, we continue to use the \code{Maybe(Bits(n))} type instead of raw \code{Bits(n)}. This choice was made to reduce the number of type casts when comparing and relating game states in SMT-LIB (we discuss this in more detail when discussing invariants and randomness mappings). However, the tradeoff is that we need to use an \code{Unwrap} operator when trying to access the value of \code{delta} in the Domino code.
 
-The code for the \code{ENC} oracle in the \code{LINRKKDM} package also differs from the pen-and-paper SSP as it contains an extra conditional branch using \code{if-else} on the boolean variable \code{z}. This is because Domino does not allow us to multiply a boolean value $z$ with a bitstring $\Delta$, and we cannot represent ${msg} \xor {z}\cdot \Delta$ from $G^{b}_{\mathsf{LIN-RK-KDM}}$ directly.
+The code for the \code{ENC} oracle in the \code{LINRKKDM} package also differs from the pen-and-paper SSP as it contains an extra conditional branch using \code{if-else} on the boolean variable \code{z} (Listing \ref{lst:freexor-pkg-linrkkdm-ora-ENC}). This is because Domino does not allow us to multiply a boolean value $z$ with a bitstring $\Delta$, and we cannot represent ${msg} \xor {z}\cdot \Delta$ from $G^{b}_{\mathsf{LIN-RK-KDM}}$ directly.
 
-A final observation is that the \code{enc} parameter that represents the $\enc$ operation from $G^{b}_{\mathsf{LIN-RK-KDM}}$ contains three parameters instead of two. Because $\enc$ is a non-deterministic function, and the abstract functions we define in Domino as treated as deterministic, we introduce a third parameter that takes a freshly sampled random value to emulate the desired behaviour.
-%domino-cond-branch.tex this is unused but use if it helps explain something. We could add code snippets here.
+A final observation is that the \code{enc} parameter that represents the $\enc$ operation from $G^{b}_{\mathsf{LIN-RK-KDM}}$ contains three parameters instead of two. Because $\enc$ is a non-deterministic function, and the abstract functions we define in Domino are treated as deterministic, we introduce a third parameter that takes a freshly sampled random value to emulate the desired random behaviour.
 
-\subsubsection{Representation of the Reduction game}
+\subsubsection{Reduction.pkg.ssp}
 \label{subsubsec:reduction}
+\input{figs/code/freexor-pkg-reduction.tex}
 The \code{Reduction} package begins with the package parameters and does not use a state variable, which is consistent with its pen-and-paper counterpart. However, since $\rdv$ is composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$, we use the \code{import oracle} syntax in \code{Reduction} to declare that this package is intended to be composed with another package that exposes a \code{ENC} oracle with a specific signature. This also allows us to invoke the \code{ENC} oracle in the oracles of \code{Reduction}. 
 
 \code{Reduction} exposes one oracle -- \code{GARBLEAND}, which maps to the $\mathsf{GARBLE}$ oracle of $\rdv$, but does not take $f$ as a paramter. This is because Domino does not allow equivalence relations between games that expose oracles with different oracle signatures, and one of the latter games in the equivalence relations we try to establish (specifically $G^{1}_\mathsf{Sim\text{-}FreeXOR}$ and its corresponding package \code{SimFreeXORIdeal}) require a modified oracle signature. We discuss this in more detail later in this subsection. We are able to get around not having $f$ as an input parameter since we already know that we are dealing with the garbling of an AND gate.

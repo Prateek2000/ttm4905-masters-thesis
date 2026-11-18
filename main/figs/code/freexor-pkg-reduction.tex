@@ -1,0 +1,40 @@
+\lstdefinelanguage{Domino}{
+    % morecomment=[s]{/*}{*/},
+    moredelim=[is][\color{gray}]{@@}{@@}
+}
+\begin{lstlisting}[
+    language=Domino,
+    caption={Part of oracle GARBLEAND in Reduction.pkg.ssp},
+    label={lst:freexor-pkg-reduction-ora-GARBLEAND},
+    commentstyle=\small\rmfamily\itshape,
+    basicstyle=\small\ttfamily,
+    columns=fixed,
+    frame=single,
+    breaklines=true,
+    float,floatplacement=H]
+oracle GARBLEAND(x: (Bool, Bool)) -> ( Table((Bits(m),Bits(m)), ()), (Bits(n), Bits(n)), Table(Bits(n), Bool)) {
+    @@...@@
+    if ((a==false) and (b==false)) {
+        c <- false; /* AND gate */
+        A_0 <-tempsample1;
+        B_0 <-tempsample2;
+        C_0 <-tempsample3;
+        GarbledRow0 <- (enc(A_0, R_00, r01), enc(B_0, xor_(R_00, C_0), r02));
+        temp <- invoke ENC(B_0, xor_(R_01, C_0), false);
+        GarbledRow1 <- (enc(A_0, R_01, r11), temp);
+        temp <- invoke ENC(A_0, xor_(R_10, C_0), false);
+        GarbledRow2 <- (temp, enc(B_0, R_10, r22)); 
+        temp <- invoke ENC(A_0, R_11, false);
+        temp2 <- invoke ENC(B_0, xor_(R_11, C_0), true);
+        GarbledRow3 <- (temp, temp2);
+        C_[GarbledRow0] <- Some(());
+        C_[GarbledRow1] <- Some(());
+        C_[GarbledRow2] <- Some(());
+        C_[GarbledRow3] <- Some(());
+        X_ <- (A_0, B_0);
+        d[C_0] <- Some(c); 
+    }
+    @@...@@
+    return (C_,X_,d);
+} 
+\end{lstlisting}
