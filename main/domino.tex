@@ -69,15 +69,32 @@ The the use of the following paramteres remains consistent across many package a
     \item \code{b}: Parameter used to switch real and ideal behaviors in a few games. 
     \item \code{xor_}: Parameter used as an abstract function used to represent the bitwise XOR operation, since Domino does not provide a real representation of the bitwise XOR operation. We discuss this in more detail in Section \ref{chp:discussion}.
 \end{itemize}
+\subsection{The FreeXOR proof sketch}
+\label{subsec:freexorproofsketch}
+The theorem file \code{freexor.ssp} defines all of the assumptions and game hops used in the Domino encoding of the proof, and links to the invariants and randomness mappings used in the game hops. Initially, we started with four packages - \code{SimFreeXORReal}, \code{SimFreeXORIdeal}, \code{Reduction}, and \code{LINRKKDM}. These packages map cleanly to the pen-and-paper SSP we describe in Section \ref{chp:penpaperssp}, as described in Table \ref{tab:freexor-domino-packages}.
 
-\subsection{The FreeXOR, LIN-RK-KDM, and Reduction games}
+\input{figs/table/freexorpackages.tex}
+
+However, as we went about defining the relations between the variables in the packages involved in each game hop, it became apparent that we would need to use intermediate packages and games due to the complexity of the game hops, and break it down into multiple game hops with less drastic changes.
+
+Figure \ref{fig:gamehops} shows an overview of both the planned proof sketch based on the pen-and-paper SSP, and the actual proof sketch that was used in the Domino encoding.
+
+\input{figs/gamehops.tex}
+
+\subsection{Game hops}
+\label{subsec:gamehops}
+We now discuss the game hops used in the \code{freexor} theorem. 
+\subsubsection{Equivalence between \code{GSimFreeXORReal} and \code{R1compHybridReal}}
+\code{GSimFreeXORReal} is a game that contains one package - \code{SimFreeXORReal}. 
+rewrite:This package is a one to one map except: delta is sampled differently and is a maybe type because we wanted to keep it similar to linrkkdm (ref linrkkdm game hop 1 - we discuss it more there). also, since domino does not allow indexing of arrays using boolean variables, we use conditional branching on booleans a and b to compute c and to assign the set the X and d values in the return tuple.
+Also $A_a$ is analogous to \code{A\_1} since they are both randomly sampled values. The exact garbled row at which the encryption goes does not matter either, since \code{C\_} acts like a set when we insert the garbled rows into its table keys rather than the table value.
+
+\subsection{The Free XOR, LIN-RK-KDM, and Reduction games}
 \label{subsec:freexorandlinkrkkdmgames}
 The reduction described in Chapter \ref{chp:penpaperssp} consists of the games $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ and \allowbreak $G^{b}_{\mathsf{LIN-RK-KDM}}$, and the reduction $\rdv$. It also uses a composition $\rdv\to G^{b}_{\mathsf{LIN-RK-KDM}}$. 
 We represent the ideal and real instances of $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ as  two different packages in Domino, namely \code{SimFreeXORIdeal}  and \code{SimFreeXORReal}. Both instances of $G^{b}_{\mathsf{LIN-RK-KDM}}$ are represented as one package \code{LINRKKDM} that takes an input parameter bit \code{b} that can be used to switch between the real and ideal behaviors. 
 The reduction $\rdv$ is modeled as its own package \code{Reduction}.
-Table \ref{tab:freexor-domino-packages} shows this mapping.
 
-\input{figs/table/freexorpackages.tex}
 
 However, the Domino code for these packages is not a literal translation of the pseudocode from the pen-and-paper SSP packages. 
 
@@ -95,7 +112,7 @@ A final observation is that the \code{enc} parameter that represents the $\enc$ 
 \subsubsection{Reduction.pkg.ssp}
 \label{subsubsec:reduction}
 \input{figs/code/freexor-pkg-reduction.tex}
-The \code{Reduction} package begins with the package parameters and does not use a state variable, which is consistent with its pen-and-paper counterpart. However, since $\rdv$ is composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$, we use the \code{import oracle} syntax in \code{Reduction} to declare that this package is intended to be composed with another package that exposes a \code{ENC} oracle with a specific signature. This also allows us to invoke the \code{ENC} oracle in the oracles of \code{Reduction}. 
+The \code{Reduction} package begins with the package parameters and does not use a state variable, which is consistent with its pen-and-paper counterpart. Since $\rdv$ is composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$, we must use the \code{import oracle} syntax in \code{Reduction} to declare that this package is intended to be composed with another package that exposes a \code{ENC} oracle with a specific signature. This also allows us to invoke the \code{ENC} oracle in the oracles of \code{Reduction}. The concrete implementation of \code{ENC} that is invoked from the oracles of \code{Reduction}, however, is defined in the composition rather than in the \code{Reduction} package itself.   
 
 \code{Reduction} exposes one oracle -- \code{GARBLEAND}, which maps to the $\mathsf{GARBLE}$ oracle of $\rdv$, but does not take $f$ as a paramter. This is because Domino does not allow equivalence relations between games that expose oracles with different oracle signatures, and one of the latter games in the equivalence relations we try to establish (specifically $G^{1}_\mathsf{Sim\text{-}FreeXOR}$ and its corresponding package \code{SimFreeXORIdeal}) require a modified oracle signature. We discuss this in more detail later in this subsection. We are able to get around not having $f$ as an input parameter since we already know that we are dealing with the garbling of an AND gate.
 
