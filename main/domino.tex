@@ -3,7 +3,7 @@
 }
 \chapter{Formalizing Free XOR in Domino}
 \label{chp:domino}
-This chapter describes the formalization of the \acrshort{ssp} introduced in the previous chapter using Domino. We first introduce the aspects of Domino related to the formalization, including its project structure and mechanisms used to represent cryptographic constructions and their security arguments. We then describe how the Free XOR construction was translated from its pen-and-paper description to Domino. While the rest of the proof could be successfully verified by Domino, one code equivalence game hop could not be verified. Therefore, we discuss the assumptions and conjectures used, and the invariants and randomness mappings required by the equivalence game hops, as well as the limitations encountered during formalization.
+This chapter describes the formalization of the \acrshort{ssp} introduced in the previous chapter using Domino. We first introduce the aspects of Domino related to the formalization, including its project structure and mechanisms used to represent cryptographic constructions and their security arguments. We then describe how the Free XOR construction was translated from its pen-and-paper description to Domino. While the rest of the proof could be successfully verified by Domino, one equivalence game hop could not be verified. Therefore, we discuss the assumptions and conjectures used, and the invariants and randomness mappings required by the equivalence game hops, as well as the limitations encountered during formalization.
 \section{Domino}
 \label{sec:whatisdomino}
 \newacronym{z3}{Z3}{Z3 theorem prover}
@@ -81,13 +81,26 @@ Figure \ref{fig:gamehops} shows an overview of both the planned proof sketch bas
 
 \input{figs/gamehops.tex}
 
+\subsection{Common changes made across the Domino representation}
+\label{subsec:commonchangesindomino}
+Since Domino is a strongly typed language, the pseudocode from the pen-and-paper SSP needs to be adapted to be syntactically correct. Therefore, we made some common changes to the Domino packages when compared to the pen-and-paper games. 
+\begin{itemize}
+    \item In all games, \code{delta} is declared as a \code{Maybe(Bits(n))} type, which represents an nullable container type (\code{Maybe()}), wrapped around a bitstring of length $n$. This is to maintain similarity with the type of \code{delta} used in \code{linrkkdm.pkg.ssp}, and allows us to avoid typecasting in the SMT-LIB portion of the code, which is preferable. In doing this, we made a tradeoff by having to cast \code{delta} to its wrapped value whenever we needed to use it in our Domino code.
+    \item Since Domino does not allow accessing an array using a boolean variable as the array index in many cases, all of the Domino packages that expose the \code{GARBLE} oracle use conditional branching on booleans a and b to make varying assignments to the return tuple \code{(C_,X_,d)}.
+    \item Wire labels in all Domino packages, for any wire W, are of the form \code{W\_1}, instead of the $W_a$ notation from the pen-and-paper SSP. The switch from $a$ to \code{1} is acceptable since the variable names are not reused, and they both refer to a randomly sampled value.
+    \item The first item of the return tuple, i.e.\ $F$ in the pen-and-paper SSP is a table (the garbled table, to be precise). However, in Domino code, the corresponding variable, \code{C_}, is used as a set. This is by choice. Since Domino does not natively support sets, a workaround is to use the keys of a table as a set-like data structure, since the keys do not repeat themselves. This set-like data structure allows us to remove the relevance of the order or index at which elements exist inside it, and it allows us to compare the entries in the garbled table out-of-order. This is in line with the special correctness property discussed in Section \ref{subsec:yaosgarblingscheme}, implying that the \cevaluator of the \acrfull{gc} can identify the correct entry from this data structure without requiring ordering or indexes. 
+\end{itemize}
+
+
 \subsection{Game hops}
 \label{subsec:gamehops}
 We now discuss the game hops used in the \code{freexor} theorem. 
 \subsubsection{Equivalence between \code{GSimFreeXORReal} and \code{R1compHybridReal}}
-\code{GSimFreeXORReal} is a game that contains one package - \code{SimFreeXORReal}. 
-rewrite:This package is a one to one map except: delta is sampled differently and is a maybe type because we wanted to keep it similar to linrkkdm (ref linrkkdm game hop 1 - we discuss it more there). also, since domino does not allow indexing of arrays using boolean variables, we use conditional branching on booleans a and b to compute c and to assign the set the X and d values in the return tuple.
-Also $A_a$ is analogous to \code{A\_1} since they are both randomly sampled values. The exact garbled row at which the encryption goes does not matter either, since \code{C\_} acts like a set when we insert the garbled rows into its table keys rather than the table value.
+\code{GSimFreeXORReal} is a game consisting of a single package - \code{SimFreeXORReal}. The domino representation of this package is based on the pen-and-paper SSP, but the following changes were made: 
+\begin{itemize} 
+    \item  
+    
+\end{itemize}
 
 \subsection{The Free XOR, LIN-RK-KDM, and Reduction games}
 \label{subsec:freexorandlinkrkkdmgames}
@@ -114,7 +127,7 @@ A final observation is that the \code{enc} parameter that represents the $\enc$ 
 \input{figs/code/freexor-pkg-reduction.tex}
 The \code{Reduction} package begins with the package parameters and does not use a state variable, which is consistent with its pen-and-paper counterpart. Since $\rdv$ is composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$, we must use the \code{import oracle} syntax in \code{Reduction} to declare that this package is intended to be composed with another package that exposes a \code{ENC} oracle with a specific signature. This also allows us to invoke the \code{ENC} oracle in the oracles of \code{Reduction}. The concrete implementation of \code{ENC} that is invoked from the oracles of \code{Reduction}, however, is defined in the composition rather than in the \code{Reduction} package itself.   
 
-\code{Reduction} exposes one oracle -- \code{GARBLEAND}, which maps to the $\mathsf{GARBLE}$ oracle of $\rdv$, but does not take $f$ as a paramter. This is because Domino does not allow equivalence relations between games that expose oracles with different oracle signatures, and one of the latter games in the equivalence relations we try to establish (specifically $G^{1}_\mathsf{Sim\text{-}FreeXOR}$ and its corresponding package \code{SimFreeXORIdeal}) require a modified oracle signature. We discuss this in more detail later in this subsection. We are able to get around not having $f$ as an input parameter since we already know that we are dealing with the garbling of an AND gate.
+\code{Reduction} exposes one oracle, \code{GARBLEAND}, which maps to the $\mathsf{GARBLE}$ oracle of $\rdv$, but does not take $f$ as a paramter. This is because Domino does not allow equivalence relations between games that expose oracles with different oracle signatures, and one of the latter games in the equivalence relations we try to establish (specifically $G^{1}_\mathsf{Sim\text{-}FreeXOR}$ and its corresponding package \code{SimFreeXORIdeal}) require a modified oracle signature. We discuss this in more detail later in this subsection. We are able to get around not having $f$ as an input parameter since we already know that we are dealing with the garbling of an AND gate.
 
 Furthermore, since Domino support neither assignment operations to arbitrary boolean indexes (such as $A_a \sample \bin^\secpar $), nor operations between boolean and bitstrings, we got around it using conditional branching on the boolean variables \code{a} and \code{b}. This enabled us to compute the value of \code{c} or $f(x)$ in each branch separately by setting the value of \code{c} to a precomputed $a\land b$.
 
