@@ -1,6 +1,5 @@
 \chapter{Background}
 \label{chp:background} 
-\newacronym{ot}{OT}{Oblivious Transfer}
 \newcommand{\cgarbler}{$\mathrm{Garbler}$\xspace}
 \newcommand{\cevaluator}{$\mathrm{Evaluator}$\xspace}
 In this chapter, we introduce the important cryptographic building blocks needed in this thesis. Section \ref{sec:garbledcircuit} introduces \acrlong{gc}s, while Section \ref{sec:garblingschemes} introduces \acrlong{gs}s, their security properties, and Yao's \acrshort{gs}. Section \ref{sec:garblingoptimizations} discusses the \acrshort{gs} optimizations that are relevant to the work done in this thesis.
@@ -101,10 +100,7 @@ For a larger circuit, garbled tables are generated for each garbled gate in the 
 
 \section{Optimizations to Yao's Garbling Scheme}
 \label{sec:garblingoptimizations}
-\newacronym{pnp}{P\&P}{Point and Permute}
-\newacronym{grr}{GRR}{Garbled Row Reduction}
-\newacronym{freexor}{FreeXOR}{Free XOR}
-\newacronym{hg}{HG}{Half-Gates}
+
 In the last two decades, there have been many optimizations that improve the efficiency of Yao's \acrlong{gs}, in terms of the computational costs of garbling, evaluating, and also in terms of the bandwidth consumption when transmitting the \acrlong{gc}. In this section, we discuss the optimizations that are relevant to our work, namely - \acrfull{pnp} \cite{STOC:BeaMicRog90}, \acrfull{grr} \cite{ACMCEC:NaPiSu99}, \acrlong{freexor} \cite{ALP:KolSch08}, and \acrlong{hg} \cite{EC:ZahRosEva15}. 
 \subsection{Point and Permute}
 \label{subsec:pointandpermute}
@@ -135,11 +131,7 @@ This technique can also be combined with the \acrfull{pnp} optimization describe
 
 \subsection{Free XOR}
 \label{subsec:freexor}
-\newacronym{lin}{LIN}{Linear}
-\newacronym{rk}{RK}{Related-Key}
-\newacronym{kdm}{KDM}{Key-Dependent-Message}
-\newacronym{linrkkdm}{LIN-RK-KDM}{Linear, Related-Key, Key-Dependent-Message}
-\newacronym{lpn}{LPN}{Learning Parity with Noise}
+
 
 The Free XOR optimization was a big step in the optimization of \acrlong{gc}s, allowing the transmission of an XOR gate for free, i.e., without the need to generate, send, or evaluate a garbled table for an XOR gate. This is a big improvement when we consider that circuits can be optimized to maximize the number of XOR gates. This technique was introduced by \citeauthor{ALP:KolSch08} \cite{ALP:KolSch08}.
 \input{figs/freexortable.tex}

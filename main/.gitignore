@@ -29,6 +29,12 @@
 # Minted
 *_minted*
 
+# Morewrites
+*.mw
+
+# File used for pygmetize tests - pygmentize -l ssp-lang -f latex -O style=sspprint test.ssp
+test.ssp
+
 # glossaries
 *.acn
 *.acr
@@ -48,4 +54,4 @@ _region_.tex
 *.xdy
 
 .vscode/
-domino_cryptocode/
+domino_cryptocode

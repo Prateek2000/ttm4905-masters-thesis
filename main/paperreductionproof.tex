@@ -64,7 +64,6 @@ We redefine the same security notion to better fit our \acrshort{ssp} setting:
 Our $G^{b}_{\mathsf{LIN-RK-KDM}}$ provides an interface $\mathsf{ENC}$ that takes the key, message, and an extra parameter $z$ as input, and returns an encryption of the message in the real game, and an encryption of zeroes in the ideal game (Figure \ref{fig:linrkkdm-game}). It is important to note that the real \acrshort{linrkkdm} game does not simply return an encryption under the key used as input to the $\mathsf{ENC}$ oracle. It XORs this key by an offset of $\Delta$, and optionally XORs the same offset to the message, depending on the value of $z$.  
 
 Since we now have a base assumption to build from, we try to reduce the security of the real and simulated garbling games (Figures \ref{fig:simfreexor-real-game} and \ref{fig:simfreexor-ideal-game}) to the \acrshort{linrkkdm} assumption. 
-\newacronym{ppt}{PPT}{probabilistic, polynomial-time}
 \Needspace{6\baselineskip}
 \begin{theorem}\label{thm:reduction}
     If $\enc$ is the \acrshort{linrkkdm} secure encryption scheme used in the Free XOR garbling scheme, then for f=\{AND\} and $\forall x\in \bin^2$, there exists a \acrfull{ppt} simulator $G^1_\mathsf{Sim\text{-}FreeXOR}$ and reduction $\rdv$ such that for all \acrshort{ppt} adversaries $\adv$,

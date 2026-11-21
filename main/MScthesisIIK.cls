@@ -55,9 +55,37 @@
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{memoir}}
 \ProcessOptions\relax
 \LoadClass[10pt,b5paper]{memoir}
+\errorcontextlines=999
+\RequirePackage{morewrites}
+
+%show page margins
+% \RequirePackage[showframe]{geometry}
+
+%syntax highlighting for ssp and smt2 files
+\RequirePackage{minted}
 
 % Colors
 \RequirePackage[rgb]{xcolor}
+\RequirePackage[bf]{caption}
+%colors
+\definecolor{offwhite}{HTML}{F8F0E3}
+\definecolor{cooloffwhite}{HTML}{F5F5F5}
+
+\setminted{
+  breaklines=true,
+  breakanywhere=true,
+  style=sspprint,
+  linenos,
+  numbersep=5pt,
+  xleftmargin=5ex,
+  fontsize=\small,
+  breaklines,
+  tabsize=4,
+  frame=none,
+  autogobble
+}
+\setminted{bgcolor=cooloffwhite}
+\newenvironment{longlisting}{\captionsetup{type=listing}}{}
 
 %pdf/a compliance - also had to modify the embedded logo pdfs to a rgb color device from cmyk |gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sColorConversionStrategy=sRGB -dProcessColorModel=/DeviceRGB    -sOutputFile=./figs/ntnu-uten-slagord-rgb.pdf    ./figs/ntnu-uten-slagord.pdf|
 \RequirePackage[a-2b]{pdfx}

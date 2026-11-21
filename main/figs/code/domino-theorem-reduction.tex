@@ -1,27 +1,48 @@
-\lstdefinelanguage{Domino}{
-    % morecomment=[s]{/*}{*/},
-    moredelim=[is][\color{gray}]{@@}{@@}
-}
-\begin{lstlisting}[
-    language=Domino,
-    caption={Reduction game hop in the theorem},
-    label={lst:domino-theorem-reduction-gamehop},
-    commentstyle=\small\rmfamily\itshape,
-    basicstyle=\small\ttfamily,
-    columns=fixed]
-    theorem freexor {
-    @@ ... @@
+% \lstdefinelanguage{Domino}{
+%     % morecomment=[s]{/*}{*/},
+%     moredelim=[is][\color{gray}]{@@}{@@}
+% }
+% \begin{lstlisting}[
+%     language=Domino,
+%     caption={Reduction game hop in the theorem},
+%     label={lst:domino-theorem-reduction-gamehop},
+%     commentstyle=\small\rmfamily\itshape,
+%     basicstyle=\small\ttfamily,
+%     columns=fixed]
+%     theorem freexor {
+%     @@ ... @@
+%     assumptions {
+%         lin_rk_kdm: GLINRKKDM0 ~ GLINRKKDM1
+%     }
+%     gamehops{
+%     reduction RcompGLINRKKDM0 RcompGLINRKKDM1 {
+%             assumption lin_rk_kdm
+%             map GLINRKKDM0 RcompGLINRKKDM0 {
+%                 GLINRKKDM: GLINRKKDM
+%             }
+%             map GLINRKKDM1 RcompGLINRKKDM1 {
+%                 GLINRKKDM: GLINRKKDM
+%             }
+%     }}}
+% \end{lstlisting}
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+theorem freexor {
+    /*...*/
     assumptions {
         lin_rk_kdm: GLINRKKDM0 ~ GLINRKKDM1
     }
     gamehops{
     reduction RcompGLINRKKDM0 RcompGLINRKKDM1 {
-            assumption lin_rk_kdm
-            map GLINRKKDM0 RcompGLINRKKDM0 {
-                GLINRKKDM: GLINRKKDM
-            }
-            map GLINRKKDM1 RcompGLINRKKDM1 {
-                GLINRKKDM: GLINRKKDM
-            }
-    }}}
-\end{lstlisting}
+        assumption lin_rk_kdm
+        map GLINRKKDM0 RcompGLINRKKDM0 {
+            GLINRKKDM: GLINRKKDM
+        }
+        map GLINRKKDM1 RcompGLINRKKDM1 {
+            GLINRKKDM: GLINRKKDM
+        }
+}}}
+\end{minted}
+\caption{Reduction game hop in the theorem}
+\label{lst:domino-theorem-reduction-gamehop}
+\end{longlisting}

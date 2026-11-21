@@ -1,18 +1,34 @@
-\lstdefinelanguage{Domino}{
-    % morecomment=[s]{/*}{*/},
-    moredelim=[is][\color{gray}]{@@}{@@}
-}
-\begin{lstlisting}[
-    language=Domino,
-    caption={Conditional branching in \code{ENC}},
-    label={lst:conditionalbranching},
-    commentstyle=\small\rmfamily\itshape,
-    basicstyle=\small\ttfamily,
-    columns=fixed]
-    package LINRKKDM {
-    @@ ... @@
+% \lstdefinelanguage{Domino}{
+%     % morecomment=[s]{/*}{*/},
+%     moredelim=[is][\color{gray}]{@@}{@@}
+% }
+% \begin{lstlisting}[
+%     language=Domino,
+%     caption={Conditional branching in \code{ENC}},
+%     label={lst:conditionalbranching},
+%     commentstyle=\small\rmfamily\itshape,
+%     basicstyle=\small\ttfamily,
+%     columns=fixed]
+%     package LINRKKDM {
+%     @@ ... @@
+%     oracle ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m) {
+%     @@ ... @@
+%     if z {
+%       return enc(
+%         xor_(Unwrap(delta),key),
+%         xor_(msg,Unwrap(delta)), r); 
+%     } else {
+%       return enc(xor_(Unwrap(delta), key), msg, r);
+%     }
+%     @@ ... @@
+%     }}
+% \end{lstlisting}
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+package LINRKKDM {
+    /*...*/
     oracle ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m) {
-    @@ ... @@
+    /*...*/
     if z {
       return enc(
         xor_(Unwrap(delta),key),
@@ -20,6 +36,9 @@
     } else {
       return enc(xor_(Unwrap(delta), key), msg, r);
     }
-    @@ ... @@
+    /*...*/
     }}
-\end{lstlisting}
+\end{minted}
+\caption{Conditional branching in \code{ENC}}
+\label{lst:conditionalbranching}
+\end{longlisting}

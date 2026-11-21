@@ -6,7 +6,6 @@
 This chapter describes the formalization of the \acrshort{ssp} introduced in the previous chapter using Domino. We first introduce the aspects of Domino related to the formalization, including its project structure and mechanisms used to represent cryptographic constructions and their security arguments. We then describe how the Free XOR construction was translated from its pen-and-paper description to Domino. While the rest of the proof could be successfully verified by Domino, one equivalence game hop could not be verified. Therefore, we discuss the assumptions and conjectures used, and the invariants and randomness mappings required by the equivalence game hops, as well as the limitations encountered during formalization.
 \section{Domino}
 \label{sec:whatisdomino}
-\newacronym{z3}{Z3}{Z3 theorem prover}
 Domino is a proof assistant for State-separating proofs (SSPs) (Section \ref{sec:ssp}) that allows the user to validate the correctness of a SSP using simple and familiar syntax. To allow this, it converts the SSP-style Domino language code into corresponding code in SMT-LIB, a language used by programs called SMT solvers that use a variety of mathematical theorems to determine if a given problem is satisfiable with some possible combination of inputs under specific constraints. If the problem is satisfiable, the SMT solver can also return the inputs that make the problem satisfiable. Domino requires a SMT solver to be installed on the system - either \acrfull{z3} \cite{de_moura_z3_2008}, or CVC5, in order to process these SMT-LIB files that are generated. 
 
 The SSP-style Domino syntax was designed to use very similar keywords and constructs as those in SSPs -- packages, games, and theorems. Packages are composed into games, and these games are used to build a theorem. The explicit relation between the games used in the theorem are defined in the form of game hops. Functional equivalence of pairs of games is argued using invariants that relate their states, and mappings between the randomnesses sampled in either game \cite{domino:paper}. These invariants and randomness mappings are written directly in the SMT-LIB language. An equivalence relation that Domino tries to verify as part of a theorem is referred to as a lemma. In order to establish functional equivalence, games are then checked against one of many in-built and custom lemmata depending on the relations needed in order to prove the correctness of the theorem.
@@ -39,15 +38,19 @@ After setting up these dependencies, Domino can be installed using the installat
 \subsection{Packages}
 \label{subsec:arch_packages}
 Packages in Domino are syntactically the same as packages in \acrshort{ssp}s. The core of a package are the oracles that it exposes. Each oracle defines what arguments it expects, and its return values. An SSP package can also be composed with other packages, and Domino allows this using an \code{import oracle} syntax that can be used to declare external oracles that can composed with this package. External oracle calls cannot be inlined, however, and must use an explicit \code{invoke <ORACLE-NAME>} syntax that assigns the value to some variable. Listing \ref{lst:domino-pkg-example} shows a sample Domino package with placeholders.
+
 \input{figs/code/domino-package-code.tex}
 
 \subsection{Compositions}
 \label{subsec:arch_compositions}
 Compositions, or games, in Domino are syntactically equivalent to games in \acrshort{ssp}s. A game first defines constants that will be passed to package instances. Then, it defines instances of packages that are used in the definition of the game. The compose block is used to define the composition of one or more packages by declaring the oracles of each package instance that are accessible to other package instances in the composition. The compose block also has a special keyword 'adversary' which is used to define the specific package instances that are accessible to an adversary. Listing \ref{lst:domino-game-example} shows a sample Domino game with placeholders.
+
 \input{figs/code/domino-composition-code.tex}
+
 \subsection{Theorems}
 \label{subsec:theorems}
 Theorems define the relations between different games in Domino. They first define constants that are passed to game instances defined right after. Then, the games that are used in the theorem are instantiated with these constants. Following this, the assumptions block is used to define the assumptions under which the theorem is supposed to be proven. Finally, the gamehops block defines the game hops used to relate the games that the theorem is trying to prove functionally equivalent. These game hops can either be reductions, conjectures, or equivalences. Reductions map two games to each other based on some underlying assumption which is defined in the assumption block earlier. Conjectures declare two games to be functionally equivalent without any further reasoning, and Domino accepts their equivalence as-is. Equivalences map games based on lemmata, and are expressed in terms of randomness mappings and invariant relations. Each equivalence is checked for specific lemmata such as \code{same-output} and \code{equal-aborts} (these two together show input-output equivalence). An equivalence proof step may also contains references to other lemmata that need to be verified for that proof step to be valid. These custom definitions for lemmata are written in SMT-LIB. Listing \ref{lst:domino-theorem-example} shows a sample Domino theorem with placeholders, and without custom lemmata.
+
 \input{figs/code/domino-theorem-code.tex}
 
 \subsection{Project Structure}
@@ -113,7 +116,9 @@ However, the Domino code for these packages is not a literal translation of the 
 
 \subsubsection{LINRKKDM.pkg.ssp}
 \label{subsubsec:linrkkdm}
+
 \input{figs/code/freexor-pkg-linrkkdm.tex}
+
 In addition to the package parameters, package LINRKKDM also contains a state variable (a bitstring of length \code{n})  called \code{delta} that corresponds to $\Delta$ in the SSP representation. However, in the Domino package, \code{delta} is wrapped in \code{Maybe(...)}. This is because \code{Bits(n)} is not nullable, and therefore cannot be checked for an `unassigned' state, as we do in $G^{b}_{\mathsf{LIN-RK-KDM}}$. Domino provides a nullable type \code{Maybe(...)} that allows us to set \code{delta} to a \code{None} value which we use as a representation for an `unassigned' state.
 
 It is also worth mentioning that for all subsequent games that use the state variable \code{delta}, we continue to use the \code{Maybe(Bits(n))} type instead of raw \code{Bits(n)}. This choice was made to reduce the number of type casts when comparing and relating game states in SMT-LIB (we discuss this in more detail when discussing invariants and randomness mappings). However, the tradeoff is that we need to use an \code{Unwrap} operator when trying to access the value of \code{delta} in the Domino code.
@@ -124,7 +129,9 @@ A final observation is that the \code{enc} parameter that represents the $\enc$ 
 
 \subsubsection{Reduction.pkg.ssp}
 \label{subsubsec:reduction}
+
 \input{figs/code/freexor-pkg-reduction.tex}
+
 The \code{Reduction} package begins with the package parameters and does not use a state variable, which is consistent with its pen-and-paper counterpart. Since $\rdv$ is composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$, we must use the \code{import oracle} syntax in \code{Reduction} to declare that this package is intended to be composed with another package that exposes a \code{ENC} oracle with a specific signature. This also allows us to invoke the \code{ENC} oracle in the oracles of \code{Reduction}. The concrete implementation of \code{ENC} that is invoked from the oracles of \code{Reduction}, however, is defined in the composition rather than in the \code{Reduction} package itself.   
 
 \code{Reduction} exposes one oracle, \code{GARBLEAND}, which maps to the $\mathsf{GARBLE}$ oracle of $\rdv$, but does not take $f$ as a paramter. This is because Domino does not allow equivalence relations between games that expose oracles with different oracle signatures, and one of the latter games in the equivalence relations we try to establish (specifically $G^{1}_\mathsf{Sim\text{-}FreeXOR}$ and its corresponding package \code{SimFreeXORIdeal}) require a modified oracle signature. We discuss this in more detail later in this subsection. We are able to get around not having $f$ as an input parameter since we already know that we are dealing with the garbling of an AND gate.
@@ -139,6 +146,7 @@ talk about
 \end{itemize}
 
 \input{figs/code/domino-import-oracle.tex}
+
 We also define the \code{GARBLE} oracle which encodes the code from $\mathsf{GARBLE}$ in the SSP. While randomly sampling variables, we can assign them a sample name, which is useful when we want to relate these randomnesses to the randomnesses generated in other packages and games. 
 
 \subsubsection{SimFreeXORIdealANDONLY.pkg.ssp}
@@ -172,6 +180,7 @@ After creating instances of all the games, we define the assumptions that we wou
 Finally, we define the game hops used in the theorem. Game hops can be of two types, reductions and equivalences.
 \subsubsection{Reductions}
 A reduction game hop is defined by first choosing the games whose security has to be reduced to an assumption. Following Theorem \ref{thm:reduction}, we choose to reduce the instances of game \code{RcompGLINRKKDM} instantiated with bit 0 and 1 to the \code{LINRKKDM} game. After choosing the composed games that need to be reduced to the  assumption games, we must then manually map the package instances that both composed game have to their corresponding packages in the assumption games respectively. Listing \ref{lst:domino-theorem-reduction-gamehop} shows the reduction game hop we use in this theorem.
+
 \input{figs/code/domino-theorem-reduction.tex}
 
 \subsubsection{Equivalences}
@@ -180,13 +189,16 @@ A code equivalence argument can be encoded using an equivalence game hop in Domi
 
 We also have extra conditions that are required for our proof to be validated, which can be defined as extra lemmata for Domino to verify. We define these in the file \code{real\_game\_invariant.smt2}, and is discussed in the following section.
 Listing \ref{lst:domino-theorem-equivalence-gamehop} shows one of the equivalence game hops we use in this theorem.
+
 \input{figs/code/domino-theorem-equivalence.tex}
 
 \subsection{Invariants and Randomness Mappings}
 Domino allows users to write custom lemmata that can be verified when \code{domino} \code{prove} runs, making it very extensible. We can declare such lemmata by attaching their corresponding \code{.smt2} file, and adding it to the list of lemmata to be proven. We do this in Listing \ref{lst:domino-theorem-equivalence-gamehop} by declaring a lemma called \code{invariant}. 
 These extension files are written in SMT-LIB. Listing \ref{lst:domino-theorem-equivalence-invariant}, is an excerpt from the invariant file we use. The first function that the file defines is a randomness mapping between the left and right games. Randomness mappings are necessary because it allows us to ensure that the randomness sampled in both games are related. This is important when our oracle outputs depend on the random values, and equivalence conditions will simply fail unless the randomnesses are defined to be the same.
 The other function is the invariant, and we define a condition here that we need to be true for the equivalence to be established. Specifically, the circuit offset $\Delta$ chosen in both games needs to be the same, otherwise the oracles will return different outputs and the \code{same-output} property will never be satisfied.
+
 \input{figs/code/domino-theorem-invariant.tex}
+
 \subsection{Verification Results}
 \label{subsec:results}
 The resulting Domino formalization was tested by using the verification mechanism provided in Domino (\code{domino prove}). The reduction between \code{RcompGLINRKKDM0} and \code{RcompGLINRKKDM1} was successfully verified under the LIN-RK-KDM assumption. However, the equivalence relation between \code{RcompGLINRKKDM0} and \code{GSimFree-} \code{XORReal}, and the equivalence relation between \code{RcompGLINRKKDM1} and \code{GSimFree-} \code{XORIdeal} could not be successfully established. This suggests the requirement of more invariants, which we discuss in Chapter \ref{chp:discussion}.

@@ -1,17 +1,33 @@
-\lstdefinelanguage{Domino}{
-    % morecomment=[s]{/*}{*/},
-    moredelim=[is][\color{gray}]{@@}{@@}
-}
-\begin{lstlisting}[
-    language=Domino,
-    caption={Oracle ENC in LINRKKDM.pkg.ssp},
-    label={lst:freexor-pkg-linrkkdm-ora-ENC},
-    commentstyle=\small\rmfamily\itshape,
-    basicstyle=\small\ttfamily,
-    columns=fixed,
-    frame=single,
-    breaklines=true,
-    float,floatplacement=H]
+% \lstdefinelanguage{Domino}{
+%     % morecomment=[s]{/*}{*/},
+%     moredelim=[is][\color{gray}]{@@}{@@}
+% }
+% \begin{lstlisting}[
+%     language=Domino,
+%     caption={Oracle ENC in LINRKKDM.pkg.ssp},
+%     label={lst:freexor-pkg-linrkkdm-ora-ENC},
+%     commentstyle=\small\rmfamily\itshape,
+%     basicstyle=\small\ttfamily,
+%     columns=fixed,
+%     frame=single,
+%     breaklines=true,
+%     float,floatplacement=H]
+% oracle ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m) {
+%     if (delta == None) {
+%         tmp <-$ Bits(n) sample-name delta;
+%         delta <- Some(tmp);
+%     } 
+%     r <-$ Bits(n) sample-name r;
+%     if b {return enc(xor_(key, Unwrap(delta)), 0_n, r); }
+%     else {
+%         if z {
+%             return enc(xor_(key, Unwrap(delta)), xor_(msg,Unwrap(delta)), r); 
+%         } else {
+%             return enc(xor_(key, Unwrap(delta)), msg, r);
+% }}}
+% \end{lstlisting}
+\begin{longlisting}
+\begin{minted}{ssp-lang}
 oracle ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m) {
     if (delta == None) {
         tmp <-$ Bits(n) sample-name delta;
@@ -25,4 +41,7 @@ oracle ENC(key: Bits(n), msg: Bits(n), z: Bool) -> Bits(m) {
         } else {
             return enc(xor_(key, Unwrap(delta)), msg, r);
 }}}
-\end{lstlisting}
+\end{minted}
+\caption{Oracle ENC in LINRKKDM.pkg.ssp}
+\label{lst:freexor-pkg-linrkkdm-ora-ENC}
+\end{longlisting}
