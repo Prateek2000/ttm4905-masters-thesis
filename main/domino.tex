@@ -72,15 +72,26 @@ The the use of the following paramteres remains consistent across many package a
     \item \code{b}: Parameter used to switch real and ideal behaviors in a few games. 
     \item \code{xor_}: Parameter used as an abstract function used to represent the bitwise XOR operation, since Domino does not provide a real representation of the bitwise XOR operation. We discuss this in more detail in Section \ref{chp:discussion}.
 \end{itemize}
-\subsection{The FreeXOR proof sketch}
+\subsection{The Free XOR proof sketch}
 \label{subsec:freexorproofsketch}
-The theorem file \code{freexor.ssp} defines all of the assumptions and game hops used in the Domino encoding of the proof, and links to the invariants and randomness mappings used in the game hops. Initially, we started with four packages - \code{SimFreeXORReal}, \code{SimFreeXORIdeal}, \code{Reduction}, and \code{LINRKKDM}. These packages map cleanly to the pen-and-paper SSP we describe in Section \ref{chp:penpaperssp}, as described in Table \ref{tab:freexor-domino-packages}.
+The theorem file \code{freexor.ssp} defines all of the assumptions and game hops used in the Domino encoding of the proof, and links to the invariants and randomness mappings used in the game hops. Initially, we started with four packages - \code{SimFreeXORReal}, \code{SimFreeXORIdeal}, \code{Reduction}, and \code{LINRKKDM}. These packages map cleanly to the pen-and-paper SSP we describe in Section \ref{chp:penpaperssp}, as described in Table \ref{tab:freexor-domino-packages}, and are marked with dotted lines in Figure \ref{fig:gamehops}.
 
 \input{figs/table/freexorpackages.tex}
 
 However, as we went about defining the relations between the variables in the packages involved in each game hop, it became apparent that we would need to use intermediate packages and games due to the complexity of the game hops, and break it down into multiple game hops with less drastic changes.
 
-Figure \ref{fig:gamehops} shows an overview of both the planned proof sketch based on the pen-and-paper SSP, and the actual proof sketch that was used in the Domino encoding.
+Figure \ref{fig:gamehops} shows an overview of both the planned proof sketch based on the pen-and-paper SSP, and the actual proof sketch that was used in the Domino encoding. 
+
+The first game hop starts with the real Free XOR game, encoded in \code{GSimFreeXORReal.comp.ssp}.We show that \code{GSimFreeXORReal} is equivalent to an intermediate game where part of \code{GSimFreeXORReal}'s code is outlined into the real version of a hybrid randomness sampling game (\code{Hybrid.pkg.ssp}). \code{Hybrid.pkg.ssp} contains an oracle \code{GETRANDOMS} which represents the statistical argument we made in the pen-and-paper proof using the \mathsf{GETRANDOMS2\mathit{(w)}} oracle in $G^b_\mathsf{Hybrid}$ (Figure \ref{fig:hybridgetrandoms}). 
+
+The second game hop is a reduction step from the real to ideal versions of \code{Reduction1.pkg.ssp} composed with \code{Hybrid.pkg.ssp}, defined in game \code{R1compHybrid.comp.ssp}. The basis for the real and ideal versions of the \code{GETRANDOMS} oracle of \code{Hybrid.pkg.ssp} being indistinguishable is the same as the argument made when proving Lemma \ref{lemma:informationtheoreticassumptionreal}. Since Domino cannot reason about probabilistic arguments at the moment, we declare the real and ideal versions of \code{GHybrid} as equivalent in our theorem file \code{freexor.ssp}, as an assumption called \code{hybrid}. 
+
+The third game hop is another equivalence game hop, between the the ideal composition \code{R1compHybrid} and a new game \code{GHybridWithCases}. In this game hop, we move a lot of the code from before the conditional branching into the branches. This is a setup for later gamehops that have separate garbled table generation logic for each branch. Domino does not allow $n:1$ randomness mappings between two games, and this leads to complications, since ideally each of the three random values would be sampled separately in each of the four conditional branches. To work around this, we introduce \code{tempsample1}, \code{tempsample2} and \code{tempsample3}, which are placeholders for the randomness sampling of \code{A_0}, \code{B_0} and \code{C_0}. These still remain outside the conditional branches, however, the assignment of these random values to wire labels, and the assignment of values of the complimentary wire labels are moved inside the branches. In addition, the garbled table generation itself is also moved within the branches.
+
+The fourth game hop is declared as a conjecture between {GHybridWithCases} and {GHybridWithCasesWithSampling}. A conjecture in Domino is a declaration of equivalence that is assumed to be correct by Domino, meaning that it does not perform any checks to verify its correctness. While it is ideal to avoid using them, we use it to move the sampling of the randomness used in wire label generation into the conditional branches. This is a logically sound transformation because only one of the four code branches will run at a time, and therefore, only three of the twelve randomness sampling operations will be executed. The rest of the code remains the exact same as \code{GHybridWithCases.comp.ssp}.
+
+The fifth game hop is a equivalence gamehop between \code{GHybridWithCasesWithSampling} and another compositon (\code{GIntermediatecompHybrid2}) of intermediate games \code{Intermediate.pkg.ssp} and (\code{Hybrid.pkg.ssp}). 
+
 
 \input{figs/gamehops.tex}
 
@@ -113,10 +124,9 @@ The reduction $\rdv$ is modeled as its own package \code{Reduction}.
 
 
 However, the Domino code for these packages is not a literal translation of the pseudocode from the pen-and-paper SSP packages. 
-
 \subsubsection{LINRKKDM.pkg.ssp}
 \label{subsubsec:linrkkdm}
-
+\par\medskip
 \input{figs/code/freexor-pkg-linrkkdm.tex}
 
 In addition to the package parameters, package LINRKKDM also contains a state variable (a bitstring of length \code{n})  called \code{delta} that corresponds to $\Delta$ in the SSP representation. However, in the Domino package, \code{delta} is wrapped in \code{Maybe(...)}. This is because \code{Bits(n)} is not nullable, and therefore cannot be checked for an `unassigned' state, as we do in $G^{b}_{\mathsf{LIN-RK-KDM}}$. Domino provides a nullable type \code{Maybe(...)} that allows us to set \code{delta} to a \code{None} value which we use as a representation for an `unassigned' state.
@@ -129,7 +139,7 @@ A final observation is that the \code{enc} parameter that represents the $\enc$ 
 
 \subsubsection{Reduction.pkg.ssp}
 \label{subsubsec:reduction}
-
+\medskip
 \input{figs/code/freexor-pkg-reduction.tex}
 
 The \code{Reduction} package begins with the package parameters and does not use a state variable, which is consistent with its pen-and-paper counterpart. Since $\rdv$ is composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$, we must use the \code{import oracle} syntax in \code{Reduction} to declare that this package is intended to be composed with another package that exposes a \code{ENC} oracle with a specific signature. This also allows us to invoke the \code{ENC} oracle in the oracles of \code{Reduction}. The concrete implementation of \code{ENC} that is invoked from the oracles of \code{Reduction}, however, is defined in the composition rather than in the \code{Reduction} package itself.   
