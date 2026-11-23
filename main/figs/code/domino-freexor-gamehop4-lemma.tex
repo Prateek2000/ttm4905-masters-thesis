@@ -1,0 +1,26 @@
+\begin{longlisting}
+\begin{minted}{smt2-lang}
+(define-lemma case-x-is-false-false GARBLEAND
+    (old-state-left old-state-right return-left return-right
+        (x (Tuple2 Bool Bool))
+    )
+    (=>
+        (= x ((as mk-tuple2 (Tuple2 Bool Bool)) false false))
+        (= return-left.value return-right.value)
+    )
+)
+(define-lemma abort-case-x-is-false-false GARBLEAND
+    (
+        old-state-left old-state-right return-left return-right
+        (x (Tuple2 Bool Bool))
+    )
+    (=>
+        (= x ((as mk-tuple2 (Tuple2 Bool Bool)) false false))
+        (= ((_ is mk-abort) return-left.value)
+           ((_ is mk-abort) return-right.value))
+    )
+)
+\end{minted}
+\caption{One of four lemma pairs in game hop 5 of the \code{freexor} theorem}
+\label{lst:domino-freexor-gamehop4-lemma}
+\end{longlisting}

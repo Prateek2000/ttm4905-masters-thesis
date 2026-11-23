@@ -16,13 +16,13 @@ Domino is published as a Rust crate and is available on GitHub. At the time of w
 
 The main Domino program is exposed as a command line binary. We use two main subcommands in our formalization: 
 \begin{itemize}
-    \item \code{domino latex} is used to generate \LaTeX  code for the packages, games, theorems and graphs that show how these are related to each other. It uses the underlying \acrshort{smt} solver to generate code that draws the reduction graphs when the output \lstinline|.tex| files are compiled. This command also generates pseudocode for every package that is used in the theorem. \acrshort{z3} is the default \acrshort{smt} solver used in this version of Domino \cite{domino:code}. The \code{.tex} files are stored in the \code{\_build\\latex} subdirectory.
+    \item \code{domino latex} is used to generate \LaTeX  code for the packages, games, theorems and graphs that show how these are related to each other. It uses the underlying \acrshort{smt} solver to generate code that draws the reduction graphs when the output \lstinline|.tex| files are compiled. This command also generates pseudocode for every package that is used in the theorem. \acrshort{z3} is the default \acrshort{smt} solver used in this version of Domino \cite{domino:code}. The \code{.tex} files are stored in the \code{\_build\symbol{`\\}latex} subdirectory.
     \item \code{domino prove} is used to validate each of the game hops that are defined in the theorem file. It also uses the SMT solver to validate the reduction and equivalence game hops. Equivalence game hops require an additional randomness mapping step, and may require a separate invariant file. \code{domino prove} accepts parameters, and the following are used in this project:
     \begin{itemize}
         \item \code{-t} generates transcripts which can be used to review the outputs of the SMT solver.
-        \item \code{--proof} selects a specifc theorem to be proven and is useful if the proof code is split into multiple theorems and the user needs to prove a specific one. It is followed by a string parameter with the name of the theorem.
-        \item \code{--proofstep} selects the proof step to be proven in the selected theorem. It is followed by a integer which is the index of the proof step to be proven. Indexing starts at 0.
-        \item \code{--claim} selects the lemma to be proven in the selected proofstep. It takes a string parameter that is the full name of the lemma to be proven. 
+        \item \code{-{}-proof} selects a specifc theorem to be proven and is useful if the proof code is split into multiple theorems and the user needs to prove a specific one. It is followed by a string parameter with the name of the theorem.
+        \item \code{-{}-proofstep} selects the proof step to be proven in the selected theorem. It is followed by a integer which is the index of the proof step to be proven. Indexing starts at 0.
+        \item \code{-{}-claim} selects the lemma to be proven in the selected proofstep. It takes a string parameter that is the full name of the lemma to be proven. 
     \end{itemize}
 \end{itemize}  
 
@@ -49,13 +49,13 @@ Compositions, or games, in Domino are syntactically equivalent to games in \acrs
 
 \subsection{Theorems}
 \label{subsec:theorems}
-Theorems define the relations between different games in Domino. They first define constants that are passed to game instances defined right after. Then, the games that are used in the theorem are instantiated with these constants. Following this, the assumptions block is used to define the assumptions under which the theorem is supposed to be proven. Finally, the gamehops block defines the game hops used to relate the games that the theorem is trying to prove functionally equivalent. These game hops can either be reductions, conjectures, or equivalences. Reductions map two games to each other based on some underlying assumption which is defined in the assumption block earlier. Conjectures declare two games to be functionally equivalent without any further reasoning, and Domino accepts their equivalence as-is. Equivalences map games based on lemmata, and are expressed in terms of randomness mappings and invariant relations. Each equivalence is checked for specific lemmata such as \code{same-output} and \code{equal-aborts} (these two together show input-output equivalence). An equivalence proof step may also contains references to other lemmata that need to be verified for that proof step to be valid. These custom definitions for lemmata are written in SMT-LIB. Listing \ref{lst:domino-theorem-example} shows a sample Domino theorem with placeholders, and without custom lemmata.
+Theorems define the relations between different games in Domino. They first define constants that are passed to game instances defined right after. Then, the games that are used in the theorem are instantiated with these constants. Following this, the assumptions block is used to define the assumptions under which the theorem is supposed to be proven. Finally, the gamehops block defines the game hops used to relate the games that the theorem is trying to prove functionally equivalent. These game hops can either be reductions, conjectures, or equivalences. Reductions map two games to each other based on some underlying assumption which is defined in the assumption block earlier. Conjectures declare two games to be functionally equivalent without any further reasoning, and Domino accepts their equivalence as-is. Equivalences map games based on lemmata, and are expressed in terms of randomness mappings and invariant relations. Each equivalence is checked for specific lemmata such as \code{same-output} and \code{equal-aborts}, which together show that for any given input, the two games output the same values (input-output equivalence), while the \code{invariant} ensures that some condition remains true before and after the oracles execute. An equivalence proof step may also contains references to other lemmata that need to be verified for that proof step to be valid. These custom definitions for lemmata are written in SMT-LIB. Listing \ref{lst:domino-theorem-example} shows a sample Domino theorem with placeholders, and without custom lemmata.
 
 \input{figs/code/domino-theorem-code.tex}
 
 \subsection{Project Structure}
 \label{subsec:projectstructure}
-A Domino project directory requires the presence of an empty \code{ssp.toml} file to indicate the project root. The project root contains three other mandatory folders - \code{packages}, \code{games}, and \code{theorem}, each of which contain their namesakes. Most Domino subcommands also take a \code{--path} parameter, followed by a directory, to indicate the project root. 
+A Domino project directory requires the presence of an empty \code{ssp.toml} file to indicate the project root. The project root contains three other mandatory folders - \code{packages}, \code{games}, and \code{theorem}, each of which contain their namesakes. Most Domino subcommands also take a \code{-{}-path} parameter, followed by a directory, to indicate the project root. 
 
 Each of the three folders in a Domino project can contain one or more \code{.ssp} files. Domino checks packages and games for syntactic correctness even if they are not used in a theorem. This is by design, in order to help packages and games  be checked for syntax before setting up a complicated proof.
 
@@ -188,33 +188,64 @@ Then, we instantiate all the games associated with the \code{freexor} theorem, a
 
 \input{figs/code/domino-freexor-inst.tex}
 
-After creating instances of all the games, we define the assumptions that the subsequent reduction game hops use. In our case, these are \code{hybrid}, \code{hybrid2} and \code{lin_rk_kdm}, which correspond to Definition \ref{def:linrkkdmsecurity} (LIN-RK-KDM security), Lemma \ref{lemma:informationtheoreticassumptionreal}, and Lemma \ref{lemma:informationtheoreticassumptionideal}, respectively. 
+After creating instances of all the games, we define the assumptions that the subsequent reduction game hops use. In our case, these are \code{hybrid}, \code{hybrid2} and \code{lin\_rk\_kdm}, which correspond to Definition \ref{def:linrkkdmsecurity} (LIN-RK-KDM security), Lemma \ref{lemma:informationtheoreticassumptionreal}, and Lemma \ref{lemma:informationtheoreticassumptionideal}, respectively. 
 
 \input{figs/code/domino-freexor-assumption.tex}
 
 Finally, the theorem file contains the game hops used in the theorem, along with their randomness mappings and invariants. We go over each game hop individually. It is important to note that game hops in Domino are indexed from 0, and these are mapped accurately to Figure \ref{fig:gamehops}.
 
 \input{figs/code/domino-freexor-gamehop0.tex}
-The first gamehop is a simple equivalence relation between \code{GSimFreeXORReal} and \code{R1compHybridReal}. The randomness mapping and invariant are found in the \code{hybridreal2.smt2} file. The randomness mapping is quite simple, it maps the wire label samplings, \code{delta}, row randomness samplings (\code{R_00}, code{R_01}, \code{R_10}, \code{R_11}), and the random values used for \code{enc} function calls from \code{GSimFreeXORReal} to \code{R1compHybridReal}.
+The first game hop (Listing \ref{lst:domino-freexor-gamehop0}) is a simple equivalence relation between \code{GSimFree} \code{XORReal} and \code{R1compHybridReal}. The randomness mapping and invariant are found in the \code{hybridreal2.smt2} file. The randomness mapping is quite simple, it maps the wire label samplings, \code{delta}, row randomness samplings (\code{R\_00}, \code{R\_01}, \code{R\_10}, \code{R\_11}), and the random values used for \code{enc} function calls from \code{GSimFreeXORReal} to \code{R1compHybridReal}. It is worth noting that Domino allows us to map variables from \code{SimFreeXORReal} to both the packages that compose \code{R1compHybridReal}. The \code{invariant} for this equivalence simply states that the values of \code{delta} are equivalent in the states of both games. The two other lemmata, \code{same-output} and \code{equal-aborts} verify the input-output equivalence property. 
 
 \input{figs/code/domino-freexor-gamehop1.tex}
-The second
+The second game hop (Listing \ref{lst:domino-freexor-gamehop1}) is a reduction step, that holds because of the \code{hybrid} assumption. Domino checks whether the composition graphs for the games we are stating are equivalence actually reduce to the stated assumption or not. However, the assumption itself cannot be reasoned about in Domino.
 
 \input{figs/code/domino-freexor-gamehop2.tex}
+The third game hop (Listing \ref{lst:domino-freexor-gamehop2}) is an equivalence game hop between \code{R1comp} \code{HybridIdeal} and \code{GHybridWithCases}, and this is quite similar to the first game hop. The randomness mapping is quite straightforward like the first game hop, and the invariant is the same as well.
 
 \input{figs/code/domino-freexor-gamehop3.tex}
+The fourth game hop (Listing \ref{lst:domino-freexor-gamehop3}) is a conjecture that \code{GHybridWithCases} is equivalent to \code{GHybridWithCasesWithSampling}. As stated before, conjectures are not checked by Domino and the reason we use this is because Domino does not support $n:1$ randomness mappings even if the first game has conditional branches that ensure that the runtime mapping is $1:1$.  
 
 \input{figs/code/domino-freexor-gamehop4.tex}
+The fifth game hop (Listing \ref{lst:domino-freexor-gamehop4}) is an equivalence game hop where things get a bit more interesting. In this equivalence relation, we needed to define conditional randomness mappings between \code{GHybridWithCasesWithSampling} and \code{GIntermediate} \code{compHybrid2Real}, where one or more arbitrary wire labels in the left game would correspond to a sampling in the inner right game \code{GHybrid2}.
+Listing \ref{lst:domino-freexor-gamehop4-cond-rand} shows a sample of how we implemented this. However, conditional branching in SMT-LIB increases the verification time of the program quite significantly.
+
+\input{figs/code/domino-freexor-gamehop4-cond-rand.tex}
+
+In order to offset this performance loss, we declared pairs of lemmata like \code{case-x-is-}\code{false-false} and \code{abort-case-x}\code{-is-false-false}, for each input combination to the \code{GARBLEAND} oracles. This allowed us to split up the computation for each input, and sped up the verification quite significantly. One sample pair of such lemmata can be seen in Listing \ref{lst:domino-freexor-gamehop4-lemma}.
+\input{figs/code/domino-freexor-gamehop4-lemma.tex}
+We encoded four such pairs, one for each input possible input value to \code{GARBLEAND}.
 
 \input{figs/code/domino-freexor-gamehop5.tex}
+The sixth game hop is a reduction game hop that holds because of the \code{hybrid2} assumption.  
 
 \input{figs/code/domino-freexor-gamehop6.tex}
+The seventh game hop is a equivalence step between \code{GIntermediate}\code{compHybrid2} \code{Ideal} and \code{Rcomp}\code{GLINRKKDM0}. This game hop uses even larger conditional randomness mappings like in game hop 5, and therefore, we also use the performance optimization used there. However, it also requires the associativity, commutativity, identity and inverse properties of the XOR operation. Since we modelled XOR as an abstract function, with no intrinsic properties of its own, and since Domino does not provide an XOR operation with these properties, there are two ways to work around this. 
+
+The first approach is to create a reduction game hop for each property, and then create intermediate games for ever XOR operation that needs any of these properties. However, this would explode in complexity very quickly.
+
+The second approach is to create an assertion that states that two statements are equal (so in this case, we would assert something like $a\xor b = b \xor a$), but each such assertion also increases the verification time quite significantly, especially if we make the assertion over the whole domain of the variables. We discuss these approaches in more detail in Chapter \ref{chp:discussion}. Moreover, Domino shows a warning on execution if we include assertions, to prevent the programmer from `cheating' silently. Since we were unable to get the program to terminate for this game hop (due to time taken to solve), we decided to let it fail and to discuss why this occurs.
 
 \input{figs/code/domino-freexor-gamehop7.tex}
+The eighth game hop is a reduction between \code{Rcomp}\code{GLINRKKDM0} and \code{Rcomp}\code{GLINRKKDM1}, which holds because of the \code{lin\_rk\_kdm} assumption.
 
 \input{figs/code/domino-freexor-gamehop8.tex}
+The final game hop is an equivalence relation between \code{Rcomp}\code{GLINRKKDM1} and \code{GSimFree} \code{XORIdeal}. This game hop also uses conditional randomness mappings for the row randomness samplings (\code{R\_00}, \code{R\_01}, \code{R\_10}, \code{R\_11}), and the splitting-optimization used in the fifth game hop. 
+
 \subsection{Verification Results}
 \label{subsec:results}
-The resulting Domino formalization was tested by using the verification mechanism provided in Domino (\code{domino prove}). The reduction between \code{RcompGLINRKKDM0} and \code{RcompGLINRKKDM1} was successfully verified under the LIN-RK-KDM assumption. However, the equivalence relation between \code{RcompGLINRKKDM0} and \code{GSimFree-} \code{XORReal}, and the equivalence relation between \code{RcompGLINRKKDM1} and \code{GSimFree-} \code{XORIdeal} could not be successfully established. This suggests the requirement of more invariants, which we discuss in Chapter \ref{chp:discussion}.
+The above discussed formalization was verified using (\code{domino prove}). We were able to prove all the game hops until the equivalence between \code{GIntermediatecompHybrid2} \code{Ideal} and \code{Rcomp}\code{GLINRKKDM0}. Figure \ref{fig:domino_prove_all} shows the output of \code{domino prove} until it terminates at the seventh game hop. Since game hops are indexed from zero by Domino, this corresponds to the \code{-{}-proofstep 6} syntax used in the following figures.
+
+\input{figs/screens/domino_prove_all.tex}
+
+Figure \ref{fig:domino_unprove_6} shows that it was indeed the seventh game hop, or \code{proofstep 6} that failed.
+
+\input{figs/screens/domino_unprove_6.tex}
+
+Figure \ref{fig:domino_prove_7} and Figure \ref{fig:domino_prove_8} show the remaining two game hops being successfully verified.
+
+\input{figs/screens/domino_prove_7.tex}
+
+\input{figs/screens/domino_prove_8.tex}
 
 The full code for this formalization can be found on GitHub \cite{prateekfreexor:code}.

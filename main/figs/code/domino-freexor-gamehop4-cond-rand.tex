@@ -1,0 +1,44 @@
+\begin{longlisting}
+\begin{minted}{smt2-lang}
+define-fun randomness-mapping-GARBLEAND
+((sample-id-left SampleId) (sample-id-right SampleId)
+    (sample-offset-left Int) (sample-offset-right Int))
+Bool 
+(or
+    (and
+        (= sample-id-left (sample-id "GHybridWithCasesWithSampling" "GARBLEAND" "delta"))
+        (= sample-id-right (sample-id "GIntermediate" "GARBLEAND" "delta"))
+        (= sample-offset-left 0)
+        (= sample-offset-right 0)
+    )
+    ; ...
+    (ite
+        (= <arg-GHybridWithCasesWithSampling-GARBLEAND-x> 
+            ((as mk-tuple2 (Tuple2 Bool Bool)) false false))
+        (or
+            (and
+                (= sample-id-left (sample-id "GHybridWithCasesWithSampling" "GARBLEAND" "A_00"))
+                (= sample-id-right (sample-id "GIntermediate" "GARBLEAND" "A_00"))
+                (= sample-offset-left 0)
+                (= sample-offset-right 0)
+            )
+            (and
+                (= sample-id-left (sample-id "GHybridWithCasesWithSampling" "GARBLEAND" "B_00"))
+                (= sample-id-right (sample-id "GIntermediate" "GARBLEAND" "B_00"))
+                (= sample-offset-left 0)
+                (= sample-offset-right 0)
+            )
+            (and
+                (= sample-id-left (sample-id "GHybridWithCasesWithSampling" "GARBLEAND" "C_00"))
+                (= sample-id-right (sample-id "GIntermediate" "GARBLEAND" "C_00"))
+                (= sample-offset-left 0)
+                (= sample-offset-right 0)
+            )
+        )'
+        ;...
+    )
+)
+\end{minted}
+\caption{Conditional randomness mapping in game hop 5 of the \code{freexor} theorem}
+\label{lst:domino-freexor-gamehop4-cond-rand}
+\end{longlisting}
