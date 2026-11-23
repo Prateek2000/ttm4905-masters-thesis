@@ -18,8 +18,9 @@ full:
 	pdflatex -synctex=1 --shell-escape $(TEXFILE)
 	makeglossaries $(TEXFILE);\
 	pdflatex -synctex=1 --shell-escape $(TEXFILE);\
-	pdflatex -synctex=1 --shell-escape $(TEXFILE)
-
+	pdflatex -synctex=1 --shell-escape $(TEXFILE);\
+	pdflatex -synctex=1 --shell-escape \
+		"\def\FINALPDF{1}\input{$(TEXFILE)}"
 
 # Removes TeX-output files
 clean:
