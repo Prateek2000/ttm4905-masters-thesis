@@ -473,7 +473,7 @@
 % Title page and project description
 \let\ordinal\undefined
 \RequirePackage{datetime}
-\newdateformat{dateIIK}{22 \monthname[\THEMONTH] \THEYEAR}
+\newdateformat{dateIIK}{23 \monthname[\THEMONTH] \THEYEAR}
 
 
 \newcounter{@auth}
