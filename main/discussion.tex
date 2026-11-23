@@ -6,6 +6,9 @@ New things to talk about:
     \item SMT code to define invariants is hidden complexity, and is mandatory for equivalence gamehops.
     \item cant reason about probabilistic arguments, so we have to use assumptions under which reductions are true
     \item Domino does not let you map n to 1 randomnesses even if the left game samplings are all in n different conditional branches. This forces us to use conjectures.
+    \item SMT code to define properties of XOR inspecific games (with code samples) and how that impacts solving time.
+    \item There is probably a suitable mapping for GIntermediateCompHybrid2Ideal and RcompGLINRKKDM that we can find.
+    \item We also had to split up the lemmata for equivalences from game hop number 5 (indexed from 1) onwards, since the verification significantly slows down when we introduce conditional randomness mappings for each input combination, and for each extra assertion we use. 
 \end{itemize}
 
 In this chapter, we first provide a short summary of the goals and results of the thesis. Then, we discuss the transformations of the Free XOR proof. Finally, we discuss the challenges and limitations of this work, and list future work that may overcome some of these shortcomings. 

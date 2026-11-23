@@ -1,5 +1,5 @@
 \newcommand{\code}[1]{%
-  \colorbox{gray!10}{\texttt{\detokenize{#1}}}%
+  \texttt{\color{black!80}{#1}}%
 }
 \chapter{Formalizing Free XOR in Domino}
 \label{chp:domino}
@@ -16,13 +16,13 @@ Domino is published as a Rust crate and is available on GitHub. At the time of w
 
 The main Domino program is exposed as a command line binary. We use two main subcommands in our formalization: 
 \begin{itemize}
-    \item \code{domino latex} is used to generate \LaTeX  code for the packages, games, theorems and graphs that show how these are related to each other. It uses the underlying \acrshort{smt} solver to generate code that draws the reduction graphs when the output \lstinline|.tex| files are compiled. This command also generates pseudocode for every package that is used in the theorem. \acrshort{z3} is the default \acrshort{smt} solver used in this version of Domino \cite{domino:code}. The \code{.tex} files are stored in the \code{\_build\latex} subdirectory.
+    \item \code{domino latex} is used to generate \LaTeX  code for the packages, games, theorems and graphs that show how these are related to each other. It uses the underlying \acrshort{smt} solver to generate code that draws the reduction graphs when the output \lstinline|.tex| files are compiled. This command also generates pseudocode for every package that is used in the theorem. \acrshort{z3} is the default \acrshort{smt} solver used in this version of Domino \cite{domino:code}. The \code{.tex} files are stored in the \code{\_build\\latex} subdirectory.
     \item \code{domino prove} is used to validate each of the game hops that are defined in the theorem file. It also uses the SMT solver to validate the reduction and equivalence game hops. Equivalence game hops require an additional randomness mapping step, and may require a separate invariant file. \code{domino prove} accepts parameters, and the following are used in this project:
     \begin{itemize}
         \item \code{-t} generates transcripts which can be used to review the outputs of the SMT solver.
-        \item \colorbox{gray!10}{\texttt{-\kern0pt-proof}} selects a specifc theorem to be proven and is useful if the proof code is split into multiple theorems and the user needs to prove a specific one. It is followed by a string parameter with the name of the theorem.
-        \item \colorbox{gray!10}{\texttt{-\kern0pt-proofstep}} selects the proof step to be proven in the selected theorem. It is followed by a integer which is the index of the proof step to be proven. Indexing starts at 0.
-        \item \colorbox{gray!10}{\texttt{-\kern0pt-claim}} selects the lemma to be proven in the selected proofstep. It takes a string parameter that is the full name of the lemma to be proven. 
+        \item \code{--proof} selects a specifc theorem to be proven and is useful if the proof code is split into multiple theorems and the user needs to prove a specific one. It is followed by a string parameter with the name of the theorem.
+        \item \code{--proofstep} selects the proof step to be proven in the selected theorem. It is followed by a integer which is the index of the proof step to be proven. Indexing starts at 0.
+        \item \code{--claim} selects the lemma to be proven in the selected proofstep. It takes a string parameter that is the full name of the lemma to be proven. 
     \end{itemize}
 \end{itemize}  
 
@@ -31,7 +31,7 @@ Domino has two main dependencies:
     \item A recent Rust toolchain. Instructions on setting this up can be found at \cite{rust_install}.
     \item A functioning \acrshort{z3} and CVC5 installation and the executables on \code{PATH}. The installation instructions for these can be found at the respective websites of the projects \cite{cvc5_install,z3_install}.
 \end{itemize} 
-It is important to note that the current version of Domino prefers \acrshort{z3} for running \code{domino latex} since it is faster at generating the dependency graphs. The \code{-s cvc5} option can be used to force it to use CVC5 for graph resolution.  However, for \code{domino prove}, CVC5 is the default \acrshort{smt} solver, and \acrshort{z3} is only supported using an adaptor script which was not tested by us \cite{domino:paper}.
+It is important to note that the current version of Domino prefers \acrshort{z3} for running \code{domino latex} since it is faster at generating the dependency graphs. The \code{-s cvc5} option can be used to force it to use CVC5 for graph resolution. However, for \code{domino prove}, CVC5 is the default \acrshort{smt} solver, and \acrshort{z3} is only supported using an adaptor script which was not tested by us \cite{domino:paper}.
 
 After setting up these dependencies, Domino can be installed using the installation instructions in the Domino repository \cite{domino:code}.
 
@@ -43,7 +43,7 @@ Packages in Domino are syntactically the same as packages in \acrshort{ssp}s. Th
 
 \subsection{Compositions}
 \label{subsec:arch_compositions}
-Compositions, or games, in Domino are syntactically equivalent to games in \acrshort{ssp}s. A game first defines constants that will be passed to package instances. Then, it defines instances of packages that are used in the definition of the game. The compose block is used to define the composition of one or more packages by declaring the oracles of each package instance that are accessible to other package instances in the composition. The compose block also has a special keyword 'adversary' which is used to define the specific package instances that are accessible to an adversary. Listing \ref{lst:domino-game-example} shows a sample Domino game with placeholders.
+Compositions, or games, in Domino are syntactically equivalent to games in \acrshort{ssp}s. A game first defines constants that will be passed to package instances. Then, it defines instances of packages that are used in the definition of the game. The compose block is used to define the composition of one or more packages by declaring the oracles of each package instance that are accessible to other package instances in the composition. The compose block also has a special keyword `adversary' which is used to define the specific package instances that are accessible to an adversary. Listing \ref{lst:domino-game-example} shows a sample Domino game with placeholders.
 
 \input{figs/code/domino-composition-code.tex}
 
@@ -55,7 +55,7 @@ Theorems define the relations between different games in Domino. They first defi
 
 \subsection{Project Structure}
 \label{subsec:projectstructure}
-A Domino project directory requires the presence of an empty \code{ssp.toml} file to indicate the project root. The project root contains three other mandatory folders - \code{packages}, \code{games}, and \code{theorem}, each of which contain their namesakes. Most Domino subcommands also take a \code{-{}-path} parameter, followed by a directory, to indicate the project root. 
+A Domino project directory requires the presence of an empty \code{ssp.toml} file to indicate the project root. The project root contains three other mandatory folders - \code{packages}, \code{games}, and \code{theorem}, each of which contain their namesakes. Most Domino subcommands also take a \code{--path} parameter, followed by a directory, to indicate the project root. 
 
 Each of the three folders in a Domino project can contain one or more \code{.ssp} files. Domino checks packages and games for syntactic correctness even if they are not used in a theorem. This is by design, in order to help packages and games  be checked for syntax before setting up a complicated proof.
 
@@ -63,15 +63,6 @@ Each of the three folders in a Domino project can contain one or more \code{.ssp
 \label{sec:freexorindomino}
 Before we describe our encoding of the SSP from the previous chapter in Domino, it is important to note that the pen-and-paper SSP was written in pseudocode, which gives us a lot of freedom on how we represent variables and operations, and allows us to get away with not explicitly defining packages. However, since Domino has its own syntax, and is compiled into SMT-LIB, small syntactical changes in the package code can alter the program's behavior and make it difficult to debug. Therefore, we reason a lot more about packages instead of games (or compositions), and clearly differentiate between them in Domino code. This has the added benefit of allowing us to reflect on the nuances of the Domino programming language and discuss it in Chapter \ref{chp:discussion}. We first discuss our representation of the original pen-and-paper SSP games in Domino, and then describe the other games and game-hops that were used, along with the reasons they were needed. 
 
-\subsection{Common parameters}
-The the use of the following paramteres remains consistent across many package and game files, and they are also seen in the theorem file, we discuss them before proceeding.
-\begin{itemize}
-    \item \code{n}: Parameter used to represent the security parameter $\secpar$.
-    \item \code{enc}: Parameter used as an abstract function to represent the encryption function $\enc$.
-    \item \code{m}: Parameter used to represent the output length of the function $\enc$. 
-    \item \code{b}: Parameter used to switch real and ideal behaviors in a few games. 
-    \item \code{xor_}: Parameter used as an abstract function used to represent the bitwise XOR operation, since Domino does not provide a real representation of the bitwise XOR operation. We discuss this in more detail in Section \ref{chp:discussion}.
-\end{itemize}
 \subsection{The Free XOR proof sketch}
 \label{subsec:freexorproofsketch}
 The theorem file \code{freexor.ssp} defines all of the assumptions and game hops used in the Domino encoding of the proof, and links to the invariants and randomness mappings used in the game hops. Initially, we started with four packages - \code{SimFreeXORReal}, \code{SimFreeXORIdeal}, \code{Reduction}, and \code{LINRKKDM}. These packages map cleanly to the pen-and-paper SSP we describe in Section \ref{chp:penpaperssp}, as described in Table \ref{tab:freexor-domino-packages}, and are marked with dotted lines in Figure \ref{fig:gamehops}.
@@ -80,41 +71,51 @@ The theorem file \code{freexor.ssp} defines all of the assumptions and game hops
 
 However, as we went about defining the relations between the variables in the packages involved in each game hop, it became apparent that we would need to use intermediate packages and games due to the complexity of the game hops, and break it down into multiple game hops with less drastic changes.
 
-Figure \ref{fig:gamehops} shows an overview of both the planned proof sketch based on the pen-and-paper SSP, and the actual proof sketch that was used in the Domino encoding. 
-
-The first game hop starts with the real Free XOR game, encoded in \code{GSimFreeXORReal.comp.ssp}.We show that \code{GSimFreeXORReal} is equivalent to an intermediate game where part of \code{GSimFreeXORReal}'s code is outlined into the real version of a hybrid randomness sampling game (\code{Hybrid.pkg.ssp}). \code{Hybrid.pkg.ssp} contains an oracle \code{GETRANDOMS} which represents the statistical argument we made in the pen-and-paper proof using the \mathsf{GETRANDOMS2\mathit{(w)}} oracle in $G^b_\mathsf{Hybrid}$ (Figure \ref{fig:hybridgetrandoms}). 
-
-The second game hop is a reduction step from the real to ideal versions of \code{Reduction1.pkg.ssp} composed with \code{Hybrid.pkg.ssp}, defined in game \code{R1compHybrid.comp.ssp}. The basis for the real and ideal versions of the \code{GETRANDOMS} oracle of \code{Hybrid.pkg.ssp} being indistinguishable is the same as the argument made when proving Lemma \ref{lemma:informationtheoreticassumptionreal}. Since Domino cannot reason about probabilistic arguments at the moment, we declare the real and ideal versions of \code{GHybrid} as equivalent in our theorem file \code{freexor.ssp}, as an assumption called \code{hybrid}. 
-
-The third game hop is another equivalence game hop, between the the ideal composition \code{R1compHybrid} and a new game \code{GHybridWithCases}. In this game hop, we move a lot of the code from before the conditional branching into the branches. This is a setup for later gamehops that have separate garbled table generation logic for each branch. Domino does not allow $n:1$ randomness mappings between two games, and this leads to complications, since ideally each of the three random values would be sampled separately in each of the four conditional branches. To work around this, we introduce \code{tempsample1}, \code{tempsample2} and \code{tempsample3}, which are placeholders for the randomness sampling of \code{A_0}, \code{B_0} and \code{C_0}. These still remain outside the conditional branches, however, the assignment of these random values to wire labels, and the assignment of values of the complimentary wire labels are moved inside the branches. In addition, the garbled table generation itself is also moved within the branches.
-
-The fourth game hop is declared as a conjecture between {GHybridWithCases} and {GHybridWithCasesWithSampling}. A conjecture in Domino is a declaration of equivalence that is assumed to be correct by Domino, meaning that it does not perform any checks to verify its correctness. While it is ideal to avoid using them, we use it to move the sampling of the randomness used in wire label generation into the conditional branches. This is a logically sound transformation because only one of the four code branches will run at a time, and therefore, only three of the twelve randomness sampling operations will be executed. The rest of the code remains the exact same as \code{GHybridWithCases.comp.ssp}.
-
-The fifth game hop is a equivalence gamehop between \code{GHybridWithCasesWithSampling} and another compositon (\code{GIntermediatecompHybrid2}) of intermediate games \code{Intermediate.pkg.ssp} and (\code{Hybrid.pkg.ssp}). 
-
+Figure \ref{fig:gamehops} shows an overview of both the planned proof sketch based on the pen-and-paper SSP (in dotted lines), and the actual proof sketch that was used in the Domino encoding.
 
 \input{figs/gamehops.tex}
+
+The first game hop starts with the real Free XOR game, encoded in game \code{GSimFree} \code{XORReal}. We show that \code{GSimFreeXORReal} is equivalent to an intermediate game where part of \code{GSimFreeXORReal}'s code is outlined into the real version of a hybrid randomness sampling game (\code{GHybrid}). The underlying package, \code{Hybrid}, contains an oracle \code{GETRANDOMS} which represents the statistical argument we made in the pen-and-paper proof using the $\mathsf{GETRANDOMS\mathit{(w)}}$ oracle in $G^b_\mathsf{Hybrid}$ (Figure \ref{fig:hybridgetrandoms}). 
+
+The second game hop is a reduction step from a composition of package \code{Reduction1} composed with the real \code{Hybrid} package, to a composition of package \code{Reduction1} composed with the ideal \code{Hybrid} package. Both the real and ideal versions of this game are defined in game \code{R1compHybrid}. The basis for the real and ideal versions of the \code{GETRANDOMS} oracle of \code{Hybrid.pkg.ssp} being indistinguishable from each other is the same as the argument made when proving Lemma \ref{lemma:informationtheoreticassumptionreal}, that they follow the same randomness distribution. Since Domino cannot reason about probabilistic arguments at the moment, we declare the real and ideal versions of \code{GHybrid} as equivalent in our theorem file \code{freexor.ssp}, as an assumption called \code{hybrid}. 
+
+The third game hop is another equivalence game hop, between the the ideal composition \code{R1compHybrid} and a new game \code{GHybridWithCases}. In this game hop, we move a lot of the code from before the conditional branching into the branches. This is a setup for later gamehops that have separate garbled table generation logic for each branch. Domino does not allow $n:1$ randomness mappings between two games, and this leads to complications, since ideally each of the three random values would be sampled separately in each of the four conditional branches. To work around this, we introduce \code{tempsample1}, \code{tempsample2} and \code{tempsample3}, which are placeholders for the randomness sampling of \code{A\_0}, \code{B\_0} and \code{C\_0}. These still remain outside the conditional branches, however, the assignment of these random values to wire labels, and the assignment of values of the complimentary wire labels are moved inside the branches. In addition, the garbled table generation itself is also moved within the branches.
+
+The fourth game hop is declared as a conjecture between \code{GHybridWithCases} and \code{GHybridWithCasesWithSampling}. A conjecture in Domino is a declaration of equivalence that is assumed to be correct by Domino, meaning that it does not perform any checks to verify its correctness. While it is ideal to avoid using them, we use it to move the sampling of the randomness used in wire label generation into the conditional branches. This is a logically sound transformation because only one of the four code branches will run at a time, and therefore, only three of the twelve randomness sampling operations will be executed. The rest of the code remains the exact same as in \code{GHybridWithCases}.
+
+The fifth game hop is a equivalence game hop between \code{GHybridWithCases}\break\code{WithSampling} and another compositon (\code{GIntermediate}\code{compHybrid2}) of games \code{Intermediate} and (\code{Hybrid}). This hop outlines the sampling of one or more wire labels that cannot be generated in the adversary-facing packages of later games where the variable \code{delta} is moved to an inner package. 
+
+The sixth game hop is a reduction game hop from a real to ideal sampling of specific wire labels (depending on the input \code{x}). Similar to the second game hop which was also a reduction, the return values of the real and ideal versions of the oracle \code{GETRANDOMWIRELABEL} in package \code{Hybrid2} are indistinguishable because they follow the same distribution. This package corresponds to the pen-and-paper SSP oracle $\mathsf{GETRANDOMS2\mathit{(w)}}$ from $G^b_\mathsf{Hybrid}$ (Figure \ref{fig:hybridgetrandoms}). The assumption \code{hybrid2} in the theorem file corresponds to this reduction.
+
+The seventh game hop brings us back to the games we dealt with in the pen-and-paper SSP. This game hop is an equivalence between \code{GIntermediate}\code{compHybrid2}\code{Ideal} and the real \code{Rcomp}\code{GLINRKKDM}. This is the game hop that we were unable to prove fully due to the randomness mapping between the random variables of the games being rather complicated. The mapping becomes complicated for values of \code{x != (false, false)} since the mapping of wire labels varies for each branch, and it was difficult to determine a suitable mapping for the random values that are used by each encryption operation. However, since the pen-and-paper proof exists, we believe that it should be able to find a mapping that allows us to prove this equivalence.
+
+Finally, the eighth game hop is a equivalence game hop between the ideal \code{Rcomp} \code{GLINRKKDM} and the ideal simulation game \code{GSimFree}\code{XORIdeal}. The simulation game we use in the pen-and-paper SSP, $G^1_{\mathsf{Sim\text{-}FreeXOR}}$, describes a $\mathsf{GARBLE}$ oracle that takes the output of the circuit, and the loss function as inputs. However, these inputs are not usable with our current setup in Domino, since the adversary-exposed oracles of the two games in an equivalence game hop must have the same signature. Therefore, \code{GSimFree}\code{XORIdeal} consists of a wrapper package \code{SimFreeXORIdeal} which exposes a \code{GARBLEAND} oracle with the same signature as the oracle exposed by \code{Reduction}. It then computes \code{f(x)}, and only this value is passed to the actual \code{Simulator}. This also ensures that the \code{Simulator} package does not have access to the garbled circuit inputs. 
+
+\subsection{Common parameters}
+The use of the following parameters remains consistent across many package and game files, and they are also seen in the theorem file, we discuss them before proceeding.
+\begin{itemize}
+    \item \code{n}: Parameter used to represent the security parameter $\secpar$.
+    \item \code{enc}: Parameter used as an abstract function to represent the encryption function $\enc$. It takes an extra third argument to model a non-deterministic function.
+    \item \code{m}: Parameter used to represent the output length of the function $\enc$. 
+    \item \code{b}: Parameter used to switch real and ideal behaviors in a few games. 
+    \item \code{xor\_}: Parameter used as an abstract function used to represent the bitwise XOR operation, since Domino does not provide a real representation of the bitwise XOR operation. We discuss this in more detail in Section \ref{chp:discussion}.
+\end{itemize}
 
 \subsection{Common changes made across the Domino representation}
 \label{subsec:commonchangesindomino}
 Since Domino is a strongly typed language, the pseudocode from the pen-and-paper SSP needs to be adapted to be syntactically correct. Therefore, we made some common changes to the Domino packages when compared to the pen-and-paper games. 
-\begin{itemize}
-    \item In all games, \code{delta} is declared as a \code{Maybe(Bits(n))} type, which represents an nullable container type (\code{Maybe()}), wrapped around a bitstring of length $n$. This is to maintain similarity with the type of \code{delta} used in \code{linrkkdm.pkg.ssp}, and allows us to avoid typecasting in the SMT-LIB portion of the code, which is preferable. In doing this, we made a tradeoff by having to cast \code{delta} to its wrapped value whenever we needed to use it in our Domino code.
-    \item Since Domino does not allow accessing an array using a boolean variable as the array index in many cases, all of the Domino packages that expose the \code{GARBLE} oracle use conditional branching on booleans a and b to make varying assignments to the return tuple \code{(C_,X_,d)}.
-    \item Wire labels in all Domino packages, for any wire W, are of the form \code{W\_1}, instead of the $W_a$ notation from the pen-and-paper SSP. The switch from $a$ to \code{1} is acceptable since the variable names are not reused, and they both refer to a randomly sampled value.
-    \item The first item of the return tuple, i.e.\ $F$ in the pen-and-paper SSP is a table (the garbled table, to be precise). However, in Domino code, the corresponding variable, \code{C_}, is used as a set. This is by choice. Since Domino does not natively support sets, a workaround is to use the keys of a table as a set-like data structure, since the keys do not repeat themselves. This set-like data structure allows us to remove the relevance of the order or index at which elements exist inside it, and it allows us to compare the entries in the garbled table out-of-order. This is in line with the special correctness property discussed in Section \ref{subsec:yaosgarblingscheme}, implying that the \cevaluator of the \acrfull{gc} can identify the correct entry from this data structure without requiring ordering or indexes. 
-\end{itemize}
 
 
-\subsection{Game hops}
-\label{subsec:gamehops}
-We now discuss the game hops used in the \code{freexor} theorem. 
-\subsubsection{Equivalence between \code{GSimFreeXORReal} and \code{R1compHybridReal}}
-\code{GSimFreeXORReal} is a game consisting of a single package - \code{SimFreeXORReal}. The domino representation of this package is based on the pen-and-paper SSP, but the following changes were made: 
-\begin{itemize} 
-    \item  
-    
-\end{itemize}
+In all games, \code{delta} is declared as a \code{Maybe(Bits(n))} type, which represents an nullable container type (\code{Maybe()}), wrapped around a bitstring of length $n$. This is to maintain similarity with the type of \code{delta} used in \code{linrkkdm.pkg.ssp}, and allows us to avoid typecasting in the SMT-LIB portion of the code, which is preferable. In doing this, we made a tradeoff by having to cast \code{delta} to its wrapped value whenever we needed to use it in our Domino code.
+
+
+Since Domino does not allow accessing an array using a boolean variable as the array index in many cases, all of the Domino packages that expose the \code{GARBLE} oracle use conditional branching on booleans a and b to make varying assignments to the return tuple \code{(C\_,X\_,d)}.
+
+
+Wire labels in all Domino packages, for any wire W, are of the form \code{W\_1}, instead of the $W_a$ notation from the pen-and-paper SSP. The switch from $a$ to \code{1} is acceptable since the variable names are not reused, and they both refer to a randomly sampled value.
+
+
+The first item of the return tuple, i.e.\ $F$ in the pen-and-paper SSP is a table (the garbled table, to be precise). However, in Domino code, the corresponding variable, \code{C\_}, is used as a set. This is by choice. Since Domino does not natively support sets, a workaround is to use the keys of a table as a set-like data structure, since the keys do not repeat themselves. This set-like data structure allows us to remove the relevance of the order or index at which elements exist inside it, and it allows us to compare the entries in the garbled table out-of-order. This is in line with the special correctness property discussed in Section \ref{subsec:yaosgarblingscheme}, implying that the \cevaluator of the \acrlong{gc} can identify the correct entry from this data structure without requiring ordering or indexes. 
 
 \subsection{The Free XOR, LIN-RK-KDM, and Reduction games}
 \label{subsec:freexorandlinkrkkdmgames}
@@ -122,8 +123,7 @@ The reduction described in Chapter \ref{chp:penpaperssp} consists of the games $
 We represent the ideal and real instances of $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ as  two different packages in Domino, namely \code{SimFreeXORIdeal}  and \code{SimFreeXORReal}. Both instances of $G^{b}_{\mathsf{LIN-RK-KDM}}$ are represented as one package \code{LINRKKDM} that takes an input parameter bit \code{b} that can be used to switch between the real and ideal behaviors. 
 The reduction $\rdv$ is modeled as its own package \code{Reduction}.
 
-
-However, the Domino code for these packages is not a literal translation of the pseudocode from the pen-and-paper SSP packages. 
+Since we try to stick closely to the pen-and-paper SSP versions of these four games, we discuss them separately.
 \subsubsection{LINRKKDM.pkg.ssp}
 \label{subsubsec:linrkkdm}
 \par\medskip
@@ -148,12 +148,6 @@ The \code{Reduction} package begins with the package parameters and does not use
 
 Furthermore, since Domino support neither assignment operations to arbitrary boolean indexes (such as $A_a \sample \bin^\secpar $), nor operations between boolean and bitstrings, we got around it using conditional branching on the boolean variables \code{a} and \code{b}. This enabled us to compute the value of \code{c} or $f(x)$ in each branch separately by setting the value of \code{c} to a precomputed $a\land b$.
 
-talk about
-\begin{itemize}
-    \item enc random variables
-    \item sampling outside the conditional branches to simplify randomness mapping later
-    \item Some(()) for table value - used to emulate a set instead of an actual table
-\end{itemize}
 
 \input{figs/code/domino-import-oracle.tex}
 
@@ -164,10 +158,12 @@ We were able to encode $G^1_\mathsf{Sim\text{-}FreeXOR}$ game without making any
 
 \subsubsection{SimFreeXORRealANDONLY.pkg.ssp}
 We were able to encode $G^0_\mathsf{Sim\text{-}FreeXOR}$ game using only the modifications we described in the above package files.
-\subsection{Games}
+
+\subsection{Games and Packages used in other game hops}
 \label{subsec:encode_games}
-Now, we move on to the mapping of the games in the SSP to the games that we used in Domino. Table \ref{tab:freexor-domino-games} shows this mapping.
-\input{figs/table/freexorgames.tex}
+Now, we move on to discussing the other games and packages that were used as intermediate steps in theorem \code{freexor}. 
+% Table \ref{tab:freexor-domino-games} shows this mapping.
+% \input{figs/table/freexorgames.tex}
 
 \subsubsection{GLINRKKDM.comp.ssp}
 \code{GLINRKKDM.comp.ssp} encodes the LIN-RK-KDM game. It first defines the constants that the package it instantiates needs. Then, it creates an instance of the \code{LINRKKDM} package and passes those parameters to it. Finally, it defines the oracle interface that it exposes to an adversary.
