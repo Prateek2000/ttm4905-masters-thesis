@@ -1,0 +1,15 @@
+\begin{longlisting}
+\begin{minted}{smt2-lang}
+(assert 
+    (forall 
+        ((x Bits_n) (y Bits_n) (z Bits_n)) 
+        (= 
+            (<<func-xor_>> x (<<func-xor_>> y z)) 
+            (<<func-xor_>> (<<func-xor_>> x y) z)
+        )
+    )
+)
+\end{minted}
+\caption{An assertion for associativity of the \code{xor\_} function}
+\label{lst:domino-smtlib-assert-xor}
+\end{longlisting}

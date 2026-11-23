@@ -1,0 +1,24 @@
+\begin{longlisting}
+\begin{minted}{smt2-lang}
+(assert 
+    (
+        let (
+            (delta 
+                (<pkg-state-Intermediate-<$<!m!><!n!>$>-delta> 
+                (<game-GIntermediatecompHybrid2-<$<!n!><!m!>$>-pkgstate-GIntermediate>
+                (<oracle-return-GIntermediatecompHybrid2-<$<!n!><!m!>$>-Intermediate-<$<!m!><!n!>$>-GARBLEAND-game-state> 
+                <return-GIntermediatecompHybrid2Ideal-GARBLEAND>
+                ))))
+            (r_11 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GIntermediatecompHybrid2" "GARBLEAND" "R_11") 0 ))
+            (c_0 (__sample-rand-GIntermediatecompHybrid2Ideal-Bits_n (sample-id "GIntermediatecompHybrid2" "GARBLEAND" "C_00") 0 ))        
+            )
+        (= 
+            (<<func-xor_>> r_11 (<<func-xor_>> c_0 (maybe-get delta))) 
+            (<<func-xor_>> (<<func-xor_>> r_11 c_0) (maybe-get delta))
+        )
+    )
+)
+\end{minted}
+\caption{An assertion for associativity of the \code{xor\_} function without using universal quantifiers}
+\label{lst:domino-smtlib-assert-xor-nonuniversal}
+\end{longlisting}

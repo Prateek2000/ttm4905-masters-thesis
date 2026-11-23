@@ -57,6 +57,8 @@
 \LoadClass[10pt,b5paper]{memoir}
 \errorcontextlines=999
 \RequirePackage{morewrites}
+\RequirePackage[7-]{pagesel}
+
 
 %show page margins
 % \RequirePackage[showframe]{geometry}

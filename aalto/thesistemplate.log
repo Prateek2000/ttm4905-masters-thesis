@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.3.17)  23 NOV 2026 19:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.3.17)  23 NOV 2026 23:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1461,7 +1461,8 @@ ty argument unresolved. These results demonstrate the feasibility of translatin
 g a Free XOR security proof into the SSP framework and encoding it in Domino, w
 hile identifying the remaining verification gap as a direction for future work,
  and also evaluating Domino as a proof verification tool. }
-\Keywords {\sep garbling scheme\sep state-separating proof\sep Domino\sep }
+\Keywords {Cryptography\sep Garbling scheme\sep State-separating proof\sep Domi
+no\sep Formal verification\sep Free XOR}
 \c@mv@tabular=\count353
 \c@mv@boldtabular=\count354
 LaTeX Info: Command `\dddot' is already robust on input line 399.
@@ -1671,11 +1672,11 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 Package pagesel Notice: Aborting LaTeX job after last selected page (3).
  ) 
 Here is how much of TeX's memory you used:
- 23638 strings out of 467533
- 368846 string characters out of 5422138
- 827027 words of memory out of 5000000
+ 23640 strings out of 467533
+ 368888 string characters out of 5422138
+ 827073 words of memory out of 5000000
  52071 multiletter control sequences out of 15000+600000
- 672414 words of font info for 107 fonts, out of 8000000 for 9000
+ 672506 words of font info for 108 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  108i,16n,111p,1730b,2463s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
@@ -1773,7 +1774,7 @@ pdfTeX warning (dest): name{section*.2} has been referenced but does not exist,
 </usr/share/texmf/fonts/type1/public/tex-gyre/qhvb.pfb></usr/share/texmf/fonts/
 type1/public/tex-gyre/qhvr.pfb></usr/share/texmf/fonts/type1/public/tex-gyre/qt
 mr.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/ztmr.pfb>
-Output written on thesistemplate.pdf (3 pages, 143715 bytes).
+Output written on thesistemplate.pdf (3 pages, 143765 bytes).
 PDF statistics:
  190 PDF objects out of 1000 (max. 8388607)
  144 compressed objects within 2 object streams

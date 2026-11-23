@@ -10,22 +10,36 @@ Then, in Section \ref{sec:whatisdomino}, we introduce the proof verifier tool we
 
 \section{Challenges in encoding the SSP in Domino}
 \label{sec:challengesandlimitations}
-Domino aims to be a highly automated tool for verification of \acrlong{ssp}s, while also providing quality-of-life features such as 
+Domino aims to be a highly automated tool for verification of \acrlong{ssp}s, while also providing quality-of-life features such as syntax that is close to SSPs, and a feature to generate \LaTeX and HTML representations of the proof. It also tries to provide verbose error logs to make debugging of code easier. 
 
-\begin{itemize}
-    \item SMT code to define invariants is hidden complexity, and is mandatory for equivalence gamehops.
-    \item cant reason about probabilistic arguments, so we have to use assumptions under which reductions are true
-    \item Domino does not let you map n to 1 randomnesses even if the left game samplings are all in n different conditional branches. This forces us to use conjectures.
-    \item SMT code to define properties of XOR inspecific games (with code samples) and how that impacts solving time. Since we modelled XOR as an abstract function, with no intrinsic properties of its own, and since Domino does not provide an XOR operation with these properties, there are two ways to work around this. The first approach is to create a reduction game hop for each property, and then create intermediate games for ever XOR operation that needs any of these properties. However, this would explode in complexity very quickly. The second approach is to create an assertion that states that the outputs from both sides of an operation are equal. however, if we use a universal quantifier then this explodes the verification time (did not complete even in two days). 
-    \item There is probably a suitable mapping for GIntermediateCompHybrid2Ideal and RcompGLINRKKDM that we can find.
-    \item We also had to split up the lemmata for equivalences from game hop number 5 (indexed from 1) onwards, since the verification significantly slows down when we introduce conditional randomness mappings for each input combination, and for each extra assertion we use. 
-\end{itemize}
+At the same time, while working on this project, we found it lacking in certain features, that if added, would make the process of encoding and verifying a SSP much simpler. We discuss some of these features below.
 
-During the encoding of the SSP into Domino, we often ran into situations where we had to branch our code based on the value of boolean variables, since Domino does not support operations such as indexing tables by boolean variables and binary operations between booleans and bitstrings. While the conditional branching was technically correct, it led to the code being significantly larger in size, and also more difficult to reason about and compare with the pen-and-paper SSP. Examples of this can be seen in \code{Reduction.pkg.ssp}, \code{LINRKKDM.pkg.ssp}, and \code{SimFreeXORRealANDONLY.pkg.ssp}.
+The biggest shortcoming we observed during the project was the lack of a in-build XOR operator. While it may be complex to implement this operator since it would have to compile to SMT-LIB, it is a basic mathematical operator available in other languages. SMT-LIB itself provides an XOR operator for certain theories, and this may be a good starting point for partial implementation of the operator for some data types in Domino. While encoding the Free XOR proof in Domino, we ran into a few cases where we could work around the absence of the Free XOR operator using \code{assert} statements in SMT-LIB. Listing \ref{lst:domino-smtlib-assert-xor} defines an assertion that uses universal quantifiers to define the associativity property for the abstract function \code{xor\_}. However, using universal quantifiers increased the time taken to discharge the proof to over two full days, making it an unrealisitc choice.
+
+\input{figs/code/domino-smtlib-assert-xor.tex}
+
+However, even if we made assertions for fixed relations between variables, like in Listing \ref{lst:domino-smtlib-assert-xor-nonuniversal}, it is very difficult to determine which variables these relations should exist for in the first place. Often, one has to work the logic out on pen and paper, and then code it in Domino. Upon trying approaches such as this, we had limited success for specific conditional branches, but completely failed on the others - simply because it was difficult to understand the program execution flow on paper. Moreover, these assertions still slow the proof verification down, though not to an extent as using universal quantifiers.
+
+\input{figs/code/domino-smtlib-assert-xor-nonuniversal.tex}
+
+If the XOR operation, even with limited properties is added to Domino, it would allow proofs that deal with this operation to be signinificantly easier. 
+
+Another difficulty we encountered was in creating randomness mappings between two packages, where the first package had a certain number of sampled random values, say $n$, and the second had $m*n$ sampled random values, but with $m$ branches, where each branch had exactly $n$ values sampledm, and only one of $m$ branches would run per program flow. An example can be seen in the fourth game hop in Listing \ref{lst:domino-freexor-gamehop3}, where we used a conjecture to get around this obstacle.
+
+While this was a minor inconvenience, stronger support for the Boolean data type would be very helpful. Examples include being able to assign values to tables while accessing them based on Boolean indexes. This was the primary reason for the conditional branching we used in the packages that exposed a \code{GARBLEAND} oracle. While the conditional branching was technically correct, it led to the code being significantly larger in size, and also more difficult to reason about and compare with the pen-and-paper SSP. Another example is that Domino does not allow multiplication between Booleans and bitstrings, causing the \code{LINRKKDM} package to have an additional conditional branch. 
+
+The flexibility that Domino brings by allowing the user to code their requirements as an invariant also contributes to an unavoidable increase in complexity. The syntax for the SMT-LIB invariant files is not plain SMT-LIB but has additions that are provided for use by the Domino compiler. However, a the time of writing the thesis, it was quite difficult to familiarize oneself with these quickly since the documentation on these is sparse, and the intermediate SMT-LIB files generated by the Domino compiler are verbose and difficult to interpret. 
+Some documentation covering the generated SMT files, the type system in Domino, and the workarounds that we ended up using would be a great addition while features are being developed. 
+
+However, not all is terrible in the world of Domino. The project seems to be moving to more opinionated default options recently, like in the case of randomness mappings. Domino now provides automatic randomness mappings for simple games, avoiding the verbosity of writing elaborate mappings for games that have simple mappings like in the case of the first game hop in our Domino encoding. The project continues to receive updates frequently, and new features are added often based on user feedback. It is a project we look forward to seeing develop in the future.
 
 
-Although Domino provides automated assistance once the required game relationships have been established, the formalization also revealed a few limitations in the tool and its current workflow.
+% \begin{itemize}
+%     \item SMT code to define invariants is hidden complexity, and is mandatory for equivalence gamehops.
+%     \item cant reason about probabilistic arguments, so we have to use assumptions under which reductions are true
+%     \item Domino does not let you map n to 1 randomnesses even if the left game samplings are all in n different conditional branches. This forces us to use conjectures.
+%     \item SMT code to define properties of XOR inspecific games (with code samples) and how that impacts solving time. Since we modelled XOR as an abstract function, with no intrinsic properties of its own, and since Domino does not provide an XOR operation with these properties, there are two ways to work around this. The first approach is to create a reduction game hop for each property, and then create intermediate games for ever XOR operation that needs any of these properties. However, this would explode in complexity very quickly. The second approach is to create an assertion that states that the outputs from both sides of an operation are equal. however, if we use a universal quantifier then this explodes the verification time (did not complete even in two days). 
+%     \item There is probably a suitable mapping for GIntermediateCompHybrid2Ideal and RcompGLINRKKDM that we can find.
+%     \item We also had to split up the lemmata for equivalences from game hop number 5 (indexed from 1) onwards, since the verification significantly slows down when we introduce conditional randomness mappings for each input combination, and for each extra assertion we use. 
+% \end{itemize}
 
-In terms of expressiveness of the language, Domino lacks boolean operations, boolean-bitstring operations, and indexing of tables in more than one dimension. Several of these operations that are straightforward in SSP notation become considerably more verbose constructions in Domino.
-
-The flexibility that Domino brings by allowing the user to code their requirements as an invariant also contributes to an increase in complexity. The syntax for the SMT-LIB invariant files is not plain SMT-LIB but also has powerful additions that are provided for use by the Domino compiler. It was, however, quite difficult to familiarize oneself with these quickly since the documentation is sparse as of the time of writing this thesis. The project seems to be moving to more opinionated default options recently, like in the case of randomness mappings, which were far more verbose earlier, lowering the barrier to learning the language. 
