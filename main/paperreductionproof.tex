@@ -27,7 +27,7 @@ However, \acrlong{ssp}s differ by introducing the notion of a package. A package
 State separating proofs allow us to restrict access to the state of each package to oracles in that package, and only provide the oracles themselves as an interface to other packages. This lets them be highly modular and composable, enabling us to reuse a package used in one reduction in another, while also allowing changes in state that do not make changes to the whole game. If these changes cascaded to the whole game, it would require the cryptographer to once again verify the correctness of the game in the new state. \cite{brzuska_state_2018} formally defines the constructs we use here, and the mathematical properties of packages such as associativity and compositions. We slightly diverge from their notation of sequential composition by using the $\to$ operator instead of $\circ$. 
 
 
-\section{On the Privacy of the Garbling of Various Gates}
+\section{On the Privacy of the Garbling of Various Gates using Free XOR}
 \label{sec:sspANDgate}
 In our work, we are concerned with the garbling of NOT, XOR, and AND gates, since every boolean circuit can be represented with that combination of gates (functional completeness of boolean gates). Despite the fact that NOT and AND gates by themselves are functionally complete, we are interested in XOR gates since they are the basis on which the Free XOR optimization improves the efficiency of evaluating a \acrlong{gc}. We discuss these gates in order:
 \subsection{NOT Gate}

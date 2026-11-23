@@ -89,6 +89,7 @@
 
 %pdf/a compliance - also had to modify the embedded logo pdfs to a rgb color device from cmyk |gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sColorConversionStrategy=sRGB -dProcessColorModel=/DeviceRGB    -sOutputFile=./figs/ntnu-uten-slagord-rgb.pdf    ./figs/ntnu-uten-slagord.pdf|
 \RequirePackage[a-2b]{pdfx}
+% \RequirePackage[a-1b]{pdfx}
 
 % Fixes
 \RequirePackage{iftex}
