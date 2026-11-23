@@ -57,9 +57,9 @@
 \LoadClass[10pt,b5paper]{memoir}
 \errorcontextlines=999
 \RequirePackage{morewrites}
-% \ifdefined\FINALPDF
-%     \RequirePackage[7-]{pagesel}
-% \fi
+\ifdefined\FINALPDF
+    \RequirePackage[3-]{pagesel}
+\fi
 
 %show page margins
 % \RequirePackage[showframe]{geometry}
