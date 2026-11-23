@@ -1,0 +1,13 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+theorem freexor {
+    const n: Integer; /* security parameter */
+    const m: Integer; /* message length */
+    const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); 
+    const xor_: fn Bits(n), Bits(n) -> Bits(n);
+    /* ... */
+}
+\end{minted}
+\caption{Parameters in theorem \code{freexor}}
+\label{lst:domino-freexor-params}
+\end{longlisting}

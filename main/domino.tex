@@ -92,6 +92,7 @@ The seventh game hop brings us back to the games we dealt with in the pen-and-pa
 Finally, the eighth game hop is a equivalence game hop between the ideal \code{Rcomp} \code{GLINRKKDM} and the ideal simulation game \code{GSimFree}\code{XORIdeal}. The simulation game we use in the pen-and-paper SSP, $G^1_{\mathsf{Sim\text{-}FreeXOR}}$, describes a $\mathsf{GARBLE}$ oracle that takes the output of the circuit, and the loss function as inputs. However, these inputs are not usable with our current setup in Domino, since the adversary-exposed oracles of the two games in an equivalence game hop must have the same signature. Therefore, \code{GSimFree}\code{XORIdeal} consists of a wrapper package \code{SimFreeXORIdeal} which exposes a \code{GARBLEAND} oracle with the same signature as the oracle exposed by \code{Reduction}. It then computes \code{f(x)}, and only this value is passed to the actual \code{Simulator}. This also ensures that the \code{Simulator} package does not have access to the garbled circuit inputs. 
 
 \subsection{Common parameters}
+\label{subsec:commonparams}
 The use of the following parameters remains consistent across many package and game files, and they are also seen in the theorem file, we discuss them before proceeding.
 \begin{itemize}
     \item \code{n}: Parameter used to represent the security parameter $\secpar$.
@@ -101,110 +102,116 @@ The use of the following parameters remains consistent across many package and g
     \item \code{xor\_}: Parameter used as an abstract function used to represent the bitwise XOR operation, since Domino does not provide a real representation of the bitwise XOR operation. We discuss this in more detail in Section \ref{chp:discussion}.
 \end{itemize}
 
-\subsection{Common changes made across the Domino representation}
-\label{subsec:commonchangesindomino}
-Since Domino is a strongly typed language, the pseudocode from the pen-and-paper SSP needs to be adapted to be syntactically correct. Therefore, we made some common changes to the Domino packages when compared to the pen-and-paper games. 
+\subsection{Game compositions}
+\label{subsec:encodegames}
 
+In this section, we go over the way game compositons are structured in Domino. 
 
+The real SimFreeXOR game is described in the composition \code{GSimFreeXORReal} (Listing \ref{lst:domino-composition-simfreexorreal}). It instantiates the \code{SimFreeXORReal} package using the common parameters specified in Section \ref{subsec:commonparams} and exposes its \code{GARBLEAND} oracle to the adversary. 
+
+\input{figs/code/domino-composition-simfreexorreal.tex}
+
+Next, the real and ideal versions of the intermediate game \code{R1compHybrid} are defined as in Listing \ref{lst:domino-composition-r1comphybrid}. It instantiates two packages, \code{Reduction1} and \code{Hybrid} using the common parameters, and also includes the bit \code{b} to switch between real and ideal behaviours in package \code{Hybrid}. It then composes the packages such that the adversary has access to the \code{GARBLEAND} oracle of the \code{Reduction1} instance \code{R1}, and \code{R1} has access to the \code{GETRANDOMS} oracle of the \code{Hybrid} instance.
+
+\input{figs/code/domino-composition-r1comphybrid.tex}
+
+Then, the intermediate game \code{GHybridWithCases} defines a simple composition \code{GHybridWithCases} as in Listing \ref{lst:domino-composition-ghybridwithcases}. It consists of just one package, \code{HybridWithCases}, which exposes a \code{GARBLEAND} oracle to the adversary.
+
+\input{figs/code/domino-composition-ghybridwithcases.tex}
+
+Next, the intermediate game \code{GHybridWithCasesWithSampling} defines a similar composition as the previous one that only differs in the package definition. This game is described in Listing \ref{lst:domino-composition-ghybridwithcaseswithsampling}.
+
+\input{figs/code/domino-composition-ghybridwithcaseswithsampling.tex}
+
+The next composition, \code{GIntermediateCompHybrid2} composes two packages, \code{Inter} \code{mediate}, and \code{Hybrid2} as in Listing \ref{lst:domino-composition-gintermediatecomphybrid2}. It passes the parameter \code{b} to \code{Hybrid2} to switch between real and ideal behaviors. The \code{GARBLEAND} oracle of the \code{Intermediate} instance is exposed to the adversary, and the \code{GETRANDOMWIRELABEL} oracle of the \code{Hybrid2} instance is exposed to the \code{Intermediate} instance.
+
+\input{figs/code/domino-composition-gintermediatecomphybrid2.tex}
+
+Returning to the planned games, \code{RcompGLINRKKDM} composes two packages, \code{Reduction} and \code{LINRKKDM}. It also passes the \code{b} parameter to \code{LINRKKDM} to switch between real and ideal behaviours. The \code{Reduction} instance exposes the \code{GARBLEAND} oracle to the adversary, and has access to the \code{ENC} oracle of the \code{LINRKKDM} instance.
+
+\input{figs/code/domino-composition-rcompglinrkkdm.tex}
+
+Finally, \code{GSimFreeXORIdeal} is a composition of the simulator interface \code{SimFreeXOR} \code{Ideal} and the simulator itself \code{Simulator}. The code is described in Listing \ref{lst:domino-composition-simfreexorideal}. It exposes the \code{GARBLEAND} oracle from the \code{SimFreeXORIdeal} instance, and composes the \code{GARBLE} oracle of the \code{Simulator} instance with the \code{SimFreeXORIdeal} instance. 
+
+\input{figs/code/domino-composition-simfreexorideal.tex}
+
+\subsection{Packages}
+\label{subsec:encodepackages}
+Since Domino is a strongly typed language, the pseudocode from the pen-and-paper SSP needs to be adapted to be syntactically appropriate. Therefore, we first discuss  some common differences in the Domino packages when compared to the pen-and-paper games, and then move on the the specific packages.
+
+\subsubsection{Common changes across Domino packages}
+\label{subsubsec:commonchangesindomino}
 In all games, \code{delta} is declared as a \code{Maybe(Bits(n))} type, which represents an nullable container type (\code{Maybe()}), wrapped around a bitstring of length $n$. This is to maintain similarity with the type of \code{delta} used in \code{linrkkdm.pkg.ssp}, and allows us to avoid typecasting in the SMT-LIB portion of the code, which is preferable. In doing this, we made a tradeoff by having to cast \code{delta} to its wrapped value whenever we needed to use it in our Domino code.
 
+As briefly mentioned before, \code{enc} is defined as a three-argument functio, which is different from $\enc$ in the pen-and-paper SSP which only has two arguments. This is because Domino does not have a separate syntax to define a non-deterministic function. The workaround is to have a deterministic function take an argument which is a freshly sampled random value that isn't reused, and this is used as the third extra argument in \code{enc}.
 
 Since Domino does not allow accessing an array using a boolean variable as the array index in many cases, all of the Domino packages that expose the \code{GARBLE} oracle use conditional branching on booleans a and b to make varying assignments to the return tuple \code{(C\_,X\_,d)}.
 
-
 Wire labels in all Domino packages, for any wire W, are of the form \code{W\_1}, instead of the $W_a$ notation from the pen-and-paper SSP. The switch from $a$ to \code{1} is acceptable since the variable names are not reused, and they both refer to a randomly sampled value.
-
 
 The first item of the return tuple, i.e.\ $F$ in the pen-and-paper SSP is a table (the garbled table, to be precise). However, in Domino code, the corresponding variable, \code{C\_}, is used as a set. This is by choice. Since Domino does not natively support sets, a workaround is to use the keys of a table as a set-like data structure, since the keys do not repeat themselves. This set-like data structure allows us to remove the relevance of the order or index at which elements exist inside it, and it allows us to compare the entries in the garbled table out-of-order. This is in line with the special correctness property discussed in Section \ref{subsec:yaosgarblingscheme}, implying that the \cevaluator of the \acrlong{gc} can identify the correct entry from this data structure without requiring ordering or indexes. 
 
-\subsection{The Free XOR, LIN-RK-KDM, and Reduction games}
-\label{subsec:freexorandlinkrkkdmgames}
-The reduction described in Chapter \ref{chp:penpaperssp} consists of the games $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ and \allowbreak $G^{b}_{\mathsf{LIN-RK-KDM}}$, and the reduction $\rdv$. It also uses a composition $\rdv\to G^{b}_{\mathsf{LIN-RK-KDM}}$. 
-We represent the ideal and real instances of $G^{b}_\mathsf{Sim\text{-}FreeXOR}$ as  two different packages in Domino, namely \code{SimFreeXORIdeal}  and \code{SimFreeXORReal}. Both instances of $G^{b}_{\mathsf{LIN-RK-KDM}}$ are represented as one package \code{LINRKKDM} that takes an input parameter bit \code{b} that can be used to switch between the real and ideal behaviors. 
-The reduction $\rdv$ is modeled as its own package \code{Reduction}.
+\subsubsection{Other changes}
+We now discuss other notable differences in the Domino packages compared to their pen-and-paper counterparts. For a full overview of the code, please refer to the code repository \cite{prateekfreexor:code}.
 
-Since we try to stick closely to the pen-and-paper SSP versions of these four games, we discuss them separately.
-\subsubsection{LINRKKDM.pkg.ssp}
-\label{subsubsec:linrkkdm}
-\par\medskip
+In addition to the package parameters, package \code{LINRKKDM} also contains a state variable (a bitstring of length \code{n}) called \code{delta} that corresponds to $\Delta$ in the SSP representation. However, in the Domino package, \code{delta} is wrapped in \code{Maybe(...)}. This is because the \code{Bits(n)} type is not nullable, and therefore cannot be checked for an `unassigned' state, as we do in $G^{b}_{\mathsf{LIN-RK-KDM}}$. Domino provides a nullable type \code{Maybe(...)} that allows us to set \code{delta} to a \code{None} value which we use as a representation for an `unassigned' state.
+
+We continue to use the \code{Maybe(Bits(n))} type instead of raw \code{Bits(n)} in every package that uses \code{delta}. This choice was made to reduce the number of type casts when comparing and relating game states in SMT-LIB (we discuss this in more detail when discussing invariants and randomness mappings). However, the tradeoff is that we need to use an \code{Unwrap} operator when trying to access the value of \code{delta} in the Domino code.
+
 \input{figs/code/freexor-pkg-linrkkdm.tex}
-
-In addition to the package parameters, package LINRKKDM also contains a state variable (a bitstring of length \code{n})  called \code{delta} that corresponds to $\Delta$ in the SSP representation. However, in the Domino package, \code{delta} is wrapped in \code{Maybe(...)}. This is because \code{Bits(n)} is not nullable, and therefore cannot be checked for an `unassigned' state, as we do in $G^{b}_{\mathsf{LIN-RK-KDM}}$. Domino provides a nullable type \code{Maybe(...)} that allows us to set \code{delta} to a \code{None} value which we use as a representation for an `unassigned' state.
-
-It is also worth mentioning that for all subsequent games that use the state variable \code{delta}, we continue to use the \code{Maybe(Bits(n))} type instead of raw \code{Bits(n)}. This choice was made to reduce the number of type casts when comparing and relating game states in SMT-LIB (we discuss this in more detail when discussing invariants and randomness mappings). However, the tradeoff is that we need to use an \code{Unwrap} operator when trying to access the value of \code{delta} in the Domino code.
 
 The code for the \code{ENC} oracle in the \code{LINRKKDM} package also differs from the pen-and-paper SSP as it contains an extra conditional branch using \code{if-else} on the boolean variable \code{z} (Listing \ref{lst:freexor-pkg-linrkkdm-ora-ENC}). This is because Domino does not allow us to multiply a boolean value $z$ with a bitstring $\Delta$, and we cannot represent ${msg} \xor {z}\cdot \Delta$ from $G^{b}_{\mathsf{LIN-RK-KDM}}$ directly.
 
-A final observation is that the \code{enc} parameter that represents the $\enc$ operation from $G^{b}_{\mathsf{LIN-RK-KDM}}$ contains three parameters instead of two. Because $\enc$ is a non-deterministic function, and the abstract functions we define in Domino are treated as deterministic, we introduce a third parameter that takes a freshly sampled random value to emulate the desired random behaviour.
+The \code{Reduction} package begins with the package parameters and does not use a state variable, which is consistent with its pen-and-paper counterpart. Since $\rdv$ is composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$, we must use the \code{import oracle} syntax in \code{Reduction} to declare that this package is intended to be composed with another package that exposes a \code{ENC} oracle with a specific signature (Listing \ref{lst:importoracle}). This also allows us to invoke the \code{ENC} oracle in the code of \code{Reduction}. The concrete implementation of \code{ENC} that is invoked from the oracles of \code{Reduction}, however, is defined in the composition rather than in the \code{Reduction} package itself (as we see in Listing \ref{lst:domino-composition-rcompglinrkkdm}). 
 
-\subsubsection{Reduction.pkg.ssp}
-\label{subsubsec:reduction}
-\medskip
 \input{figs/code/freexor-pkg-reduction.tex}
 
-The \code{Reduction} package begins with the package parameters and does not use a state variable, which is consistent with its pen-and-paper counterpart. Since $\rdv$ is composed with $G^{b}_{\mathsf{LIN-RK-KDM}}$, we must use the \code{import oracle} syntax in \code{Reduction} to declare that this package is intended to be composed with another package that exposes a \code{ENC} oracle with a specific signature. This also allows us to invoke the \code{ENC} oracle in the oracles of \code{Reduction}. The concrete implementation of \code{ENC} that is invoked from the oracles of \code{Reduction}, however, is defined in the composition rather than in the \code{Reduction} package itself.   
-
-\code{Reduction} exposes one oracle, \code{GARBLEAND}, which maps to the $\mathsf{GARBLE}$ oracle of $\rdv$, but does not take $f$ as a paramter. This is because Domino does not allow equivalence relations between games that expose oracles with different oracle signatures, and one of the latter games in the equivalence relations we try to establish (specifically $G^{1}_\mathsf{Sim\text{-}FreeXOR}$ and its corresponding package \code{SimFreeXORIdeal}) require a modified oracle signature. We discuss this in more detail later in this subsection. We are able to get around not having $f$ as an input parameter since we already know that we are dealing with the garbling of an AND gate.
-
-Furthermore, since Domino support neither assignment operations to arbitrary boolean indexes (such as $A_a \sample \bin^\secpar $), nor operations between boolean and bitstrings, we got around it using conditional branching on the boolean variables \code{a} and \code{b}. This enabled us to compute the value of \code{c} or $f(x)$ in each branch separately by setting the value of \code{c} to a precomputed $a\land b$.
-
+\code{Reduction} exposes one oracle, \code{GARBLEAND}, which maps to the $\mathsf{GARBLE}$ oracle of $\rdv$, but does not take $f$ as a paramter. This is because Domino does not allow equivalence relations between games that expose oracles with different oracle signatures, and one of the latter games in the equivalence relations we try to establish (specifically $G^{1}_\mathsf{Sim\text{-}FreeXOR}$ and its corresponding package \code{SimFreeXORIdeal}) require a modified oracle signature. We are able to get around not having $f$ as an input parameter since we already know that we are dealing with the garbling of an AND gate, and can compute $f(x)$ in each conditional branch. Since Domino supports neither assignment operations to arbitrary boolean indexes (such as $A_a \sample \bin^\secpar $), nor operations between boolean and bitstrings, we got around it using conditional branching on the boolean variables \code{a} and \code{b}. This enabled us to compute the value of \code{c} or $f(x)$ in each branch separately by setting the value of \code{c} to a precomputed $a\land b$ (Listing \ref{lst:freexor-pkg-reduction-ora-GARBLEAND}).
 
 \input{figs/code/domino-import-oracle.tex}
 
 We also define the \code{GARBLE} oracle which encodes the code from $\mathsf{GARBLE}$ in the SSP. While randomly sampling variables, we can assign them a sample name, which is useful when we want to relate these randomnesses to the randomnesses generated in other packages and games. 
 
-\subsubsection{SimFreeXORIdealANDONLY.pkg.ssp}
-We were able to encode $G^1_\mathsf{Sim\text{-}FreeXOR}$ game without making any significant changes.
+Aside from the differences listed in Section \ref{subsubsec:commonchangesindomino}, we were able to encode \code{SimFree} \code{XORReal} without any significant logical changes. 
 
-\subsubsection{SimFreeXORRealANDONLY.pkg.ssp}
-We were able to encode $G^0_\mathsf{Sim\text{-}FreeXOR}$ game using only the modifications we described in the above package files.
+However, the ideal Free XOR game had to be split into \code{SimFreeXORIdeal} and \code{Simulator}, where \code{Simulator} contains the actual simulation, and the outer wrapper ensures that the simulator does not receive the actual input values. It also allow us to have the required oracle signature for code equivalence, since the \code{Simulator} package does not expose a \code{GARBLEAND} oracle \ref{lst:domino-package-simulator}.
 
-\subsection{Games and Packages used in other game hops}
-\label{subsec:encode_games}
-Now, we move on to discussing the other games and packages that were used as intermediate steps in theorem \code{freexor}. 
-% Table \ref{tab:freexor-domino-games} shows this mapping.
-% \input{figs/table/freexorgames.tex}
+\input{figs/code/domino-package-simulator}
 
-\subsubsection{GLINRKKDM.comp.ssp}
-\code{GLINRKKDM.comp.ssp} encodes the LIN-RK-KDM game. It first defines the constants that the package it instantiates needs. Then, it creates an instance of the \code{LINRKKDM} package and passes those parameters to it. Finally, it defines the oracle interface that it exposes to an adversary.
-
-\subsubsection{RcompGLINRKKDM.comp.ssp}
-\code{RcompGLINRKKDM.comp.ssp} encodes the composition of the reduction $\rdv$ with the LIN-RK-KDM game. While following the same syntax as the previous game file, it instantiates two different games, and composes them by defining that the \code{ENC} oracle of the \code{LINRKKDM} instance is available to the instance of the \code{Reduction} package. It also defines the interface exposed to the adversary.
-
-\subsubsection{GSimFreeXORReal.comp.ssp and GSimFreeXORIdeal.comp.ssp}
-These two files follow the same syntax as the previous game files and define their respective games.
-
-\subsection{Theorems}
+\subsection{Theorem}
 \label{subsec:encode_therorems}
-Theorem files are where we define the relationships between the games we have defined so far.
-We start by defining the constant variables that we would like to instantiate the games with. These parameters are then injected into the games (and then their packages), making their way to the underlying oracles. This is a useful property to have if we want some functions or variables to behave the same way in every package.
-This allows us to use the same parameters for each package, causing each package to have the same message length, security parameter, and for them to use the same encryption scheme and XOR functions.
+We now go over the \code{freexor} theorem file. It starts by defining the constant variables that are used to instantiate the games (Figure \ref{lst:domino-freexor-params}). These parameters are then injected into the games (and then their packages), making their way to the underlying oracles. This is what allow us to ensure that symbolic parameters behave the same way across packages. For example, this is what allows \code{enc} and \code{xor} to have exactly the same behavior in every package, and for \code{m} and \code{n} to remain consistent, even though they are never explicitly defined.
 
-Then, we instantiate all the games associated with this theorem, and separate the real and ideal games by passing relevant parameters, in the case of games that have varying logic based on an input paramter bit, like in the case of game \code{GLINRKKDM}. 
-After creating instances of all the games, we define the assumptions that we would like to reduce our games to in future reduction game hops. In our case, this is Definition \ref{def:linrkkdmsecurity} (LIN-RK-KDM security). We define our assumption as the equivalence of the instance of game \code{GLINRKKDM} initialized with bit 0, and its instance initialized with bit 1.
+\input{figs/code/domino-freexor-params.tex}
 
-Finally, we define the game hops used in the theorem. Game hops can be of two types, reductions and equivalences.
-\subsubsection{Reductions}
-A reduction game hop is defined by first choosing the games whose security has to be reduced to an assumption. Following Theorem \ref{thm:reduction}, we choose to reduce the instances of game \code{RcompGLINRKKDM} instantiated with bit 0 and 1 to the \code{LINRKKDM} game. After choosing the composed games that need to be reduced to the  assumption games, we must then manually map the package instances that both composed game have to their corresponding packages in the assumption games respectively. Listing \ref{lst:domino-theorem-reduction-gamehop} shows the reduction game hop we use in this theorem.
+Then, we instantiate all the games associated with the \code{freexor} theorem, and intantiate the real and ideal games separately by passing the relevant \code{b} parameter.
 
-\input{figs/code/domino-theorem-reduction.tex}
+\input{figs/code/domino-freexor-inst.tex}
 
-\subsubsection{Equivalences}
-%Since invariants and randomness mappings are part of equivalences, they go here 
-A code equivalence argument can be encoded using an equivalence game hop in Domino. First, we choose the oracles exposed by the two games (to the adversary) for which we would like to show equivalence. Then, we describe what equivalence actually means in this context using varying lemmata. Domino offers two built-in lemmata - \code{same-output} and \code{equal-aborts}. To put it simply, the \code{same-output} lemma, along with the \code{[no-abort]} argument verifies whether the oracles of the two games return the same output when they are provided the same inputs. The \code{equal-abort} lemma verifies if both oracles also abort on the same inputs, verifying equivalence of their failure behavior too. 
+After creating instances of all the games, we define the assumptions that the subsequent reduction game hops use. In our case, these are \code{hybrid}, \code{hybrid2} and \code{lin_rk_kdm}, which correspond to Definition \ref{def:linrkkdmsecurity} (LIN-RK-KDM security), Lemma \ref{lemma:informationtheoreticassumptionreal}, and Lemma \ref{lemma:informationtheoreticassumptionideal}, respectively. 
 
-We also have extra conditions that are required for our proof to be validated, which can be defined as extra lemmata for Domino to verify. We define these in the file \code{real\_game\_invariant.smt2}, and is discussed in the following section.
-Listing \ref{lst:domino-theorem-equivalence-gamehop} shows one of the equivalence game hops we use in this theorem.
+\input{figs/code/domino-freexor-assumption.tex}
 
-\input{figs/code/domino-theorem-equivalence.tex}
+Finally, the theorem file contains the game hops used in the theorem, along with their randomness mappings and invariants. We go over each game hop individually. It is important to note that game hops in Domino are indexed from 0, and these are mapped accurately to Figure \ref{fig:gamehops}.
 
-\subsection{Invariants and Randomness Mappings}
-Domino allows users to write custom lemmata that can be verified when \code{domino} \code{prove} runs, making it very extensible. We can declare such lemmata by attaching their corresponding \code{.smt2} file, and adding it to the list of lemmata to be proven. We do this in Listing \ref{lst:domino-theorem-equivalence-gamehop} by declaring a lemma called \code{invariant}. 
-These extension files are written in SMT-LIB. Listing \ref{lst:domino-theorem-equivalence-invariant}, is an excerpt from the invariant file we use. The first function that the file defines is a randomness mapping between the left and right games. Randomness mappings are necessary because it allows us to ensure that the randomness sampled in both games are related. This is important when our oracle outputs depend on the random values, and equivalence conditions will simply fail unless the randomnesses are defined to be the same.
-The other function is the invariant, and we define a condition here that we need to be true for the equivalence to be established. Specifically, the circuit offset $\Delta$ chosen in both games needs to be the same, otherwise the oracles will return different outputs and the \code{same-output} property will never be satisfied.
+\input{figs/code/domino-freexor-gamehop0.tex}
+The first gamehop is a simple equivalence relation between \code{GSimFreeXORReal} and \code{R1compHybridReal}.  
 
-\input{figs/code/domino-theorem-invariant.tex}
+\input{figs/code/domino-freexor-gamehop1.tex}
 
+\input{figs/code/domino-freexor-gamehop2.tex}
+
+\input{figs/code/domino-freexor-gamehop3.tex}
+
+\input{figs/code/domino-freexor-gamehop4.tex}
+
+\input{figs/code/domino-freexor-gamehop5.tex}
+
+\input{figs/code/domino-freexor-gamehop6.tex}
+
+\input{figs/code/domino-freexor-gamehop7.tex}
+
+\input{figs/code/domino-freexor-gamehop8.tex}
 \subsection{Verification Results}
 \label{subsec:results}
 The resulting Domino formalization was tested by using the verification mechanism provided in Domino (\code{domino prove}). The reduction between \code{RcompGLINRKKDM0} and \code{RcompGLINRKKDM1} was successfully verified under the LIN-RK-KDM assumption. However, the equivalence relation between \code{RcompGLINRKKDM0} and \code{GSimFree-} \code{XORReal}, and the equivalence relation between \code{RcompGLINRKKDM1} and \code{GSimFree-} \code{XORIdeal} could not be successfully established. This suggests the requirement of more invariants, which we discuss in Chapter \ref{chp:discussion}.

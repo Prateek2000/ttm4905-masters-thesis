@@ -1,0 +1,36 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+composition GIntermediatecompHybrid2 {
+    const n: Integer; 
+    const m: Integer; 
+    const b: Bool;
+    const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); 
+    const xor_: fn Bits(n), Bits(n) -> Bits(n);
+    instance GIntermediate = Intermediate {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_:xor_,
+        }
+    }
+    instance GHybrid2 = Hybrid2 {
+        params {
+            n: n,
+            b: b,
+            xor_:xor_,
+        }
+    }
+    compose {
+        adversary: {
+            GARBLEAND: GIntermediate,
+        },
+        GIntermediate: {
+            GETRANDOMWIRELABEL: GHybrid2,
+        }
+    }
+}
+\end{minted}
+\caption{Composition \code{GIntermediatecompHybrid2}}
+\label{lst:domino-composition-gintermediatecomphybrid2}
+\end{longlisting}

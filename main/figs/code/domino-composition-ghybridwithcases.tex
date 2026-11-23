@@ -1,0 +1,25 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+composition GHybridWithCases {
+    const n: Integer; 
+    const m: Integer;  
+    const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); 
+    const xor_: fn Bits(n), Bits(n) -> Bits(n);
+    instance GHybridWithCases = HybridWithCases {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_:xor_,
+        }
+    }
+    compose {
+        adversary: {
+            GARBLEAND: GHybridWithCases,
+        },
+    }
+}
+\end{minted}
+\caption{Composition \code{GHybridWithCases}}
+\label{lst:domino-composition-ghybridwithcases}
+\end{longlisting}

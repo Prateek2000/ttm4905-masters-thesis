@@ -1,0 +1,25 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+composition GSimFreeXORReal {
+    const n: Integer; 
+    const m: Integer;  
+    const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); 
+    const xor_: fn Bits(n), Bits(n) -> Bits(n);
+    instance SimFreeXOR0 = SimFreeXORReal {
+        params {
+            n: n,
+            m:m,
+            enc: enc,
+            xor_:xor_,
+        }
+    }
+    compose {
+        adversary: {
+            GARBLEAND: SimFreeXOR0,
+        }
+    }
+}
+\end{minted}
+\caption{Composition \code{GSimFreeXORReal}}
+\label{lst:domino-composition-simfreexorreal}
+\end{longlisting}

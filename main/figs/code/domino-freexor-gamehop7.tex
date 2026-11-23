@@ -1,0 +1,22 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+theorem freexor {
+    /*...*/
+    gamehops {
+    /*...*/
+    reduction RcompGLINRKKDM0 RcompGLINRKKDM1 {
+        assumption lin_rk_kdm
+        map GLINRKKDM0 RcompGLINRKKDM0 {
+            GLINRKKDM: GLINRKKDM
+        }
+        map GLINRKKDM1 RcompGLINRKKDM1 {
+            GLINRKKDM: GLINRKKDM
+        }
+    }
+    /*...*/
+    }
+}
+\end{minted}
+\caption{Game hop 8 in the \code{freexor} theorem}
+\label{lst:domino-freexor-gamehop7}
+\end{longlisting}

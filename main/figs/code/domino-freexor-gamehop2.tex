@@ -1,0 +1,25 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+theorem freexor {
+    /*...*/
+    gamehops{
+    /*...*/
+    equivalence R1compHybridIdeal GHybridWithCases {
+            invariant: [
+                    ./theorem/invariants/hybrididealpart1.smt2
+                ]
+            GARBLEAND: {
+                lemmas {
+                    invariant: [no-abort]
+                    same-output: [no-abort]
+                    equal-aborts: []
+                }
+            }
+        }
+    /*...*/
+    }
+}
+\end{minted}
+\caption{Game hop 3 in the \code{freexor} theorem}
+\label{lst:domino-freexor-gamehop2}
+\end{longlisting}

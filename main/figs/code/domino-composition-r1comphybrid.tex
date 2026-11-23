@@ -1,0 +1,36 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+composition R1compHybrid {
+    const n: Integer; 
+    const m: Integer;  
+    const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); 
+    const b: Bool; 
+    const xor_: fn Bits(n), Bits(n) -> Bits(n);
+    instance GHybrid = Hybrid {
+        params {
+            n: n,
+            b: b,
+            xor_:xor_,
+        }
+    }
+    instance R1 = Reduction1 {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_:xor_,
+        }
+    }
+    compose {
+        adversary: {
+            GARBLEAND: R1,
+        },
+        R1: {
+            GETRANDOMS: GHybrid,
+        }
+    }
+}
+\end{minted}
+\caption{Composition \code{R1compHybrid}}
+\label{lst:domino-composition-r1comphybrid}
+\end{longlisting}

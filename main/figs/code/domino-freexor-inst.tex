@@ -1,0 +1,126 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+theorem freexor {
+    /* ... */
+    instance GHybridReal = GHybrid {
+        params {
+            n: n,
+            b: false,
+            xor_: xor_,
+        }}
+    instance GHybridIdeal = GHybrid {
+        params {
+            n: n,
+            b: true,
+            xor_: xor_,
+        }} 
+    instance GSimFreeXORReal = GSimFreeXORReal {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_: xor_
+        }}
+    instance R1compHybridReal = R1compHybrid {
+        params {
+            n: n,
+            m: m,
+            b: false,
+            enc: enc,
+            xor_: xor_
+        }}
+    instance R1compHybridIdeal = R1compHybrid {
+        params {
+            n: n,
+            m: m,
+            b: true,
+            enc: enc,
+            xor_: xor_
+        }}
+    instance RcompGLINRKKDM0 = RcompGLINRKKDM {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            b: false,
+            xor_: xor_
+        }}
+    instance GHybridWithCases = GHybridWithCases {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_: xor_
+        }}
+    instance GHybridWithCasesWithSampling = GHybridWithCasesWithSampling {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_: xor_
+        }}
+    instance GHybrid2Ideal = GHybrid2 {
+        params {
+            n: n,
+            b: true,
+            xor_: xor_
+        }}
+    instance GHybrid2Real = GHybrid2 {
+        params {
+            n: n,
+            b: false,
+            xor_: xor_
+        }}
+    instance GIntermediatecompHybrid2Real = GIntermediatecompHybrid2 {
+        params {
+            n: n,
+            m: m,
+            b: false,
+            enc: enc,
+            xor_: xor_
+        }}
+    instance GIntermediatecompHybrid2Ideal = GIntermediatecompHybrid2 {
+        params {
+            n: n,
+            m: m,
+            b: true,
+            enc: enc,
+            xor_: xor_
+        }}
+    instance GLINRKKDM0 = GLINRKKDM {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            b: false,
+            xor_: xor_,
+        }}
+    instance GLINRKKDM1 = GLINRKKDM {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            b: true,
+            xor_: xor_,
+        }}
+    instance RcompGLINRKKDM1 = RcompGLINRKKDM {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            b: true,
+            xor_: xor_
+        }}
+    instance GSimFreeXORIdeal = GSimFreeXORIdeal {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_: xor_
+        }}
+    /* ... */
+}
+\end{minted}
+\caption{Game instantiations in theorem \code{freexor}}
+\label{lst:domino-freexor-inst}
+\end{longlisting}

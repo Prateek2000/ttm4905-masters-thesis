@@ -1,0 +1,38 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+theorem freexor {
+    /*...*/
+    gamehops {
+    /*...*/
+    equivalence RcompGLINRKKDM1 GSimFreeXORIdeal {
+        invariant: [
+            ./theorem/invariants/freexorideal.smt2
+            ./theorem/invariants/lemma-hybridintermediate.smt2
+        ]
+        GARBLEAND: {
+            lemmas {
+                case-x-is-false-false: [no-abort]
+                case-x-is-false-true: [no-abort]
+                case-x-is-true-false: [no-abort]
+                case-x-is-true-true: [no-abort]
+                same-output: [no-abort, case-x-is-false-false,
+                         case-x-is-false-true, case-x-is-true-false,
+                         case-x-is-true-true]
+                invariant: [no-abort]
+                abort-case-x-is-false-false: []
+                abort-case-x-is-false-true: []
+                abort-case-x-is-true-false: []
+                abort-case-x-is-true-true: []
+                equal-aborts: [abort-case-x-is-false-false,
+                 abort-case-x-is-false-true, abort-case-x-is-true-false,
+                 abort-case-x-is-true-true]
+            }
+        }
+        }
+    /*...*/
+    }
+}
+\end{minted}
+\caption{Game hop 9 in the \code{freexor} theorem}
+\label{lst:domino-freexor-gamehop8}
+\end{longlisting}

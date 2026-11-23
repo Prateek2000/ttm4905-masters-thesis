@@ -1,0 +1,22 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+theorem freexor {
+    /*...*/
+    gamehops {
+    /*...*/
+    reduction GIntermediatecompHybrid2Real GIntermediatecompHybrid2Ideal {
+        assumption hybrid2
+        map GHybrid2Real GIntermediatecompHybrid2Real {
+            GHybrid2: GHybrid2
+        }
+        map GHybrid2Ideal GIntermediatecompHybrid2Ideal {
+            GHybrid2: GHybrid2
+        }
+    }
+    /*...*/
+    }
+}
+\end{minted}
+\caption{Game hop 6 in the \code{freexor} theorem}
+\label{lst:domino-freexor-gamehop5}
+\end{longlisting}

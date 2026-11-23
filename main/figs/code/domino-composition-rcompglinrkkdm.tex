@@ -1,0 +1,38 @@
+\begin{longlisting}
+\begin{minted}{ssp-lang}
+composition RcompGLINRKKDM {
+    const n: Integer; 
+    const m: Integer;  
+    const enc: fn Bits(n), Bits(n), Bits(n) -> Bits(m); 
+    const b: Bool; 
+    const xor_: fn Bits(n), Bits(n) -> Bits(n);
+    instance GLINRKKDM = LINRKKDM {
+        params {
+            n: n,
+            m:m,
+            enc: enc,
+            b: b,
+            xor_:xor_,
+        }
+    }
+    instance R = Reduction {
+        params {
+            n: n,
+            m: m,
+            enc: enc,
+            xor_:xor_,
+        }
+    }
+    compose {
+        adversary: {
+            GARBLEAND: R,
+        },
+        R: {
+            ENC: GLINRKKDM,
+        }
+    }
+}
+\end{minted}
+\caption{Composition \code{RcompGLINRKKDM}}
+\label{lst:domino-composition-rcompglinrkkdm}
+\end{longlisting}
