@@ -195,9 +195,10 @@ After creating instances of all the games, we define the assumptions that the su
 Finally, the theorem file contains the game hops used in the theorem, along with their randomness mappings and invariants. We go over each game hop individually. It is important to note that game hops in Domino are indexed from 0, and these are mapped accurately to Figure \ref{fig:gamehops}.
 
 \input{figs/code/domino-freexor-gamehop0.tex}
-The first gamehop is a simple equivalence relation between \code{GSimFreeXORReal} and \code{R1compHybridReal}.  
+The first gamehop is a simple equivalence relation between \code{GSimFreeXORReal} and \code{R1compHybridReal}. The randomness mapping and invariant are found in the \code{hybridreal2.smt2} file. The randomness mapping is quite simple, it maps the wire label samplings, \code{delta}, row randomness samplings (\code{R_00}, code{R_01}, \code{R_10}, \code{R_11}), and the random values used for \code{enc} function calls from \code{GSimFreeXORReal} to \code{R1compHybridReal}.
 
 \input{figs/code/domino-freexor-gamehop1.tex}
+The second
 
 \input{figs/code/domino-freexor-gamehop2.tex}
 
